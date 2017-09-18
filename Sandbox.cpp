@@ -42,6 +42,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #include <Misc/ConfigurationFile.h>
 #include <IO/File.h>
 #include <IO/ValueSource.h>
+
+/* MM: math includes - I don't know how much of this is only used for the topography calculations */
 #include <Math/Math.h>
 #include <Math/Constants.h>
 #include <Math/Interval.h>
@@ -53,6 +55,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #include <Geometry/LinearUnit.h>
 #include <Geometry/GeometryValueCoders.h>
 #include <Geometry/OutputOperators.h>
+
+/* MM: graphic library includes - may not need all of these */
 #include <GL/gl.h>
 #include <GL/GLMaterialTemplates.h>
 #include <GL/GLColorMap.h>
@@ -62,7 +66,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #include <GL/Extensions/GLARBTextureFloat.h>
 #include <GL/Extensions/GLARBTextureRg.h>
 #include <GL/Extensions/GLARBDepthTexture.h>
-#include <GL/Extensions/GLARBShaderObjects.h>
+#include <GL/Extensions/GLARBShaderObjects.h>    // MM: e.g. we may not need these
 #include <GL/Extensions/GLARBVertexShader.h>
 #include <GL/Extensions/GLARBFragmentShader.h>
 #include <GL/Extensions/GLARBMultitexture.h>
@@ -77,6 +81,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #include <GLMotif/Margin.h>
 #include <GLMotif/Label.h>
 #include <GLMotif/TextField.h>
+
+/* MM: Vrui 3D library includes */
 #include <Vrui/Vrui.h>
 #include <Vrui/CoordinateManager.h>
 #include <Vrui/Lightsource.h>
@@ -89,13 +95,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #include <Kinect/DirectFrameSource.h>
 #include <Kinect/OpenDirectFrameSource.h>
 
-#define SAVEDEPTH 0
+#define SAVEDEPTH 0    // MM: what is SAVEDEPTH for?
 
 #if SAVEDEPTH
 #include <Images/RGBImage.h>
 #include <Images/WriteImageFile.h>
 #endif
 
+/* MM: SARndbox defined includes */
 #include "FrameFilter.h"
 #include "DepthImageRenderer.h"
 #include "ElevationColorMap.h"
@@ -144,6 +151,7 @@ Sandbox::DataItem::DataItem(void)
 	GLARBMultitexture::initExtension();
 	}
 
+/* MM: what is a data item? */
 Sandbox::DataItem::~DataItem(void)
 	{
 	/* Delete all shaders, buffers, and texture objects: */
@@ -155,6 +163,9 @@ Sandbox::DataItem::~DataItem(void)
 Methods of class Sandbox::RenderSettings:
 ****************************************/
 
+/* MM: looks like these render settings are specific to topography and SARndbox, 
+       though the projector settings may communicate with Vrui / Kinect... 
+       see Sandbox.h for RenderSettings struct */
 Sandbox::RenderSettings::RenderSettings(void)
 	:fixProjectorView(false),projectorTransform(PTransform::identity),projectorTransformValid(false),
 	 hillshade(false),surfaceMaterial(GLMaterial::Color(1.0f,1.0f,1.0f)),
@@ -243,12 +254,13 @@ void Sandbox::RenderSettings::loadHeightMap(const char* heightMapName)
 Methods of class Sandbox:
 ************************/
 
+/* MM: is a raw depth frame a collection of data representing a single frame received from Kinect? */
 void Sandbox::rawDepthFrameDispatcher(const Kinect::FrameBuffer& frameBuffer)
 	{
 	/* Pass the received frame to the frame filter and the hand extractor: */
 	if(frameFilter!=0&&!pauseUpdates)
 		frameFilter->receiveRawFrame(frameBuffer);
-	if(handExtractor!=0)
+	if(handExtractor!=0)                                     // MM: we may be wanting to use their hand extractor
 		handExtractor->receiveRawFrame(frameBuffer);
 	}
 
@@ -261,6 +273,8 @@ void Sandbox::receiveFilteredFrame(const Kinect::FrameBuffer& frameBuffer)
 	Vrui::requestUpdate();
 	}
 
+/* MM: "DEM - Class to represent digital elevation models (DEMs) as float-valued texture objects." - DEM.h 
+       does this mean we need to use DEMs? */
 void Sandbox::toggleDEM(DEM* dem)
 	{
 	/* Check if this is the active DEM: */
@@ -281,6 +295,7 @@ void Sandbox::toggleDEM(DEM* dem)
 			rsIt->surfaceRenderer->setDem(activeDem);
 	}
 
+/* MM: obviously we aren't dealing with water, this is unnecessary */
 void Sandbox::addWater(GLContextData& contextData) const
 	{
 	/* Check if the most recent rain object list is not empty: */
@@ -314,11 +329,13 @@ void Sandbox::addWater(GLContextData& contextData) const
 		}
 	}
 
+/* MM: does this mean don't update the projected output? */
 void Sandbox::pauseUpdatesCallback(GLMotif::ToggleButton::ValueChangedCallbackData* cbData)
 	{
 	pauseUpdates=cbData->set;
 	}
 
+/* MM: here's how to make Vrui show a dialog box, looks like */
 void Sandbox::showWaterControlDialogCallback(Misc::CallbackData* cbData)
 	{
 	Vrui::popupPrimaryWidget(waterControlDialog);
@@ -339,6 +356,8 @@ void Sandbox::waterAttenuationSliderCallback(GLMotif::TextFieldSlider::ValueChan
 	waterTable->setAttenuation(GLfloat(1.0-cbData->value));
 	}
 
+
+/* MM: the following method shows how to build a main menu; sounds relevant to our project */
 GLMotif::PopupMenu* Sandbox::createMainMenu(void)
 	{
 	/* Create a popup shell to hold the main menu: */
@@ -366,6 +385,7 @@ GLMotif::PopupMenu* Sandbox::createMainMenu(void)
 	return mainMenuPopup;
 	}
 
+/* MM: main menu was PopupMenu; this is PopupWindow - could also be useful */
 GLMotif::PopupWindow* Sandbox::createWaterControlDialog(void)
 	{
 	const GLMotif::StyleSheet& ss=*Vrui::getWidgetManager()->getStyleSheet();
@@ -435,12 +455,14 @@ GLMotif::PopupWindow* Sandbox::createWaterControlDialog(void)
 	return waterControlDialogPopup;
 	}
 
+/* MM: what does enclosing the following in namespace{} do? */
 namespace {
 
 /****************
 Helper functions:
 ****************/
-
+	
+/* MM: usage below may be helpful in understanding the project */
 void printUsage(void)
 	{
 	std::cout<<"Usage: SARndbox [option 1] ... [option n]"<<std::endl;
@@ -539,6 +561,7 @@ void printUsage(void)
 
 }
 
+/* MM:  */
 Sandbox::Sandbox(int& argc,char**& argv)
 	:Vrui::Application(argc,argv),
 	 camera(0),pixelDepthCorrection(0),
@@ -820,6 +843,7 @@ Sandbox::Sandbox(int& argc,char**& argv)
 	/* Get the camera's intrinsic parameters: */
 	cameraIps=camera->getIntrinsicParameters();
 	
+	/* MM: this will probably be needed for our project; just basic physical sandbox info? */
 	/* Read the sandbox layout file: */
 	Geometry::Plane<double,3> basePlane;
 	Geometry::Point<double,3> basePlaneCorners[4];
@@ -885,6 +909,7 @@ Sandbox::Sandbox(int& argc,char**& argv)
 		handExtractor=new HandExtractor(frameSize,pixelDepthCorrection,cameraIps.depthProjection);
 		}
 	
+	/* MM: this depth section will be necessary for our project bc it's just 3D space calcs, I think */
 	/* Start streaming depth frames: */
 	camera->startStreaming(0,Misc::createFunctionCall(this,&Sandbox::rawDepthFrameDispatcher));
 	
@@ -1041,6 +1066,7 @@ void Sandbox::toolDestructionCallback(Vrui::ToolManager::ToolDestructionCallback
 		}
 	}
 
+/* MM: a Vrui::Application method - necessary for us */
 void Sandbox::frame(void)
 	{
 	/* Check if the filtered frame has been updated: */
@@ -1057,6 +1083,7 @@ void Sandbox::frame(void)
 		
 		#if 0
 		
+		/* MM: looks like this is where detected hands trigger actions - could be useful */
 		/* Register/unregister the rain rendering function based on whether hands have been detected: */
 		bool registerWaterFunction=!handExtractor->getLockedExtractedHands().empty();
 		if(addWaterFunctionRegistered!=registerWaterFunction)
@@ -1075,6 +1102,7 @@ void Sandbox::frame(void)
 	for(std::vector<RenderSettings>::iterator rsIt=renderSettings.begin();rsIt!=renderSettings.end();++rsIt)
 		rsIt->surfaceRenderer->setAnimationTime(Vrui::getApplicationTime());
 	
+	/* MM: I think the following may just be for manually entered data. could be useful */
 	/* Check if there is a control command on the control pipe: */
 	if(controlPipeFd>=0)
 		{
@@ -1163,10 +1191,12 @@ void Sandbox::frame(void)
 		frameRateTextField->setValue(1.0/Vrui::getCurrentFrameTime());
 		}
 	
+	/* MM: updates paused - check what Vrui::scheduleUpdate does */
 	if(pauseUpdates)
 		Vrui::scheduleUpdate(Vrui::getApplicationTime()+1.0/30.0);
 	}
 
+/* MM: a Vrui::Application method - necessary for us */
 void Sandbox::display(GLContextData& contextData) const
 	{
 	/* Get the data item: */
@@ -1180,6 +1210,7 @@ void Sandbox::display(GLContextData& contextData) const
 		;
 	const RenderSettings& rs=windowIndex<int(renderSettings.size())?renderSettings[windowIndex]:renderSettings.back();
 	
+	/* MM: water stuff unnecessary */
 	/* Check if the water simulation state needs to be updated: */
 	if(waterTable!=0&&dataItem->waterTableTime!=Vrui::getApplicationTime())
 		{
@@ -1216,6 +1247,7 @@ void Sandbox::display(GLContextData& contextData) const
 		dataItem->waterTableTime=Vrui::getApplicationTime();
 		}
 	
+	/* MM: necessary? */
 	/* Calculate the projection matrix: */
 	PTransform projection=ds.projection;
 	if(rs.fixProjectorView&&rs.projectorTransformValid)
@@ -1227,6 +1259,7 @@ void Sandbox::display(GLContextData& contextData) const
 		projection*=Geometry::invert(ds.modelviewNavigational);
 		}
 	
+	/* MM: I think all the shading is unnecessary for our project... */
 	if(rs.hillshade)
 		{
 		/* Set the surface material: */
@@ -1404,6 +1437,7 @@ void Sandbox::display(GLContextData& contextData) const
 		rs.surfaceRenderer->renderSinglePass(ds.viewport,projection,ds.modelviewNavigational,contextData);
 		}
 	
+	/* MM: water rendering unnecessary */
 	if(rs.waterRenderer!=0)
 		{
 		/* Draw the water surface: */
@@ -1414,12 +1448,14 @@ void Sandbox::display(GLContextData& contextData) const
 		}
 	}
 
+/* MM: a Vrui::Application method, don't know what it does */
 void Sandbox::resetNavigation(void)
 	{
 	/* Set the navigation transformation from the previously computed parameters: */
 	Vrui::setNavigationTransformation(navCenter,navSize,navUp);
 	}
 
+/* MM: a Vrui::Application method, don't know what it does */
 void Sandbox::eventCallback(Vrui::Application::EventID eventId,Vrui::InputDevice::ButtonCallbackData* cbData)
 	{
 	if(cbData->newButtonState)
@@ -1438,6 +1474,7 @@ void Sandbox::eventCallback(Vrui::Application::EventID eventId,Vrui::InputDevice
 		}
 	}
 
+/* MM: a GLObject method - necessary for us */
 void Sandbox::initContext(GLContextData& contextData) const
 	{
 	/* Create a data item and add it to the context: */
@@ -1449,6 +1486,7 @@ void Sandbox::initContext(GLContextData& contextData) const
 	GLint currentFrameBuffer;
 	glGetIntegerv(GL_FRAMEBUFFER_BINDING_EXT,&currentFrameBuffer);
 	
+	/* MM: do we need any of the following shadow lines? */
 	/* Set the default shadow buffer size: */
 	dataItem->shadowBufferSize[0]=1024;
 	dataItem->shadowBufferSize[1]=1024;
@@ -1470,6 +1508,7 @@ void Sandbox::initContext(GLContextData& contextData) const
 	glTexImage2D(GL_TEXTURE_2D,0,GL_DEPTH_COMPONENT24_ARB,dataItem->shadowBufferSize[0],dataItem->shadowBufferSize[1],0,GL_DEPTH_COMPONENT,GL_UNSIGNED_BYTE,0);
 	glBindTexture(GL_TEXTURE_2D,0);
 	
+	/* MM: without shadows, do we need this? */
 	/* Attach the depth texture to the frame buffer object: */
 	glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,GL_DEPTH_ATTACHMENT_EXT,GL_TEXTURE_2D,dataItem->shadowDepthTextureObject,0);
 	glDrawBuffer(GL_NONE);

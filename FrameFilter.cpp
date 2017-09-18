@@ -1,3 +1,5 @@
+/* MM: this one can probably be left as-is. looks crucial for building frames from Kinect */
+
 /***********************************************************************
 FrameFilter - Class to filter streams of depth frames arriving from a
 depth camera, with code to detect unstable values in each pixel, and

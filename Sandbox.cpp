@@ -43,7 +43,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #include <IO/File.h>
 #include <IO/ValueSource.h>
 
-/* MM: math includes - I don't know how much of this is only used for the topography calculations */
+// MM: math includes - I don't know how much of this is only used for the topography calculations
 #include <Math/Math.h>
 #include <Math/Constants.h>
 #include <Math/Interval.h>
@@ -56,23 +56,24 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #include <Geometry/GeometryValueCoders.h>
 #include <Geometry/OutputOperators.h>
 
-/* MM: graphic library includes - may not need all of these */
+// MM: graphic library includes - may not need all of these
 #include <GL/gl.h>
 #include <GL/GLMaterialTemplates.h>
-#include <GL/GLColorMap.h>
+#include <GL/GLColorMap.h>          // MM: color map directly related to topography sim?
 #include <GL/GLLightTracker.h>
 #include <GL/Extensions/GLEXTFramebufferObject.h>
 #include <GL/Extensions/GLARBTextureRectangle.h>
 #include <GL/Extensions/GLARBTextureFloat.h>
 #include <GL/Extensions/GLARBTextureRg.h>
 #include <GL/Extensions/GLARBDepthTexture.h>
-#include <GL/Extensions/GLARBShaderObjects.h>    // MM: e.g. we may not need these
+#include <GL/Extensions/GLARBShaderObjects.h>
 #include <GL/Extensions/GLARBVertexShader.h>
 #include <GL/Extensions/GLARBFragmentShader.h>
 #include <GL/Extensions/GLARBMultitexture.h>
 #include <GL/GLContextData.h>
 #include <GL/GLGeometryWrappers.h>
 #include <GL/GLTransformationWrappers.h>
+// MM: GLMotif includes look like UI stuff
 #include <GLMotif/StyleSheet.h>
 #include <GLMotif/WidgetManager.h>
 #include <GLMotif/PopupMenu.h>
@@ -82,7 +83,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #include <GLMotif/Label.h>
 #include <GLMotif/TextField.h>
 
-/* MM: Vrui 3D library includes */
+// MM: Vrui 3D library includes
 #include <Vrui/Vrui.h>
 #include <Vrui/CoordinateManager.h>
 #include <Vrui/Lightsource.h>
@@ -95,8 +96,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #include <Kinect/DirectFrameSource.h>
 #include <Kinect/OpenDirectFrameSource.h>
 
-#define SAVEDEPTH 0    // MM: what is SAVEDEPTH for?
+#define SAVEDEPTH 0   /* MM: SAVEDEPTH is used twice as a #if 0 ... #endif block comment /*
 
+// MM: this does nothing, basically commented out
 #if SAVEDEPTH
 #include <Images/RGBImage.h>
 #include <Images/WriteImageFile.h>
@@ -108,13 +110,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #include "ElevationColorMap.h"
 #include "DEM.h"
 #include "SurfaceRenderer.h"
-#include "WaterTable2.h"
+#include "WaterTable2.h"      // MM: don't need
 #include "HandExtractor.h"
-#include "WaterRenderer.h"
-#include "GlobalWaterTool.h"
-#include "LocalWaterTool.h"
+#include "WaterRenderer.h"    // MM: don't need
+#include "GlobalWaterTool.h"  // MM: don't need
+#include "LocalWaterTool.h"   // MM: don't need
 #include "DEMTool.h"
-#include "BathymetrySaverTool.h"
+#include "BathymetrySaverTool.h"  // MM: don't need
 
 #include "Config.h"
 
@@ -122,11 +124,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 Methods of class Sandbox::DataItem:
 **********************************/
 
+/* MM: what is a data item? */
 Sandbox::DataItem::DataItem(void)
 	:waterTableTime(0.0),
 	 shadowFramebufferObject(0),shadowDepthTextureObject(0)
 	{
 	/* Check if all required extensions are supported: */
+	// MM: can change this once we determine which extensions we need
 	bool supported=GLEXTFramebufferObject::isSupported();
 	supported=supported&&GLARBTextureRectangle::isSupported();
 	supported=supported&&GLARBTextureFloat::isSupported();
@@ -151,7 +155,6 @@ Sandbox::DataItem::DataItem(void)
 	GLARBMultitexture::initExtension();
 	}
 
-/* MM: what is a data item? */
 Sandbox::DataItem::~DataItem(void)
 	{
 	/* Delete all shaders, buffers, and texture objects: */
@@ -233,6 +236,10 @@ void Sandbox::RenderSettings::loadProjectorTransform(const char* projectorTransf
 		}
 	}
 
+/* MM: don't need; specific to topography map.
+       it's called only twice in this file, both times in Sandbox constructor:
+       1) with a height map name as an argument
+       2) using the default height map */
 void Sandbox::RenderSettings::loadHeightMap(const char* heightMapName)
 	{
 	try
@@ -561,7 +568,7 @@ void printUsage(void)
 
 }
 
-/* MM:  */
+/* MM: this is a mess, and we'll have to pick through it carefully */
 Sandbox::Sandbox(int& argc,char**& argv)
 	:Vrui::Application(argc,argv),
 	 camera(0),pixelDepthCorrection(0),
@@ -984,6 +991,7 @@ Sandbox::Sandbox(int& argc,char**& argv)
 		rsIt->surfaceRenderer->setDemDistScale(demDistScale);
 		}
 	
+	// MM: block comment here
 	#if 0
 	/* Create a fixed-position light source: */
 	sun=Vrui::getLightsourceManager()->createLightsource(true);
@@ -993,12 +1001,14 @@ Sandbox::Sandbox(int& argc,char**& argv)
 	sun->getLight().position=GLLight::Position(1,0,1,0);
 	#endif
 	
+	// MM: this looks important
 	/* Create the GUI: */
 	mainMenu=createMainMenu();
 	Vrui::setMainMenu(mainMenu);
-	if(waterTable!=0)
+	if(waterTable!=0)             // MM: not this
 		waterControlDialog=createWaterControlDialog();
 	
+	// MM: maybe need DEMTool. addEventTool? 
 	/* Initialize the custom tool classes: */
 	GlobalWaterTool::initClass(*Vrui::getToolManager());
 	LocalWaterTool::initClass(*Vrui::getToolManager());
@@ -1036,6 +1046,7 @@ Sandbox::Sandbox(int& argc,char**& argv)
 	navUp=Geometry::normal(Vrui::Vector(basePlane.getNormal()));
 	}
 
+// MM: Sandbox destructor
 Sandbox::~Sandbox(void)
 	{
 	/* Stop streaming depth frames: */
@@ -1081,6 +1092,7 @@ void Sandbox::frame(void)
 		/* Lock the most recent extracted hand list: */
 		handExtractor->lockNewExtractedHands();
 		
+		// MM: block comment? then does this handle detected hands as my comment below thought?
 		#if 0
 		
 		/* MM: looks like this is where detected hands trigger actions - could be useful */
@@ -1228,6 +1240,8 @@ void Sandbox::display(GLContextData& contextData) const
 			totalTimeStep-=timeStep;
 			++numSteps;
 			}
+		
+		// MM: another block comment?
 		#if 0
 		if(totalTimeStep>1.0e-8f)
 			{
@@ -1247,7 +1261,7 @@ void Sandbox::display(GLContextData& contextData) const
 		dataItem->waterTableTime=Vrui::getApplicationTime();
 		}
 	
-	/* MM: necessary? */
+	/* MM: necessary? I think so */
 	/* Calculate the projection matrix: */
 	PTransform projection=ds.projection;
 	if(rs.fixProjectorView&&rs.projectorTransformValid)
@@ -1266,6 +1280,9 @@ void Sandbox::display(GLContextData& contextData) const
 		glMaterial(GLMaterialEnums::FRONT,rs.surfaceMaterial);
 		}
 	
+	/* ///////////////////////////////////////////////////////////////////////////////////
+	 MM: this ENTIRE SECTION (about 200 lines) is commented out with the #if 0 ... #endif 
+	/////////////////////////////////////////////////////////////////////////////////// */
 	#if 0
 	if(rs.hillshade&&rs.useShadows)
 		{
@@ -1402,6 +1419,7 @@ void Sandbox::display(GLContextData& contextData) const
 				glCullFace(GL_BACK);
 				glDepthMask(GL_FALSE);
 				
+				// MM: this does nothing (block comment)
 				#if SAVEDEPTH
 				/* Save the depth image: */
 				{
@@ -1455,7 +1473,7 @@ void Sandbox::resetNavigation(void)
 	Vrui::setNavigationTransformation(navCenter,navSize,navUp);
 	}
 
-/* MM: a Vrui::Application method, don't know what it does */
+/* MM: a Vrui::Application method, looks like an event handler from a button click or something */
 void Sandbox::eventCallback(Vrui::Application::EventID eventId,Vrui::InputDevice::ButtonCallbackData* cbData)
 	{
 	if(cbData->newButtonState)
@@ -1486,15 +1504,14 @@ void Sandbox::initContext(GLContextData& contextData) const
 	GLint currentFrameBuffer;
 	glGetIntegerv(GL_FRAMEBUFFER_BINDING_EXT,&currentFrameBuffer);
 	
-	/* MM: do we need any of the following shadow lines? */
+	/* MM: don't think we need any of the following shadow lines 
+	///////////////////////////////////////////////////////// */
 	/* Set the default shadow buffer size: */
 	dataItem->shadowBufferSize[0]=1024;
 	dataItem->shadowBufferSize[1]=1024;
-	
 	/* Generate the shadow rendering frame buffer: */
 	glGenFramebuffersEXT(1,&dataItem->shadowFramebufferObject);
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,dataItem->shadowFramebufferObject);
-	
 	/* Generate a depth texture for shadow rendering: */
 	glGenTextures(1,&dataItem->shadowDepthTextureObject);
 	glBindTexture(GL_TEXTURE_2D,dataItem->shadowDepthTextureObject);
@@ -1517,4 +1534,4 @@ void Sandbox::initContext(GLContextData& contextData) const
 	} 
 	}
 
-VRUI_APPLICATION_RUN(Sandbox)
+VRUI_APPLICATION_RUN(Sandbox)    // MM: got to find out what this kicks off

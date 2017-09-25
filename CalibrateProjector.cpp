@@ -853,3 +853,10 @@ void CalibrateProjector::calcCalibration(void)
 
 /* Create and execute an application object: */
 VRUI_APPLICATION_RUN(CalibrateProjector)
+/* MM: ^^ This goes to Vrui/Vrui/Application.h and calls run in
+Vrui/Vrui/Application.cpp which calls mainLoop() in 
+Vrui/Vrui/Internal/Vrui.Workbench.cpp. 
+
+mainLoop does a bunch of set up and eventually calls either 
+vruiInnerLoopMultiWindow or vruiInnerLoopSingleWindow,
+which hold the actual while loops that run the whole process. */

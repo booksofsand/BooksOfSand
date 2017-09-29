@@ -236,7 +236,7 @@ void Sandbox::RenderSettings::loadProjectorTransform(const char* projectorTransf
 		}
 	}
 
-/* MM: don't need; specific to topography map.
+/* MM: this is specific to the topography map, which we may be able to modify. 
        it's called only twice in this file, both times in Sandbox constructor:
        1) with a height map name as an argument
        2) using the default height map */

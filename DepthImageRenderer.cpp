@@ -21,6 +21,9 @@ with the Augmented Reality Sandbox; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 ***********************************************************************/
 
+/* MM: is this for storing the image of the sandbox from which depth
+       is calculated? */
+
 #include "DepthImageRenderer.h"
 
 #include <GL/gl.h>

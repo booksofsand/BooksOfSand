@@ -75,10 +75,21 @@ void ElevationColorMap::load(const char* heightMapName)
 	
 	/* Open the height map file: */
 	IO::ValueSource heightMapSource(Vrui::openFile(fullHeightMapName.c_str()));
+	/* MM: here, the height map already exists, and it's opened as a standard file
+	       using some Vrui functions. below we see that the height map file must
+               contain a bunch of numbers called key values and color values, with
+               one key value followed by 3 color values (probably RGB). these are
+               loaded into two different arrays, then passed by reference in the end
+               to setColors, which is in Vrui/GL/GLColorMap.cpp. 
+
+               what I still want to know is where the colors are determined. I think 
+               we can use this if we can substitute the set colors for the colors of 
+               the text image. but I'm not sure this does colors pixel by pixel. */
 	
 	/* Load the height color map: */
 	std::vector<Color> heightMapColors;
 	std::vector<GLdouble> heightMapKeys;
+	std::cout << "heightMapName: " << heightMapName << std::endl; //MM:
 	if(Misc::hasCaseExtension(heightMapName,".cpt"))
 		{
 		heightMapSource.setPunctuation("\n");
@@ -88,11 +99,14 @@ void ElevationColorMap::load(const char* heightMapName)
 			{
 			/* Read the next color map key value: */
 			heightMapKeys.push_back(GLdouble(heightMapSource.readNumber()));
+			std::cout << "key: " << heightMapSource.readNumber() << std::endl; //MM:
 			
 			/* Read the next color map color value: */
 			Color color;
-			for(int i=0;i<3;++i)
+			for(int i=0;i<3;++i) { //MM: added {
 				color[i]=Color::Scalar(heightMapSource.readNumber()/255.0);
+				std::cout << "key: " << heightMapSource.readNumber() << std::endl; //MM:
+			} //MM: 
 			color[3]=Color::Scalar(1);
 			heightMapColors.push_back(color);
 			
@@ -110,13 +124,16 @@ void ElevationColorMap::load(const char* heightMapName)
 			{
 			/* Read the next color map key value: */
 			heightMapKeys.push_back(GLdouble(heightMapSource.readNumber()));
+			std::cout << "key: " << heightMapSource.readNumber() << std::endl; //MM:
 			if(!heightMapSource.isLiteral(','))
 				Misc::throwStdErr("ElevationColorMap: Color map format error in line %d of file %s",line,fullHeightMapName.c_str());
 			
 			/* Read the next color map color value: */
 			Color color;
-			for(int i=0;i<3;++i)
+			for(int i=0;i<3;++i) { //MM: added {
 				color[i]=Color::Scalar(heightMapSource.readNumber());
+				std::cout << "key: " << heightMapSource.readNumber() << std::endl; //MM:
+			} //MM: 
 			color[3]=Color::Scalar(1);
 			heightMapColors.push_back(color);
 			
@@ -127,6 +144,10 @@ void ElevationColorMap::load(const char* heightMapName)
 		}
 	
 	/* Create the color map: */
+	/* MM: does heightMapKeys contain height values as keys, which are then 
+               mapped to the colors that were calculated above? I think that 
+               may be what's going on. so not pixel by pixel, possibly. */
+	std::cout << "heightMapKeys.size(): " << heightMapKeys.size() << std::endl; // MM:
 	setColors(heightMapKeys.size(),&heightMapColors[0],&heightMapKeys[0],256);
 	
 	/* Invalidate the color map texture object: */

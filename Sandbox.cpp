@@ -59,7 +59,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 // MM: graphic library includes - may not need all of these
 #include <GL/gl.h>
 #include <GL/GLMaterialTemplates.h>
-#include <GL/GLColorMap.h>          // MM: color map directly related to topography sim?
+#include <GL/GLColorMap.h>
 #include <GL/GLLightTracker.h>
 #include <GL/Extensions/GLEXTFramebufferObject.h>
 #include <GL/Extensions/GLARBTextureRectangle.h>
@@ -967,7 +967,8 @@ Sandbox::Sandbox(int& argc,char**& argv)
 			else
 				rsIt->elevationColorMap->calcTexturePlane(depthImageRenderer);
 			}
-		
+
+	        // MM: is this where the image is first drawn?
 		/* Initialize the surface renderer: */
 		rsIt->surfaceRenderer=new SurfaceRenderer(depthImageRenderer);
 		rsIt->surfaceRenderer->setDrawContourLines(rsIt->useContourLines);
@@ -1083,6 +1084,7 @@ void Sandbox::frame(void)
 	/* Check if the filtered frame has been updated: */
 	if(filteredFrames.lockNewValue())
 		{
+		// MM: update the depth map after sand has been moved?
 		/* Update the depth image renderer's depth image: */
 		depthImageRenderer->setDepthImage(filteredFrames.getLockedValue());
 		}
@@ -1109,10 +1111,12 @@ void Sandbox::frame(void)
 		
 		#endif
 		}
-	
+
+	// MM: does this update the displayed image? or just the time?
 	/* Update all surface renderers: */
 	for(std::vector<RenderSettings>::iterator rsIt=renderSettings.begin();rsIt!=renderSettings.end();++rsIt)
 		rsIt->surfaceRenderer->setAnimationTime(Vrui::getApplicationTime());
+	// getApplicationTime returns seconds since application was started
 	
 	/* MM: I think the following may just be for manually entered data. could be useful */
 	/* Check if there is a control command on the control pipe: */
@@ -1165,6 +1169,7 @@ void Sandbox::frame(void)
 				if(waterAttenuationSlider!=0)
 					waterAttenuationSlider->setValue(attenuation);
 				}
+			// MM: this height map loading - is this just a cmdline option or is it regular?
 			else if(strcasecmp(command,"colorMap")==0)
 				{
 				try
@@ -1203,7 +1208,8 @@ void Sandbox::frame(void)
 		frameRateTextField->setValue(1.0/Vrui::getCurrentFrameTime());
 		}
 	
-	/* MM: updates paused - check what Vrui::scheduleUpdate does */
+	/* MM: Asks Vrui to update its internal state and redraw the VR windows 
+               at the given application time; must be called from main thread */
 	if(pauseUpdates)
 		Vrui::scheduleUpdate(Vrui::getApplicationTime()+1.0/30.0);
 	}
@@ -1450,6 +1456,8 @@ void Sandbox::display(GLContextData& contextData) const
 		}
 	else
 	#endif
+  	        // MM: I think this is where the image is displayed through the projector
+	        // (see SurfaceRenderer.cpp)
 		{
 		/* Render the surface in a single pass: */
 		rs.surfaceRenderer->renderSinglePass(ds.viewport,projection,ds.modelviewNavigational,contextData);

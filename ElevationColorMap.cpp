@@ -82,9 +82,12 @@ void ElevationColorMap::load(const char* heightMapName)
                loaded into two different arrays, then passed by reference in the end
                to setColors, which is in Vrui/GL/GLColorMap.cpp. 
 
-               what I still want to know is where the colors are determined. I think 
-               we can use this if we can substitute the set colors for the colors of 
-               the text image. but I'm not sure this does colors pixel by pixel. */
+               I forget where at the moment, but we saw a file with these values
+               on the installed and working SARndbox system. it was only a dozen lines
+               or so, each with four values (must be the depth and 3 color values),
+               so clearly this program colors within the specified ranges.
+
+               problem is, we want to do pixel by pixel. */
 	
 	/* Load the height color map: */
 	std::vector<Color> heightMapColors;
@@ -105,7 +108,7 @@ void ElevationColorMap::load(const char* heightMapName)
 			Color color;
 			for(int i=0;i<3;++i) { //MM: added {
 				color[i]=Color::Scalar(heightMapSource.readNumber()/255.0);
-				std::cout << "key: " << heightMapSource.readNumber() << std::endl; //MM:
+				std::cout << "num: " << heightMapSource.readNumber() << std::endl; //MM:
 			} //MM: 
 			color[3]=Color::Scalar(1);
 			heightMapColors.push_back(color);
@@ -144,13 +147,16 @@ void ElevationColorMap::load(const char* heightMapName)
 		}
 	
 	/* Create the color map: */
-	/* MM: does heightMapKeys contain height values as keys, which are then 
-               mapped to the colors that were calculated above? I think that 
-               may be what's going on. so not pixel by pixel, possibly. */
+	/* MM: heightMapKeys contains height values as keys, which are then 
+               mapped to the colors that were calculated above.
+
+               setColors is in Vrui/GL/GLColorMap.cpp; it creates a color map 
+               from a piecewise linear color function */
 	std::cout << "heightMapKeys.size(): " << heightMapKeys.size() << std::endl; // MM:
 	setColors(heightMapKeys.size(),&heightMapColors[0],&heightMapKeys[0],256);
 	
 	/* Invalidate the color map texture object: */
+	// MM: I'm guessing this is so the surface renderer knows to update its display
 	++textureVersion;
 	}
 

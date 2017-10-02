@@ -241,6 +241,7 @@ void DepthImageRenderer::bindDepthTexture(GLContextData& contextData) const
 		}
 	}
 
+// MM: I think this does the actual drawing/projecting of the image. not sure
 void DepthImageRenderer::renderSurfaceTemplate(GLContextData& contextData) const
 	{
 	/* Get the data item: */

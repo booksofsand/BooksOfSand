@@ -650,7 +650,8 @@ void SurfaceRenderer::setAnimationTime(double newAnimationTime)
 	animationTime=newAnimationTime;
 	
 	/* Poll the file monitor: */
-	fileMonitor.processEvents();
+	fileMonitor.processEvents(); 	// MM: IO::FileMonitor fileMonitor
+	// watches renderer's external shader source files. see SurfaceRenderer.h
 	}
 
 void SurfaceRenderer::renderSinglePass(const int viewport[4],const PTransform& projection,const OGTransform& modelview,GLContextData& contextData) const
@@ -761,7 +762,8 @@ void SurfaceRenderer::renderSinglePass(const int viewport[4],const PTransform& p
 				*mPtr=GLfloat(*tmdpPtr);
 		glUniformMatrix4fvARB(*(ulPtr++),1,GL_FALSE,matrix);
 		}
-	
+
+	// MM: ignore the water stuff
 	if(waterTable!=0&&dem==0)
 		{
 		/* Upload the water table texture coordinate matrix: */
@@ -799,7 +801,8 @@ void SurfaceRenderer::renderSinglePass(const int viewport[4],const PTransform& p
 	PTransform projectionModelviewDepthProjection=projectionModelview;
 	projectionModelviewDepthProjection*=depthImageRenderer->getDepthProjection();
 	glUniformARB(*(ulPtr++),projectionModelviewDepthProjection);
-	
+
+	// MM: here's where the display happens, I think
 	/* Draw the surface: */
 	depthImageRenderer->renderSurfaceTemplate(contextData);
 	

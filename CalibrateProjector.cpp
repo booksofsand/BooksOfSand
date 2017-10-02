@@ -89,7 +89,9 @@ Methods of class CalibrateProjector::DataItem:
 CalibrateProjector::DataItem::DataItem(void)
 	:blobImageTextureId(0),blobImageVersion(0)
 	{
-	glGenTextures(1,&blobImageTextureId);
+	glGenTextures(1,&blobImageTextureId); 
+        // MM: generates the specified number of texture objects and places their 
+	// handles in the GLuint array pointer (the second parameter)
 	}
 
 CalibrateProjector::DataItem::~DataItem(void)
@@ -548,7 +550,7 @@ void CalibrateProjector::display(GLContextData& contextData) const
 		glEnd();
 		
 		/* Draw the current blob image: */
-		glBindTexture(GL_TEXTURE_2D,dataItem->blobImageTextureId);
+		glBindTexture(GL_TEXTURE_2D,dataItem->blobImageTextureId); // MM: texture target and texture name
 		if(dataItem->blobImageVersion!=blobImageVersion)
 			{
 			/* Upload the new blob image into the texture: */
@@ -568,7 +570,7 @@ void CalibrateProjector::display(GLContextData& contextData) const
 		glVertex3f(0.0f,float(imageSize[1]),-0.01);
 		glEnd();
 		glDisable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D,0);
+		glBindTexture(GL_TEXTURE_2D,0); // MM: texture target and texture name
 		
 		if(currentBlob!=0)
 			{
@@ -646,7 +648,7 @@ void CalibrateProjector::initContext(GLContextData& contextData) const
 		}
 	
 	/* Initialize the texture object: */
-	glBindTexture(GL_TEXTURE_2D,dataItem->blobImageTextureId);
+	glBindTexture(GL_TEXTURE_2D,dataItem->blobImageTextureId); // MM: texture target and texture name
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_BASE_LEVEL,0);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAX_LEVEL,0);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP);
@@ -656,7 +658,7 @@ void CalibrateProjector::initContext(GLContextData& contextData) const
 	glTexImage2D(GL_TEXTURE_2D,0,GL_RGB8,texSize[0],texSize[1],0,GL_RGB,GL_UNSIGNED_BYTE,0);
 	
 	/* Protect the texture object: */
-	glBindTexture(GL_TEXTURE_2D,0);
+	glBindTexture(GL_TEXTURE_2D,0); // MM: texture target and texture name
 	}
 
 void CalibrateProjector::startBackgroundCapture(void)

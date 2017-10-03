@@ -501,6 +501,7 @@ void CalibrateProjector::frame(void)
 		}
 	}
 
+// MM: need to examine this method in detail (TO DO)
 void CalibrateProjector::display(GLContextData& contextData) const
 	{
 	/* Get the context data item: */

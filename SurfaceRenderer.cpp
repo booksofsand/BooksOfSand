@@ -443,6 +443,8 @@ void SurfaceRenderer::renderPixelCornerElevations(const int viewport[4],const PT
 		glGenFramebuffersEXT(1,&dataItem->contourLineFramebufferObject);
 		glGenRenderbuffersEXT(1,&dataItem->contourLineDepthBufferObject);
 		glGenTextures(1,&dataItem->contourLineColorTextureObject);
+		// MM: generates the specified number of texture objects and places their 
+		// handles in the GLuint array pointer (the second parameter)
 		}
 	
 	/* Bind the contour line rendering frame buffer object: */
@@ -464,13 +466,16 @@ void SurfaceRenderer::renderPixelCornerElevations(const int viewport[4],const PT
 		glBindRenderbufferEXT(GL_RENDERBUFFER_EXT,0);
 		
 		/* Resize the topographic contour line rendering color texture: */
-		glBindTexture(GL_TEXTURE_RECTANGLE_ARB,dataItem->contourLineColorTextureObject);
-		glTexParameteri(GL_TEXTURE_RECTANGLE_ARB,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+		glBindTexture(GL_TEXTURE_RECTANGLE_ARB,dataItem->contourLineColorTextureObject); // MM: texture target and texture name
+		glTexParameteri(GL_TEXTURE_RECTANGLE_ARB,GL_TEXTURE_MIN_FILTER,GL_NEAREST); // MM: GLenum target, GLenum pname, GLint param
 		glTexParameteri(GL_TEXTURE_RECTANGLE_ARB,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_RECTANGLE_ARB,GL_TEXTURE_WRAP_S,GL_CLAMP);
 		glTexParameteri(GL_TEXTURE_RECTANGLE_ARB,GL_TEXTURE_WRAP_T,GL_CLAMP);
 		glTexImage2D(GL_TEXTURE_RECTANGLE_ARB,0,GL_R32F,dataItem->contourLineFramebufferSize[0],dataItem->contourLineFramebufferSize[1],0,GL_LUMINANCE,GL_UNSIGNED_BYTE,0);
-		glBindTexture(GL_TEXTURE_RECTANGLE_ARB,0);
+		// MM: glTexImage2D args: texture target, level of detail (mipmap; 0 is highest resolution), 
+		// internal format (e.g. GL_RGBA), width (texels), height (texels), border (0 is none), 
+		// source format, source type, source memory address
+		glBindTexture(GL_TEXTURE_RECTANGLE_ARB,0); // MM: texture target and texture name
 		
 		if(mustAttachBuffers)
 			{
@@ -740,7 +745,7 @@ void SurfaceRenderer::renderSinglePass(const int viewport[4],const PTransform& p
 		{
 		/* Bind the pixel corner elevation texture: */
 		glActiveTextureARB(GL_TEXTURE2_ARB);
-		glBindTexture(GL_TEXTURE_RECTANGLE_ARB,dataItem->contourLineColorTextureObject);
+		glBindTexture(GL_TEXTURE_RECTANGLE_ARB,dataItem->contourLineColorTextureObject); // MM: texture target and texture name
 		glUniform1iARB(*(ulPtr++),2);
 		
 		/* Upload the contour line distance factor: */
@@ -814,31 +819,31 @@ void SurfaceRenderer::renderSinglePass(const int viewport[4],const PTransform& p
 		glTexParameteri(GL_TEXTURE_RECTANGLE_ARB,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_RECTANGLE_ARB,GL_TEXTURE_WRAP_S,GL_CLAMP);
 		glTexParameteri(GL_TEXTURE_RECTANGLE_ARB,GL_TEXTURE_WRAP_T,GL_CLAMP);
-		glBindTexture(GL_TEXTURE_RECTANGLE_ARB,0);
+		glBindTexture(GL_TEXTURE_RECTANGLE_ARB,0); // MM: texture target and texture name
 		glActiveTextureARB(GL_TEXTURE3_ARB);
 		glTexParameteri(GL_TEXTURE_RECTANGLE_ARB,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_RECTANGLE_ARB,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_RECTANGLE_ARB,GL_TEXTURE_WRAP_S,GL_CLAMP);
 		glTexParameteri(GL_TEXTURE_RECTANGLE_ARB,GL_TEXTURE_WRAP_T,GL_CLAMP);
-		glBindTexture(GL_TEXTURE_RECTANGLE_ARB,0);
+		glBindTexture(GL_TEXTURE_RECTANGLE_ARB,0); // MM: texture target and texture name
 		}
 	if(drawContourLines)
 		{
 		glActiveTextureARB(GL_TEXTURE2_ARB);
-		glBindTexture(GL_TEXTURE_RECTANGLE_ARB,0);
+		glBindTexture(GL_TEXTURE_RECTANGLE_ARB,0); // MM: texture target and texture name
 		}
 	if(dem!=0)
 		{
 		glActiveTextureARB(GL_TEXTURE1_ARB);
-		glBindTexture(GL_TEXTURE_RECTANGLE_ARB,0);
+		glBindTexture(GL_TEXTURE_RECTANGLE_ARB,0); // MM: texture target and texture name
 		}
 	else if(elevationColorMap!=0)
 		{
 		glActiveTextureARB(GL_TEXTURE1_ARB);
-		glBindTexture(GL_TEXTURE_1D,0);
+		glBindTexture(GL_TEXTURE_1D,0); // MM: texture target and texture name
 		}
 	glActiveTextureARB(GL_TEXTURE0_ARB);
-	glBindTexture(GL_TEXTURE_RECTANGLE_ARB,0);
+	glBindTexture(GL_TEXTURE_RECTANGLE_ARB,0); // MM: texture target and texture name
 	
 	/* Unbind the height map shader: */
 	glUseProgramObjectARB(0);
@@ -879,7 +884,7 @@ void SurfaceRenderer::renderGlobalAmbientHeightMap(GLuint heightColorMapTexture,
 	if(!usePreboundDepthTexture)
 		{
 		glActiveTextureARB(GL_TEXTURE0_ARB);
-		glBindTexture(GL_TEXTURE_RECTANGLE_ARB,dataItem->depthTexture);
+		glBindTexture(GL_TEXTURE_RECTANGLE_ARB,dataItem->depthTexture); // MM: texture target and texture name
 		
 		/* Check if the texture is outdated: */
 		if(dataItem->depthTextureVersion!=depthImageVersion)
@@ -901,7 +906,7 @@ void SurfaceRenderer::renderGlobalAmbientHeightMap(GLuint heightColorMapTexture,
 	
 	/* Bind the pixel corner elevation texture: */
 	glActiveTextureARB(GL_TEXTURE1_ARB);
-	glBindTexture(GL_TEXTURE_RECTANGLE_ARB,dataItem->contourLineColorTextureObject);
+	glBindTexture(GL_TEXTURE_RECTANGLE_ARB,dataItem->contourLineColorTextureObject); // MM: texture target and texture name
 	glUniform1iARB(dataItem->globalAmbientHeightMapShaderUniforms[3],1);
 	
 	/* Upload the contour line distance factor: */
@@ -909,7 +914,7 @@ void SurfaceRenderer::renderGlobalAmbientHeightMap(GLuint heightColorMapTexture,
 	
 	/* Bind the height color map texture: */
 	glActiveTextureARB(GL_TEXTURE2_ARB);
-	glBindTexture(GL_TEXTURE_1D,heightColorMapTexture);
+	glBindTexture(GL_TEXTURE_1D,heightColorMapTexture); // MM: texture target and texture name
 	glUniform1iARB(dataItem->globalAmbientHeightMapShaderUniforms[5],2);
 	
 	/* Upload the height color map texture coordinate transformation: */
@@ -941,16 +946,16 @@ void SurfaceRenderer::renderGlobalAmbientHeightMap(GLuint heightColorMapTexture,
 	if(waterTable!=0)
 		{
 		glActiveTextureARB(GL_TEXTURE3_ARB);
-		glBindTexture(GL_TEXTURE_RECTANGLE_ARB,0);
+		glBindTexture(GL_TEXTURE_RECTANGLE_ARB,0); // MM: texture target and texture name
 		}
 	glActiveTextureARB(GL_TEXTURE2_ARB);
-	glBindTexture(GL_TEXTURE_1D,0);
+	glBindTexture(GL_TEXTURE_1D,0); // MM: texture target and texture name
 	glActiveTextureARB(GL_TEXTURE1_ARB);
-	glBindTexture(GL_TEXTURE_RECTANGLE_ARB,0);
+	glBindTexture(GL_TEXTURE_RECTANGLE_ARB,0); // MM: texture target and texture name
 	if(!usePreboundDepthTexture)
 		{
 		glActiveTextureARB(GL_TEXTURE0_ARB);
-		glBindTexture(GL_TEXTURE_RECTANGLE_ARB,0);
+		glBindTexture(GL_TEXTURE_RECTANGLE_ARB,0); // MM: texture target and texture name
 		}
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB,0);
 	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,0);
@@ -975,7 +980,7 @@ void SurfaceRenderer::renderShadowedIlluminatedHeightMap(GLuint heightColorMapTe
 	if(!usePreboundDepthTexture)
 		{
 		glActiveTextureARB(GL_TEXTURE0_ARB);
-		glBindTexture(GL_TEXTURE_RECTANGLE_ARB,dataItem->depthTexture);
+		glBindTexture(GL_TEXTURE_RECTANGLE_ARB,dataItem->depthTexture); // MM: texture target and texture name
 		
 		/* Check if the texture is outdated: */
 		if(dataItem->depthTextureVersion!=depthImageVersion)
@@ -1000,7 +1005,7 @@ void SurfaceRenderer::renderShadowedIlluminatedHeightMap(GLuint heightColorMapTe
 	
 	/* Bind the pixel corner elevation texture: */
 	glActiveTextureARB(GL_TEXTURE1_ARB);
-	glBindTexture(GL_TEXTURE_RECTANGLE_ARB,dataItem->contourLineColorTextureObject);
+	glBindTexture(GL_TEXTURE_RECTANGLE_ARB,dataItem->contourLineColorTextureObject); // MM: texture target and texture name
 	glUniform1iARB(dataItem->shadowedIlluminatedHeightMapShaderUniforms[4],1);
 	
 	/* Upload the contour line distance factor: */
@@ -1008,7 +1013,7 @@ void SurfaceRenderer::renderShadowedIlluminatedHeightMap(GLuint heightColorMapTe
 	
 	/* Bind the height color map texture: */
 	glActiveTextureARB(GL_TEXTURE2_ARB);
-	glBindTexture(GL_TEXTURE_1D,heightColorMapTexture);
+	glBindTexture(GL_TEXTURE_1D,heightColorMapTexture); // MM: texture target and texture name
 	glUniform1iARB(dataItem->shadowedIlluminatedHeightMapShaderUniforms[6],2);
 	
 	/* Upload the height color map texture coordinate transformation: */
@@ -1030,7 +1035,7 @@ void SurfaceRenderer::renderShadowedIlluminatedHeightMap(GLuint heightColorMapTe
 	
 	/* Bind the shadow texture: */
 	glActiveTextureARB(GL_TEXTURE4_ARB);
-	glBindTexture(GL_TEXTURE_2D,shadowTexture);
+	glBindTexture(GL_TEXTURE_2D,shadowTexture); // MM: texture target and texture name
 	glUniform1iARB(dataItem->shadowedIlluminatedHeightMapShaderUniforms[11],4);
 	
 	/* Upload the combined shadow viewport, shadow projection and modelview, and depth projection matrix: */
@@ -1062,16 +1067,16 @@ void SurfaceRenderer::renderShadowedIlluminatedHeightMap(GLuint heightColorMapTe
 	if(waterTable!=0)
 		{
 		glActiveTextureARB(GL_TEXTURE3_ARB);
-		glBindTexture(GL_TEXTURE_RECTANGLE_ARB,0);
+		glBindTexture(GL_TEXTURE_RECTANGLE_ARB,0); // MM: texture target and texture name
 		}
 	glActiveTextureARB(GL_TEXTURE2_ARB);
-	glBindTexture(GL_TEXTURE_1D,0);
+	glBindTexture(GL_TEXTURE_1D,0); // MM: texture target and texture name
 	glActiveTextureARB(GL_TEXTURE1_ARB);
-	glBindTexture(GL_TEXTURE_RECTANGLE_ARB,0);
+	glBindTexture(GL_TEXTURE_RECTANGLE_ARB,0); // MM: texture target and texture name
 	if(!usePreboundDepthTexture)
 		{
 		glActiveTextureARB(GL_TEXTURE0_ARB);
-		glBindTexture(GL_TEXTURE_RECTANGLE_ARB,0);
+		glBindTexture(GL_TEXTURE_RECTANGLE_ARB,0); // MM: texture target and texture name
 		}
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB,0);
 	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,0);

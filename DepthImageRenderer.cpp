@@ -64,6 +64,8 @@ DepthImageRenderer::DataItem::DataItem(void)
 	glGenBuffersARB(1,&vertexBuffer);
 	glGenBuffersARB(1,&indexBuffer);
 	glGenTextures(1,&depthTexture);
+	// MM: generates the specified number of texture objects and places their 
+	// handles in the GLuint array pointer (the second parameter)
 	}
 
 DepthImageRenderer::DataItem::~DataItem(void)
@@ -130,13 +132,13 @@ void DepthImageRenderer::initContext(GLContextData& contextData) const
 	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,0);
 	
 	/* Initialize the depth image texture: */
-	glBindTexture(GL_TEXTURE_RECTANGLE_ARB,dataItem->depthTexture);
+	glBindTexture(GL_TEXTURE_RECTANGLE_ARB,dataItem->depthTexture); // MM: texture target and texture name
 	glTexParameteri(GL_TEXTURE_RECTANGLE_ARB,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_RECTANGLE_ARB,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_RECTANGLE_ARB,GL_TEXTURE_WRAP_S,GL_CLAMP);
 	glTexParameteri(GL_TEXTURE_RECTANGLE_ARB,GL_TEXTURE_WRAP_T,GL_CLAMP);
 	glTexImage2D(GL_TEXTURE_RECTANGLE_ARB,0,GL_LUMINANCE32F_ARB,depthImageSize[0],depthImageSize[1],0,GL_LUMINANCE,GL_FLOAT,0);
-	glBindTexture(GL_TEXTURE_RECTANGLE_ARB,0);
+	glBindTexture(GL_TEXTURE_RECTANGLE_ARB,0); // MM: texture target and texture name
 	
 	/* Create the depth rendering shader: */
 	dataItem->depthShader=linkVertexAndFragmentShader("SurfaceDepthShader");
@@ -228,7 +230,7 @@ void DepthImageRenderer::bindDepthTexture(GLContextData& contextData) const
 	DataItem* dataItem=contextData.retrieveDataItem<DataItem>(this);
 	
 	/* Bind the depth image texture: */
-	glBindTexture(GL_TEXTURE_RECTANGLE_ARB,dataItem->depthTexture);
+	glBindTexture(GL_TEXTURE_RECTANGLE_ARB,dataItem->depthTexture); // MM: texture target and texture name
 	
 	/* Check if the texture is outdated: */
 	if(dataItem->depthTextureVersion!=depthImageVersion)
@@ -242,25 +244,30 @@ void DepthImageRenderer::bindDepthTexture(GLContextData& contextData) const
 	}
 
 // MM: I think this does the actual drawing/projecting of the image. not sure
+//     (what counts as surface template? the entire color map?)
 void DepthImageRenderer::renderSurfaceTemplate(GLContextData& contextData) const
 	{
 	/* Get the data item: */
 	DataItem* dataItem=contextData.retrieveDataItem<DataItem>(this);
 	
 	/* Bind the vertex and index buffers: */
-	glBindBufferARB(GL_ARRAY_BUFFER_ARB,dataItem->vertexBuffer);
+	glBindBufferARB(GL_ARRAY_BUFFER_ARB,dataItem->vertexBuffer); // MM: target and buffer (unsigned int)
 	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,dataItem->indexBuffer);
 	
 	/* Draw the surface template: */
-	GLVertexArrayParts::enable(Vertex::getPartsMask());
+	GLVertexArrayParts::enable(Vertex::getPartsMask()); 
+	// MM: ^ might be doing glEnableClientState(GL_COLOR_ARRAY) ?
+	//     Of the enable options in GL/GLVertexArrayParts.h, COLOR_ARRAY seems to make most sense
 	glVertexPointer(static_cast<const Vertex*>(0));
 	GLuint* indexPtr=0;
 	for(unsigned int y=1;y<depthImageSize[1];++y,indexPtr+=depthImageSize[0]*2)
-		glDrawElements(GL_QUAD_STRIP,depthImageSize[0]*2,GL_UNSIGNED_INT,indexPtr);
+		glDrawElements(GL_QUAD_STRIP,depthImageSize[0]*2,GL_UNSIGNED_INT,indexPtr); 
+		// MM: ^ renders multiple primitives from array
+		//     does this function draw the active texture or something? 
 	GLVertexArrayParts::disable(Vertex::getPartsMask());
 	
 	/* Unbind the vertex and index buffers: */
-	glBindBufferARB(GL_ARRAY_BUFFER_ARB,0);
+	glBindBufferARB(GL_ARRAY_BUFFER_ARB,0);         // MM: entering 0 is like binding to a null buffer
 	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,0);
 	}
 
@@ -278,7 +285,7 @@ void DepthImageRenderer::renderDepth(const PTransform& projectionModelview,GLCon
 	
 	/* Bind the depth image texture: */
 	glActiveTextureARB(GL_TEXTURE0_ARB);
-	glBindTexture(GL_TEXTURE_RECTANGLE_ARB,dataItem->depthTexture);
+	glBindTexture(GL_TEXTURE_RECTANGLE_ARB,dataItem->depthTexture); // MM: texture target and texture name
 	
 	/* Check if the texture is outdated: */
 	if(dataItem->depthTextureVersion!=depthImageVersion)
@@ -305,7 +312,7 @@ void DepthImageRenderer::renderDepth(const PTransform& projectionModelview,GLCon
 	GLVertexArrayParts::disable(Vertex::getPartsMask());
 	
 	/* Unbind all textures and buffers: */
-	glBindTexture(GL_TEXTURE_RECTANGLE_ARB,0);
+	glBindTexture(GL_TEXTURE_RECTANGLE_ARB,0); // MM: texture target and texture name
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB,0);
 	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,0);
 	
@@ -323,7 +330,7 @@ void DepthImageRenderer::renderElevation(const PTransform& projectionModelview,G
 	
 	/* Set up the depth image texture: */
 	glActiveTextureARB(GL_TEXTURE0_ARB);
-	glBindTexture(GL_TEXTURE_RECTANGLE_ARB,dataItem->depthTexture);
+	glBindTexture(GL_TEXTURE_RECTANGLE_ARB,dataItem->depthTexture); // MM: texture target and texture name
 	
 	/* Check if the texture is outdated: */
 	if(dataItem->depthTextureVersion!=depthImageVersion)
@@ -362,7 +369,7 @@ void DepthImageRenderer::renderElevation(const PTransform& projectionModelview,G
 	/* Unbind all textures and buffers: */
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB,0);
 	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,0);
-	glBindTexture(GL_TEXTURE_RECTANGLE_ARB,0);
+	glBindTexture(GL_TEXTURE_RECTANGLE_ARB,0); // MM: texture target and texture name
 	
 	/* Unbind the elevation rendering shader: */
 	glUseProgramObjectARB(0);

@@ -1429,10 +1429,10 @@ void Sandbox::display(GLContextData& contextData) const
 				#if SAVEDEPTH
 				/* Save the depth image: */
 				{
-				glBindTexture(GL_TEXTURE_2D,dataItem->shadowDepthTextureObject);
+				glBindTexture(GL_TEXTURE_2D,dataItem->shadowDepthTextureObject); // MM: texture target and texture name
 				GLfloat* depthTextureImage=new GLfloat[dataItem->shadowBufferSize[1]*dataItem->shadowBufferSize[0]];
 				glGetTexImage(GL_TEXTURE_2D,0,GL_DEPTH_COMPONENT,GL_FLOAT,depthTextureImage);
-				glBindTexture(GL_TEXTURE_2D,0);
+				glBindTexture(GL_TEXTURE_2D,0); // MM: texture target and texture name
 				Images::RGBImage dti(dataItem->shadowBufferSize[0],dataItem->shadowBufferSize[1]);
 				GLfloat* dtiPtr=depthTextureImage;
 				Images::RGBImage::Color* ciPtr=dti.modifyPixels();
@@ -1522,7 +1522,9 @@ void Sandbox::initContext(GLContextData& contextData) const
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,dataItem->shadowFramebufferObject);
 	/* Generate a depth texture for shadow rendering: */
 	glGenTextures(1,&dataItem->shadowDepthTextureObject);
-	glBindTexture(GL_TEXTURE_2D,dataItem->shadowDepthTextureObject);
+	// MM: generates the specified number of texture objects and places their 
+	// handles in the GLuint array pointer (the second parameter)
+	glBindTexture(GL_TEXTURE_2D,dataItem->shadowDepthTextureObject); // MM: texture target and texture name
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP);
@@ -1531,7 +1533,7 @@ void Sandbox::initContext(GLContextData& contextData) const
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_COMPARE_FUNC_ARB,GL_LEQUAL);
 	glTexParameteri(GL_TEXTURE_2D,GL_DEPTH_TEXTURE_MODE_ARB,GL_INTENSITY);
 	glTexImage2D(GL_TEXTURE_2D,0,GL_DEPTH_COMPONENT24_ARB,dataItem->shadowBufferSize[0],dataItem->shadowBufferSize[1],0,GL_DEPTH_COMPONENT,GL_UNSIGNED_BYTE,0);
-	glBindTexture(GL_TEXTURE_2D,0);
+	glBindTexture(GL_TEXTURE_2D,0); // MM: texture target and texture name
 	
 	/* MM: without shadows, do we need this? */
 	/* Attach the depth texture to the frame buffer object: */

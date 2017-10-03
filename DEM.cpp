@@ -47,6 +47,8 @@ DEM::DataItem::DataItem(void)
 	
 	/* Create the texture object: */
 	glGenTextures(1,&textureObjectId);
+	// MM: generates the specified number of texture objects and places their 
+	// handles in the GLuint array pointer (the second parameter)
 	}
 
 DEM::DataItem::~DataItem(void)
@@ -102,13 +104,13 @@ void DEM::initContext(GLContextData& contextData) const
 	contextData.addDataItem(this,dataItem);
 	
 	/* Upload the DEM array into the texture object: */
-	glBindTexture(GL_TEXTURE_RECTANGLE_ARB,dataItem->textureObjectId);
+	glBindTexture(GL_TEXTURE_RECTANGLE_ARB,dataItem->textureObjectId); // MM: texture target and texture name
 	glTexParameteri(GL_TEXTURE_RECTANGLE_ARB,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_RECTANGLE_ARB,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_RECTANGLE_ARB,GL_TEXTURE_WRAP_S,GL_CLAMP);
 	glTexParameteri(GL_TEXTURE_RECTANGLE_ARB,GL_TEXTURE_WRAP_T,GL_CLAMP);
 	glTexImage2D(GL_TEXTURE_RECTANGLE_ARB,0,GL_LUMINANCE32F_ARB,demSize[0],demSize[1],0,GL_LUMINANCE,GL_FLOAT,dem);
-	glBindTexture(GL_TEXTURE_RECTANGLE_ARB,0);
+	glBindTexture(GL_TEXTURE_RECTANGLE_ARB,0); // MM: texture target and texture name
 	}
 
 void DEM::load(const char* demFileName)
@@ -154,7 +156,7 @@ void DEM::bindTexture(GLContextData& contextData) const
 	DataItem* dataItem=contextData.retrieveDataItem<DataItem>(this);
 	
 	/* Bind the DEM texture: */
-	glBindTexture(GL_TEXTURE_RECTANGLE_ARB,dataItem->textureObjectId);
+	glBindTexture(GL_TEXTURE_RECTANGLE_ARB,dataItem->textureObjectId); // MM: texture target and texture name
 	}
 
 void DEM::uploadDemTransform(GLint location) const

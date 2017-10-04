@@ -35,7 +35,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Vrui/ToolManager.h>
 #include <Vrui/DisplayState.h>
 #include <Vrui/OpenFile.h>
-#include <IOstream>
+#include <iostream>
 
 class ImageViewer:public Vrui::Application
 	{
@@ -66,7 +66,7 @@ ImageViewer::ImageViewer()
         // MM: addTexture(BaseImage, open file target, internal format, key)
 	//     GL_RGB8 must mean RGB 8-bit image. Note the key, 0U, is referenced in display()
 	  filename = "sample_text.jpg";
-	Images::TextureSet::Texture& tex=textures.addTexture(Images::readImageFile(filename,Vrui::openFile(filename),GL_TEXTURE_2D,GL_RGB8,0U);
+	Images::TextureSet::Texture& tex=textures.addTexture(Images::readImageFile(filename,Vrui::openFile(filename)),GL_TEXTURE_2D,GL_RGB8,0U);
 	
 	/* Set clamping and filtering parameters for mip-mapped linear interpolation: */
 	tex.setMipmapRange(0,1000);

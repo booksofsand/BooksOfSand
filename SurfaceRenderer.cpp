@@ -810,6 +810,8 @@ void SurfaceRenderer::renderSinglePass(const int viewport[4],const PTransform& p
 	// MM: here's where the display happens, I think
 	/* Draw the surface: */
 	depthImageRenderer->renderSurfaceTemplate(contextData);
+	//VRUI_APPLICATION_RUN(ImageViewer) // MM: try running ImageViewer instead to display a jpg
+	
 	
 	/* Unbind all textures and buffers: */
 	if(waterTable!=0&&dem==0)

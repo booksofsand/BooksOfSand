@@ -153,14 +153,9 @@ SARNDBOX_SOURCES = FrameFilter.cpp \
                    DepthImageRenderer.cpp \
                    ElevationColorMap.cpp \
                    SurfaceRenderer.cpp \
-                   WaterTable2.cpp \
-                   WaterRenderer.cpp \
                    HandExtractor.cpp \
-                   GlobalWaterTool.cpp \
-                   LocalWaterTool.cpp \
                    DEM.cpp \
                    DEMTool.cpp \
-                   BathymetrySaverTool.cpp \
                    Sandbox.cpp
 
 $(EXEDIR)/SARndbox: $(SARNDBOX_SOURCES:%.cpp=$(OBJDIR)/%.o)

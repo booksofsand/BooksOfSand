@@ -67,7 +67,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #include "DepthImageRenderer.h"
 #include "ElevationColorMap.h"
 #include "DEM.h"
-#include "WaterTable2.h"
 #include "ShaderHelper.h"
 #include "Config.h"
 
@@ -238,22 +237,7 @@ GLhandleARB SurfaceRenderer::createSinglePassSurfaceShader(const GLLightTracker&
 				vertexMain+="\
 					\n";
 			}
-		
-		if(waterTable!=0&&dem==0)
-			{
-			/* Add declarations for water handling: */
-			vertexUniforms+="\
-				uniform mat4 waterTransform; // Transformation from camera space to water level texture coordinate space\n";
-			vertexVaryings+="\
-				varying vec2 waterTexCoord; // Texture coordinate for water level texture\n";
-			
-			/* Add water handling code to vertex shader's main function: */
-			vertexMain+="\
-				/* Transform the vertex from camera space to water level texture coordinate space: */\n\
-				waterTexCoord=(waterTransform*vertexCc).xy;\n\
-				\n";
-			}
-		
+				
 		/* Finish the vertex shader's main function: */
 		vertexMain+="\
 				/* Transform vertex from depth image space to clip space: */\n\
@@ -348,34 +332,7 @@ GLhandleARB SurfaceRenderer::createSinglePassSurfaceShader(const GLLightTracker&
 				illuminate(baseColor);\n\
 				\n";
 			}
-		
-		if(waterTable!=0&&dem==0)
-			{
-			/* Declare the water handling functions: */
-			fragmentDeclarations+="\
-				void addWaterColor(in vec2,inout vec4);\n\
-				void addWaterColorAdvected(inout vec4);\n";
-			
-			/* Compile the water handling shader: */
-			shaders.push_back(compileFragmentShader("SurfaceAddWaterColor"));
-			
-			/* Call water coloring function from fragment shader's main function: */
-			if(advectWaterTexture)
-				{
-				fragmentMain+="\
-					/* Modulate the base color with water color: */\n\
-					addWaterColorAdvected(baseColor);\n\
-					\n";
-				}
-			else
-				{
-				fragmentMain+="\
-					/* Modulate the base color with water color: */\n\
-					addWaterColor(gl_FragCoord.xy,baseColor);\n\
-					\n";
-				}
-			}
-		
+				
 		/* Finish the fragment shader's main function: */
 		fragmentMain+="\
 			/* Assign the final color to the fragment: */\n\
@@ -424,16 +381,6 @@ GLhandleARB SurfaceRenderer::createSinglePassSurfaceShader(const GLLightTracker&
 			/* Query illumination uniform variables: */
 			*(ulPtr++)=glGetUniformLocationARB(result,"modelview");
 			*(ulPtr++)=glGetUniformLocationARB(result,"tangentModelviewDepthProjection");
-			}
-		if(waterTable!=0&&dem==0)
-			{
-			/* Query water handling uniform variables: */
-			*(ulPtr++)=glGetUniformLocationARB(result,"waterTransform");
-			*(ulPtr++)=glGetUniformLocationARB(result,"bathymetrySampler");
-			*(ulPtr++)=glGetUniformLocationARB(result,"quantitySampler");
-			*(ulPtr++)=glGetUniformLocationARB(result,"waterCellSize");
-			*(ulPtr++)=glGetUniformLocationARB(result,"waterOpacity");
-			*(ulPtr++)=glGetUniformLocationARB(result,"waterAnimationTime");
 			}
 		*(ulPtr++)=glGetUniformLocationARB(result,"projectionModelviewDepthProjection");
 		}
@@ -541,9 +488,7 @@ SurfaceRenderer::SurfaceRenderer(const DepthImageRenderer* sDepthImageRenderer)
 	 elevationColorMap(0),
 	 dem(0),demDistScale(1.0f),
 	 illuminate(false),
-	 waterTable(0),advectWaterTexture(false),waterOpacity(2.0f),
-	 surfaceSettingsVersion(1),
-	 animationTime(0.0)
+	 surfaceSettingsVersion(1)
 	{
 	/* Copy the depth image size: */
 	for(int i=0;i<2;++i)
@@ -565,7 +510,6 @@ SurfaceRenderer::SurfaceRenderer(const DepthImageRenderer* sDepthImageRenderer)
 	/* Monitor the external shader source files: */
 	fileMonitor.addPath((std::string(CONFIG_SHADERDIR)+std::string("/SurfaceAddContourLines.fs")).c_str(),IO::FileMonitor::Modified,Misc::createFunctionCall(this,&SurfaceRenderer::shaderSourceFileChanged));
 	fileMonitor.addPath((std::string(CONFIG_SHADERDIR)+std::string("/SurfaceIlluminate.fs")).c_str(),IO::FileMonitor::Modified,Misc::createFunctionCall(this,&SurfaceRenderer::shaderSourceFileChanged));
-	fileMonitor.addPath((std::string(CONFIG_SHADERDIR)+std::string("/SurfaceAddWaterColor.fs")).c_str(),IO::FileMonitor::Modified,Misc::createFunctionCall(this,&SurfaceRenderer::shaderSourceFileChanged));
 	fileMonitor.startPolling();
 	}
 
@@ -589,9 +533,6 @@ void SurfaceRenderer::initContext(GLContextData& contextData) const
 	dataItem->globalAmbientHeightMapShaderUniforms[4]=glGetUniformLocationARB(dataItem->globalAmbientHeightMapShader,"contourLineFactor");
 	dataItem->globalAmbientHeightMapShaderUniforms[5]=glGetUniformLocationARB(dataItem->globalAmbientHeightMapShader,"heightColorMapSampler");
 	dataItem->globalAmbientHeightMapShaderUniforms[6]=glGetUniformLocationARB(dataItem->globalAmbientHeightMapShader,"heightColorMapTransformation");
-	dataItem->globalAmbientHeightMapShaderUniforms[7]=glGetUniformLocationARB(dataItem->globalAmbientHeightMapShader,"waterLevelSampler");
-	dataItem->globalAmbientHeightMapShaderUniforms[8]=glGetUniformLocationARB(dataItem->globalAmbientHeightMapShader,"waterLevelTextureTransformation");
-	dataItem->globalAmbientHeightMapShaderUniforms[9]=glGetUniformLocationARB(dataItem->globalAmbientHeightMapShader,"waterOpacity");
 	
 	/* Create the shadowed illuminated height map render shader: */
 	dataItem->shadowedIlluminatedHeightMapShader=linkVertexAndFragmentShader("SurfaceShadowedIlluminatedHeightMapShader");
@@ -603,9 +544,6 @@ void SurfaceRenderer::initContext(GLContextData& contextData) const
 	dataItem->shadowedIlluminatedHeightMapShaderUniforms[5]=glGetUniformLocationARB(dataItem->shadowedIlluminatedHeightMapShader,"contourLineFactor");
 	dataItem->shadowedIlluminatedHeightMapShaderUniforms[6]=glGetUniformLocationARB(dataItem->shadowedIlluminatedHeightMapShader,"heightColorMapSampler");
 	dataItem->shadowedIlluminatedHeightMapShaderUniforms[7]=glGetUniformLocationARB(dataItem->shadowedIlluminatedHeightMapShader,"heightColorMapTransformation");
-	dataItem->shadowedIlluminatedHeightMapShaderUniforms[8]=glGetUniformLocationARB(dataItem->shadowedIlluminatedHeightMapShader,"waterLevelSampler");
-	dataItem->shadowedIlluminatedHeightMapShaderUniforms[9]=glGetUniformLocationARB(dataItem->shadowedIlluminatedHeightMapShader,"waterLevelTextureTransformation");
-	dataItem->shadowedIlluminatedHeightMapShaderUniforms[10]=glGetUniformLocationARB(dataItem->shadowedIlluminatedHeightMapShader,"waterOpacity");
 	dataItem->shadowedIlluminatedHeightMapShaderUniforms[11]=glGetUniformLocationARB(dataItem->shadowedIlluminatedHeightMapShader,"shadowTextureSampler");
 	dataItem->shadowedIlluminatedHeightMapShaderUniforms[12]=glGetUniformLocationARB(dataItem->shadowedIlluminatedHeightMapShader,"shadowProjection");
 	}
@@ -651,34 +589,6 @@ void SurfaceRenderer::setIlluminate(bool newIlluminate)
 	{
 	illuminate=newIlluminate;
 	++surfaceSettingsVersion;
-	}
-
-void SurfaceRenderer::setWaterTable(WaterTable2* newWaterTable)
-	{
-	waterTable=newWaterTable;
-	++surfaceSettingsVersion;
-	}
-
-void SurfaceRenderer::setAdvectWaterTexture(bool newAdvectWaterTexture)
-	{
-	advectWaterTexture=false; // newAdvectWaterTexture;
-	++surfaceSettingsVersion;
-	}
-
-void SurfaceRenderer::setWaterOpacity(GLfloat newWaterOpacity)
-	{
-	/* Set the new opacity factor: */
-	waterOpacity=newWaterOpacity;
-	}
-
-void SurfaceRenderer::setAnimationTime(double newAnimationTime)
-	{
-	/* Set the new animation time: */
-	animationTime=newAnimationTime;
-	
-	/* Poll the file monitor: */
-	fileMonitor.processEvents(); 	// MM: IO::FileMonitor fileMonitor
-	// watches renderer's external shader source files. see SurfaceRenderer.h
 	}
 
 void SurfaceRenderer::renderSinglePass(const int viewport[4],const PTransform& projection,const OGTransform& modelview,GLContextData& contextData) const
@@ -789,40 +699,6 @@ void SurfaceRenderer::renderSinglePass(const int viewport[4],const PTransform& p
 				*mPtr=GLfloat(*tmdpPtr);
 		glUniformMatrix4fvARB(*(ulPtr++),1,GL_FALSE,matrix);
 		}
-
-	// MM: ignore the water stuff
-	if(waterTable!=0&&dem==0)
-		{
-		/* Upload the water table texture coordinate matrix: */
-		waterTable->uploadWaterTextureTransform(*(ulPtr++));
-		
-		/* Bind the bathymetry texture: */
-		glActiveTextureARB(GL_TEXTURE3_ARB);
-		waterTable->bindBathymetryTexture(contextData);
-		glTexParameteri(GL_TEXTURE_RECTANGLE_ARB,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_RECTANGLE_ARB,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_RECTANGLE_ARB,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_RECTANGLE_ARB,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
-		glUniform1iARB(*(ulPtr++),3);
-		
-		/* Bind the quantities texture: */
-		glActiveTextureARB(GL_TEXTURE4_ARB);
-		waterTable->bindQuantityTexture(contextData);
-		glTexParameteri(GL_TEXTURE_RECTANGLE_ARB,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_RECTANGLE_ARB,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_RECTANGLE_ARB,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_RECTANGLE_ARB,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
-		glUniform1iARB(*(ulPtr++),4);
-		
-		/* Upload the water grid cell size for normal vector calculation: */
-		glUniformARB<2>(*(ulPtr++),1,waterTable->getCellSize());
-		
-		/* Upload the water opacity factor: */
-		glUniform1fARB(*(ulPtr++),waterOpacity);
-		
-		/* Upload the water animation time: */
-		glUniform1fARB(*(ulPtr++),GLfloat(animationTime));
-		}
 	
 	/* Upload the combined projection, modelview, and depth unprojection matrix: */
 	PTransform projectionModelviewDepthProjection=projectionModelview;
@@ -867,21 +743,6 @@ void SurfaceRenderer::renderSinglePass(const int viewport[4],const PTransform& p
 	
 	
 	/* Unbind all textures and buffers: */
-	if(waterTable!=0&&dem==0)
-		{
-		glActiveTextureARB(GL_TEXTURE4_ARB);
-		glTexParameteri(GL_TEXTURE_RECTANGLE_ARB,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_RECTANGLE_ARB,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_RECTANGLE_ARB,GL_TEXTURE_WRAP_S,GL_CLAMP);
-		glTexParameteri(GL_TEXTURE_RECTANGLE_ARB,GL_TEXTURE_WRAP_T,GL_CLAMP);
-		glBindTexture(GL_TEXTURE_RECTANGLE_ARB,0); // MM: texture target and texture name
-		glActiveTextureARB(GL_TEXTURE3_ARB);
-		glTexParameteri(GL_TEXTURE_RECTANGLE_ARB,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_RECTANGLE_ARB,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_RECTANGLE_ARB,GL_TEXTURE_WRAP_S,GL_CLAMP);
-		glTexParameteri(GL_TEXTURE_RECTANGLE_ARB,GL_TEXTURE_WRAP_T,GL_CLAMP);
-		glBindTexture(GL_TEXTURE_RECTANGLE_ARB,0); // MM: texture target and texture name
-		}
 	if(drawContourLines)
 		{
 		glActiveTextureARB(GL_TEXTURE2_ARB);
@@ -975,20 +836,6 @@ void SurfaceRenderer::renderGlobalAmbientHeightMap(GLuint heightColorMapTexture,
 	/* Upload the height color map texture coordinate transformation: */
 	glUniform2fARB(dataItem->globalAmbientHeightMapShaderUniforms[6],heightMapScale,heightMapOffset);
 	
-	if(waterTable!=0)
-		{
-		/* Bind the water level texture: */
-		glActiveTextureARB(GL_TEXTURE3_ARB);
-		//waterTable->bindWaterLevelTexture(contextData);
-		glUniform1iARB(dataItem->globalAmbientHeightMapShaderUniforms[7],3);
-		
-		/* Upload the water table texture coordinate matrix: */
-		glUniformMatrix4fvARB(dataItem->globalAmbientHeightMapShaderUniforms[8],1,GL_FALSE,waterTable->getWaterTextureMatrix());
-		
-		/* Upload the water opacity factor: */
-		glUniform1fARB(dataItem->globalAmbientHeightMapShaderUniforms[9],waterOpacity);
-		}
-	
 	/* Draw the surface: */
 	typedef GLGeometry::Vertex<void,0,void,0,void,float,3> Vertex;
 	GLVertexArrayParts::enable(Vertex::getPartsMask());
@@ -998,11 +845,6 @@ void SurfaceRenderer::renderGlobalAmbientHeightMap(GLuint heightColorMapTexture,
 	GLVertexArrayParts::disable(Vertex::getPartsMask());
 	
 	/* Unbind all textures and buffers: */
-	if(waterTable!=0)
-		{
-		glActiveTextureARB(GL_TEXTURE3_ARB);
-		glBindTexture(GL_TEXTURE_RECTANGLE_ARB,0); // MM: texture target and texture name
-		}
 	glActiveTextureARB(GL_TEXTURE2_ARB);
 	glBindTexture(GL_TEXTURE_1D,0); // MM: texture target and texture name
 	glActiveTextureARB(GL_TEXTURE1_ARB);
@@ -1074,20 +916,6 @@ void SurfaceRenderer::renderShadowedIlluminatedHeightMap(GLuint heightColorMapTe
 	/* Upload the height color map texture coordinate transformation: */
 	glUniform2fARB(dataItem->shadowedIlluminatedHeightMapShaderUniforms[7],heightMapScale,heightMapOffset);
 	
-	if(waterTable!=0)
-		{
-		/* Bind the water level texture: */
-		glActiveTextureARB(GL_TEXTURE3_ARB);
-		//waterTable->bindWaterLevelTexture(contextData);
-		glUniform1iARB(dataItem->shadowedIlluminatedHeightMapShaderUniforms[8],3);
-		
-		/* Upload the water table texture coordinate matrix: */
-		glUniformMatrix4fvARB(dataItem->shadowedIlluminatedHeightMapShaderUniforms[9],1,GL_FALSE,waterTable->getWaterTextureMatrix());
-		
-		/* Upload the water opacity factor: */
-		glUniform1fARB(dataItem->shadowedIlluminatedHeightMapShaderUniforms[10],waterOpacity);
-		}
-	
 	/* Bind the shadow texture: */
 	glActiveTextureARB(GL_TEXTURE4_ARB);
 	glBindTexture(GL_TEXTURE_2D,shadowTexture); // MM: texture target and texture name
@@ -1119,11 +947,6 @@ void SurfaceRenderer::renderShadowedIlluminatedHeightMap(GLuint heightColorMapTe
 	GLVertexArrayParts::disable(Vertex::getPartsMask());
 	
 	/* Unbind all textures and buffers: */
-	if(waterTable!=0)
-		{
-		glActiveTextureARB(GL_TEXTURE3_ARB);
-		glBindTexture(GL_TEXTURE_RECTANGLE_ARB,0); // MM: texture target and texture name
-		}
 	glActiveTextureARB(GL_TEXTURE2_ARB);
 	glBindTexture(GL_TEXTURE_1D,0); // MM: texture target and texture name
 	glActiveTextureARB(GL_TEXTURE1_ARB);

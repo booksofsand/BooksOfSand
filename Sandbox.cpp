@@ -110,13 +110,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #include "ElevationColorMap.h"
 #include "DEM.h"
 #include "SurfaceRenderer.h"
-#include "WaterTable2.h"      // MM: don't need
 #include "HandExtractor.h"
-#include "WaterRenderer.h"    // MM: don't need
-#include "GlobalWaterTool.h"  // MM: don't need
-#include "LocalWaterTool.h"   // MM: don't need
 #include "DEMTool.h"
-#include "BathymetrySaverTool.h"  // MM: don't need
 
 #include "Config.h"
 
@@ -126,8 +121,7 @@ Methods of class Sandbox::DataItem:
 
 /* MM: what is a data item? */
 Sandbox::DataItem::DataItem(void)
-	:waterTableTime(0.0),
-	 shadowFramebufferObject(0),shadowDepthTextureObject(0)
+	:shadowFramebufferObject(0),shadowDepthTextureObject(0)
 	{
 	/* Check if all required extensions are supported: */
 	// MM: can change this once we determine which extensions we need
@@ -175,8 +169,7 @@ Sandbox::RenderSettings::RenderSettings(void)
 	 useShadows(false),
 	 elevationColorMap(0),
 	 useContourLines(true),contourLineSpacing(0.75f),
-	 renderWaterSurface(false),waterOpacity(2.0f),
-	 surfaceRenderer(0),waterRenderer(0)
+	 surfaceRenderer(0)
 	{
 	/* Load the default projector transformation: */
 	loadProjectorTransform(CONFIG_DEFAULTPROJECTIONMATRIXFILENAME);
@@ -188,15 +181,13 @@ Sandbox::RenderSettings::RenderSettings(const Sandbox::RenderSettings& source)
 	 useShadows(source.useShadows),
 	 elevationColorMap(source.elevationColorMap!=0?new ElevationColorMap(*source.elevationColorMap):0),
 	 useContourLines(source.useContourLines),contourLineSpacing(source.contourLineSpacing),
-	 renderWaterSurface(source.renderWaterSurface),waterOpacity(source.waterOpacity),
-	 surfaceRenderer(0),waterRenderer(0)
+	 surfaceRenderer(0)
 	{
 	}
 
 Sandbox::RenderSettings::~RenderSettings(void)
 	{
 	delete surfaceRenderer;
-	delete waterRenderer;
 	delete elevationColorMap;
 	}
 
@@ -302,65 +293,11 @@ void Sandbox::toggleDEM(DEM* dem)
 			rsIt->surfaceRenderer->setDem(activeDem);
 	}
 
-/* MM: obviously we aren't dealing with water, this is unnecessary */
-void Sandbox::addWater(GLContextData& contextData) const
-	{
-	/* Check if the most recent rain object list is not empty: */
-	if(handExtractor!=0&&!handExtractor->getLockedExtractedHands().empty())
-		{
-		/* Render all rain objects into the water table: */
-		glPushAttrib(GL_ENABLE_BIT);
-		glDisable(GL_CULL_FACE);
-		
-		/* Create a local coordinate frame to render rain disks: */
-		Vector z=waterTable->getBaseTransform().inverseTransform(Vector(0,0,1));
-		Vector x=Geometry::normal(z);
-		Vector y=Geometry::cross(z,x);
-		x.normalize();
-		y.normalize();
-		
-		glVertexAttrib1fARB(1,rainStrength/waterSpeed);
-		for(HandExtractor::HandList::const_iterator hIt=handExtractor->getLockedExtractedHands().begin();hIt!=handExtractor->getLockedExtractedHands().end();++hIt)
-			{
-			/* Render a rain disk approximating the hand: */
-			glBegin(GL_POLYGON);
-			for(int i=0;i<32;++i)
-				{
-				Scalar angle=Scalar(2)*Math::Constants<Scalar>::pi*Scalar(i)/Scalar(32);
-				glVertex(hIt->center+x*(Math::cos(angle)*hIt->radius*0.75)+y*(Math::sin(angle)*hIt->radius*0.75));
-				}
-			glEnd();
-			}
-		
-		glPopAttrib();
-		}
-	}
 
 /* MM: does this mean don't update the projected output? */
 void Sandbox::pauseUpdatesCallback(GLMotif::ToggleButton::ValueChangedCallbackData* cbData)
 	{
 	pauseUpdates=cbData->set;
-	}
-
-/* MM: here's how to make Vrui show a dialog box, looks like */
-void Sandbox::showWaterControlDialogCallback(Misc::CallbackData* cbData)
-	{
-	Vrui::popupPrimaryWidget(waterControlDialog);
-	}
-
-void Sandbox::waterSpeedSliderCallback(GLMotif::TextFieldSlider::ValueChangedCallbackData* cbData)
-	{
-	waterSpeed=cbData->value;
-	}
-
-void Sandbox::waterMaxStepsSliderCallback(GLMotif::TextFieldSlider::ValueChangedCallbackData* cbData)
-	{
-	waterMaxSteps=int(Math::floor(cbData->value+0.5));
-	}
-
-void Sandbox::waterAttenuationSliderCallback(GLMotif::TextFieldSlider::ValueChangedCallbackData* cbData)
-	{
-	waterTable->setAttenuation(GLfloat(1.0-cbData->value));
 	}
 
 
@@ -378,89 +315,13 @@ GLMotif::PopupMenu* Sandbox::createMainMenu(void)
 	pauseUpdatesToggle=new GLMotif::ToggleButton("PauseUpdatesToggle",mainMenu,"Pause Topography");
 	pauseUpdatesToggle->setToggle(false);
 	pauseUpdatesToggle->getValueChangedCallbacks().add(this,&Sandbox::pauseUpdatesCallback);
-	
-	if(waterTable!=0)
-		{
-		/* Create a button to show the water control dialog: */
-		GLMotif::Button* showWaterControlDialogButton=new GLMotif::Button("ShowWaterControlDialogButton",mainMenu,"Show Water Simulation Control");
-		showWaterControlDialogButton->getSelectCallbacks().add(this,&Sandbox::showWaterControlDialogCallback);
-		}
-	
+		
 	/* Finish building the main menu: */
 	mainMenu->manageChild();
 	
 	return mainMenuPopup;
 	}
 
-/* MM: main menu was PopupMenu; this is PopupWindow - could also be useful */
-GLMotif::PopupWindow* Sandbox::createWaterControlDialog(void)
-	{
-	const GLMotif::StyleSheet& ss=*Vrui::getWidgetManager()->getStyleSheet();
-	
-	/* Create a popup window shell: */
-	GLMotif::PopupWindow* waterControlDialogPopup=new GLMotif::PopupWindow("WaterControlDialogPopup",Vrui::getWidgetManager(),"Water Simulation Control");
-	waterControlDialogPopup->setCloseButton(true);
-	waterControlDialogPopup->setResizableFlags(true,false);
-	waterControlDialogPopup->popDownOnClose();
-	
-	GLMotif::RowColumn* waterControlDialog=new GLMotif::RowColumn("WaterControlDialog",waterControlDialogPopup,false);
-	waterControlDialog->setOrientation(GLMotif::RowColumn::VERTICAL);
-	waterControlDialog->setPacking(GLMotif::RowColumn::PACK_TIGHT);
-	waterControlDialog->setNumMinorWidgets(2);
-	
-	new GLMotif::Label("WaterSpeedLabel",waterControlDialog,"Speed");
-	
-	waterSpeedSlider=new GLMotif::TextFieldSlider("WaterSpeedSlider",waterControlDialog,8,ss.fontHeight*10.0f);
-	waterSpeedSlider->getTextField()->setFieldWidth(7);
-	waterSpeedSlider->getTextField()->setPrecision(4);
-	waterSpeedSlider->getTextField()->setFloatFormat(GLMotif::TextField::SMART);
-	waterSpeedSlider->setSliderMapping(GLMotif::TextFieldSlider::EXP10);
-	waterSpeedSlider->setValueRange(0.001,10.0,0.05);
-	waterSpeedSlider->getSlider()->addNotch(0.0f);
-	waterSpeedSlider->setValue(waterSpeed);
-	waterSpeedSlider->getValueChangedCallbacks().add(this,&Sandbox::waterSpeedSliderCallback);
-	
-	new GLMotif::Label("WaterMaxStepsLabel",waterControlDialog,"Max Steps");
-	
-	waterMaxStepsSlider=new GLMotif::TextFieldSlider("WaterMaxStepsSlider",waterControlDialog,8,ss.fontHeight*10.0f);
-	waterMaxStepsSlider->getTextField()->setFieldWidth(7);
-	waterMaxStepsSlider->getTextField()->setPrecision(0);
-	waterMaxStepsSlider->getTextField()->setFloatFormat(GLMotif::TextField::FIXED);
-	waterMaxStepsSlider->setSliderMapping(GLMotif::TextFieldSlider::LINEAR);
-	waterMaxStepsSlider->setValueType(GLMotif::TextFieldSlider::UINT);
-	waterMaxStepsSlider->setValueRange(0,200,1);
-	waterMaxStepsSlider->setValue(waterMaxSteps);
-	waterMaxStepsSlider->getValueChangedCallbacks().add(this,&Sandbox::waterMaxStepsSliderCallback);
-	
-	new GLMotif::Label("FrameRateLabel",waterControlDialog,"Frame Rate");
-	
-	GLMotif::Margin* frameRateMargin=new GLMotif::Margin("FrameRateMargin",waterControlDialog,false);
-	frameRateMargin->setAlignment(GLMotif::Alignment::LEFT);
-	
-	frameRateTextField=new GLMotif::TextField("FrameRateTextField",frameRateMargin,8);
-	frameRateTextField->setFieldWidth(7);
-	frameRateTextField->setPrecision(2);
-	frameRateTextField->setFloatFormat(GLMotif::TextField::FIXED);
-	frameRateTextField->setValue(0.0);
-	
-	frameRateMargin->manageChild();
-	
-	new GLMotif::Label("WaterAttenuationLabel",waterControlDialog,"Attenuation");
-	
-	waterAttenuationSlider=new GLMotif::TextFieldSlider("WaterAttenuationSlider",waterControlDialog,8,ss.fontHeight*10.0f);
-	waterAttenuationSlider->getTextField()->setFieldWidth(7);
-	waterAttenuationSlider->getTextField()->setPrecision(5);
-	waterAttenuationSlider->getTextField()->setFloatFormat(GLMotif::TextField::SMART);
-	waterAttenuationSlider->setSliderMapping(GLMotif::TextFieldSlider::EXP10);
-	waterAttenuationSlider->setValueRange(0.001,1.0,0.01);
-	waterAttenuationSlider->getSlider()->addNotch(Math::log10(1.0-double(waterTable->getAttenuation())));
-	waterAttenuationSlider->setValue(1.0-double(waterTable->getAttenuation()));
-	waterAttenuationSlider->getValueChangedCallbacks().add(this,&Sandbox::waterAttenuationSliderCallback);
-	
-	waterControlDialog->manageChild();
-	
-	return waterControlDialogPopup;
-	}
 
 /* MM: what does enclosing the following in namespace{} do? */
 namespace {
@@ -506,23 +367,6 @@ void printUsage(void)
 	std::cout<<"  -he <hysteresis envelope>"<<std::endl;
 	std::cout<<"     Sets the size of the hysteresis envelope used for jitter removal"<<std::endl;
 	std::cout<<"     Default: 0.1"<<std::endl;
-	std::cout<<"  -wts <water grid width> <water grid height>"<<std::endl;
-	std::cout<<"     Sets the width and height of the water flow simulation grid"<<std::endl;
-	std::cout<<"     Default: 640 480"<<std::endl;
-	std::cout<<"  -ws <water speed> <water max steps>"<<std::endl;
-	std::cout<<"     Sets the relative speed of the water simulation and the maximum"<<std::endl;
-	std::cout<<"     number of simulation steps per frame"<<std::endl;
-	std::cout<<"     Default: 1.0 30"<<std::endl;
-	std::cout<<"  -rer <min rain elevation> <max rain elevation>"<<std::endl;
-	std::cout<<"     Sets the elevation range of the rain cloud level relative to the"<<std::endl;
-	std::cout<<"     ground plane in cm"<<std::endl;
-	std::cout<<"     Default: Above range of elevation color map"<<std::endl;
-	std::cout<<"  -rs <rain strength>"<<std::endl;
-	std::cout<<"     Sets the strength of global or local rainfall in cm/s"<<std::endl;
-	std::cout<<"     Default: 0.25"<<std::endl;
-	std::cout<<"  -evr <evaporation rate>"<<std::endl;
-	std::cout<<"     Water evaporation rate in cm/s"<<std::endl;
-	std::cout<<"     Default: 0.0"<<std::endl;
 	std::cout<<"  -dds <DEM distance scale>"<<std::endl;
 	std::cout<<"     DEM matching distance scale factor in cm"<<std::endl;
 	std::cout<<"     Default: 1.0"<<std::endl;
@@ -555,13 +399,6 @@ void printUsage(void)
 	std::cout<<"     Enables topographic contour lines and sets the elevation distance between"<<std::endl;
 	std::cout<<"     adjacent contour lines to the given value in cm"<<std::endl;
 	std::cout<<"     Default contour line spacing: 0.75"<<std::endl;
-	std::cout<<"  -rws"<<std::endl;
-	std::cout<<"     Renders water surface as geometric surface"<<std::endl;
-	std::cout<<"  -rwt"<<std::endl;
-	std::cout<<"     Renders water surface as texture"<<std::endl;
-	std::cout<<"  -wo <water opacity>"<<std::endl;
-	std::cout<<"     Sets the water depth at which water appears opaque in cm"<<std::endl;
-	std::cout<<"     Default: 2.0"<<std::endl;
 	std::cout<<"  -cp <control pipe name>"<<std::endl;
 	std::cout<<"     Sets the name of a named POSIX pipe from which to read control commands"<<std::endl;
 	}
@@ -574,12 +411,10 @@ Sandbox::Sandbox(int& argc,char**& argv)
 	 camera(0),pixelDepthCorrection(0),
 	 frameFilter(0),pauseUpdates(false),
 	 depthImageRenderer(0),
-	 waterTable(0),
-	 handExtractor(0),addWaterFunction(0),addWaterFunctionRegistered(false),
+	 handExtractor(0),
 	 sun(0),
 	 activeDem(0),
-	 mainMenu(0),pauseUpdatesToggle(0),waterControlDialog(0),
-	 waterSpeedSlider(0),waterMaxStepsSlider(0),frameRateTextField(0),waterAttenuationSlider(0),
+	 mainMenu(0),pauseUpdatesToggle(0),frameRateTextField(0),
 	 controlPipeFd(-1)
 	{
 	/* Read the sandbox's default configuration parameters: */
@@ -607,12 +442,6 @@ Sandbox::Sandbox(int& argc,char**& argv)
 	Misc::FixedArray<unsigned int,2> wtSize;
 	wtSize[0]=640;
 	wtSize[1]=480;
-	wtSize=cfg.retrieveValue<Misc::FixedArray<unsigned int,2> >("./waterTableSize",wtSize);
-	waterSpeed=cfg.retrieveValue<double>("./waterSpeed",1.0);
-	waterMaxSteps=cfg.retrieveValue<unsigned int>("./waterMaxSteps",30U);
-	Math::Interval<double> rainElevationRange=cfg.retrieveValue<Math::Interval<double> >("./rainElevationRange",Math::Interval<double>(-1000.0,1000.0));
-	rainStrength=cfg.retrieveValue<GLfloat>("./rainStrength",0.25f);
-	double evaporationRate=cfg.retrieveValue<double>("./evaporationRate",0.0);
 	float demDistScale=cfg.retrieveValue<float>("./demDistScale",1.0f);
 	std::string controlPipeName=cfg.retrieveString("./controlPipeName","");
 	
@@ -693,31 +522,6 @@ Sandbox::Sandbox(int& argc,char**& argv)
 					wtSize[j]=(unsigned int)(atoi(argv[i]));
 					}
 				}
-			else if(strcasecmp(argv[i]+1,"ws")==0)
-				{
-				++i;
-				waterSpeed=atof(argv[i]);
-				++i;
-				waterMaxSteps=atoi(argv[i]);
-				}
-			else if(strcasecmp(argv[i]+1,"rer")==0)
-				{
-				++i;
-				double rainElevationMin=atof(argv[i]);
-				++i;
-				double rainElevationMax=atof(argv[i]);
-				rainElevationRange=Math::Interval<double>(rainElevationMin,rainElevationMax);
-				}
-			else if(strcasecmp(argv[i]+1,"rs")==0)
-				{
-				++i;
-				rainStrength=GLfloat(atof(argv[i]));
-				}
-			else if(strcasecmp(argv[i]+1,"evr")==0)
-				{
-				++i;
-				evaporationRate=atof(argv[i]);
-				}
 			else if(strcasecmp(argv[i]+1,"dds")==0)
 				{
 				++i;
@@ -783,15 +587,6 @@ Sandbox::Sandbox(int& argc,char**& argv)
 					++i;
 					renderSettings.back().contourLineSpacing=GLfloat(atof(argv[i]));
 					}
-				}
-			else if(strcasecmp(argv[i]+1,"rws")==0)
-				renderSettings.back().renderWaterSurface=true;
-			else if(strcasecmp(argv[i]+1,"rwt")==0)
-				renderSettings.back().renderWaterSurface=false;
-			else if(strcasecmp(argv[i]+1,"wo")==0)
-				{
-				++i;
-				renderSettings.back().waterOpacity=GLfloat(atof(argv[i]));
 				}
 			else if(strcasecmp(argv[i]+1,"cp")==0)
 				{
@@ -887,19 +682,14 @@ Sandbox::Sandbox(int& argc,char**& argv)
 			basePlaneCorners[i][j]*=sf;
 	if(elevationRange!=Math::Interval<double>::full)
 		elevationRange*=sf;
-	if(rainElevationRange!=Math::Interval<double>::full)
-		rainElevationRange*=sf;
 	for(std::vector<RenderSettings>::iterator rsIt=renderSettings.begin();rsIt!=renderSettings.end();++rsIt)
 		{
 		if(rsIt->elevationColorMap!=0)
 			rsIt->elevationColorMap->setScalarRange(rsIt->elevationColorMap->getScalarRangeMin()*sf,rsIt->elevationColorMap->getScalarRangeMax()*sf);
 		rsIt->contourLineSpacing*=sf;
-		rsIt->waterOpacity/=sf;
 		for(int i=0;i<4;++i)
 			rsIt->projectorTransform.getMatrix()(i,3)*=sf;
 		}
-	rainStrength*=sf;
-	evaporationRate*=sf;
 	demDistScale*=sf;
 	
 	/* Create the frame filter object: */
@@ -910,11 +700,6 @@ Sandbox::Sandbox(int& argc,char**& argv)
 	frameFilter->setSpatialFilter(true);
 	frameFilter->setOutputFrameFunction(Misc::createFunctionCall(this,&Sandbox::receiveFilteredFrame));
 	
-	if(waterSpeed>0.0)
-		{
-		/* Create the hand extractor object: */
-		handExtractor=new HandExtractor(frameSize,pixelDepthCorrection,cameraIps.depthProjection);
-		}
 	
 	/* MM: this depth section will be necessary for our project bc it's just 3D space calcs, I think */
 	/* Start streaming depth frames: */
@@ -943,18 +728,6 @@ Sandbox::Sandbox(int& argc,char**& argv)
 		bbox.addPoint(basePlane.project(basePlaneCorners[i])+basePlane.getNormal()*elevationRange.getMax());
 		}
 	
-	if(waterSpeed>0.0)
-		{
-		/* Initialize the water flow simulator: */
-		waterTable=new WaterTable2(wtSize[0],wtSize[1],depthImageRenderer,basePlaneCorners);
-		waterTable->setElevationRange(elevationRange.getMin(),rainElevationRange.getMax());
-		waterTable->setWaterDeposit(evaporationRate);
-		
-		/* Register a render function with the water table: */
-		addWaterFunction=Misc::createFunctionCall(this,&Sandbox::addWater);
-		waterTable->addRenderFunction(addWaterFunction);
-		addWaterFunctionRegistered=true;
-		}
 	
 	/* Initialize all surface renderers: */
 	for(std::vector<RenderSettings>::iterator rsIt=renderSettings.begin();rsIt!=renderSettings.end();++rsIt)
@@ -975,20 +748,6 @@ Sandbox::Sandbox(int& argc,char**& argv)
 		rsIt->surfaceRenderer->setContourLineDistance(rsIt->contourLineSpacing);
 		rsIt->surfaceRenderer->setElevationColorMap(rsIt->elevationColorMap);
 		rsIt->surfaceRenderer->setIlluminate(rsIt->hillshade);
-		if(waterTable!=0)
-			{
-			if(rsIt->renderWaterSurface)
-				{
-				/* Create a water renderer: */
-				rsIt->waterRenderer=new WaterRenderer(waterTable);
-				}
-			else
-				{
-				rsIt->surfaceRenderer->setWaterTable(waterTable);
-				rsIt->surfaceRenderer->setAdvectWaterTexture(true);
-				rsIt->surfaceRenderer->setWaterOpacity(rsIt->waterOpacity);
-				}
-			}
 		rsIt->surfaceRenderer->setDemDistScale(demDistScale);
 		}
 	
@@ -1006,16 +765,10 @@ Sandbox::Sandbox(int& argc,char**& argv)
 	/* Create the GUI: */
 	mainMenu=createMainMenu();
 	Vrui::setMainMenu(mainMenu);
-	if(waterTable!=0)             // MM: not this
-		waterControlDialog=createWaterControlDialog();
 	
 	// MM: maybe need DEMTool. addEventTool? 
 	/* Initialize the custom tool classes: */
-	GlobalWaterTool::initClass(*Vrui::getToolManager());
-	LocalWaterTool::initClass(*Vrui::getToolManager());
 	DEMTool::initClass(*Vrui::getToolManager());
-	if(waterTable!=0)
-		BathymetrySaverTool::initClass(waterTable,*Vrui::getToolManager());
 	addEventTool("Pause Topography",0,0);
 	
 	if(!controlPipeName.empty())
@@ -1056,14 +809,11 @@ Sandbox::~Sandbox(void)
 	delete frameFilter;
 	
 	/* Delete helper objects: */
-	delete waterTable;
 	delete depthImageRenderer;
 	delete handExtractor;
-	delete addWaterFunction;
 	delete[] pixelDepthCorrection;
 	
 	delete mainMenu;
-	delete waterControlDialog;
 	
 	close(controlPipeFd);
 	}
@@ -1093,24 +843,7 @@ void Sandbox::frame(void)
 		{
 		/* Lock the most recent extracted hand list: */
 		handExtractor->lockNewExtractedHands();
-		
-		// MM: block comment? then does this handle detected hands as my comment below thought?
-		#if 0
-		
-		/* MM: looks like this is where detected hands trigger actions - could be useful */
-		/* Register/unregister the rain rendering function based on whether hands have been detected: */
-		bool registerWaterFunction=!handExtractor->getLockedExtractedHands().empty();
-		if(addWaterFunctionRegistered!=registerWaterFunction)
-			{
-			if(registerWaterFunction)
-				waterTable->addRenderFunction(addWaterFunction);
-			else
-				waterTable->removeRenderFunction(addWaterFunction);
-			addWaterFunctionRegistered=registerWaterFunction;
-			}
-		
-		#endif
-		}
+				}
 
 	// MM: does this update the displayed image? or just the time?
 	/* Update all surface renderers: */
@@ -1149,28 +882,8 @@ void Sandbox::frame(void)
 			
 			/* Parse the command: */
 			*commandEnd='\0';
-			if(strcasecmp(command,"waterSpeed")==0)
-				{
-				waterSpeed=atof(parameter);
-				if(waterSpeedSlider!=0)
-					waterSpeedSlider->setValue(waterSpeed);
-				}
-			else if(strcasecmp(command,"waterMaxSteps")==0)
-				{
-				waterMaxSteps=atoi(parameter);
-				if(waterMaxStepsSlider!=0)
-					waterMaxStepsSlider->setValue(waterMaxSteps);
-				}
-			else if(strcasecmp(command,"waterAttenuation")==0)
-				{
-				double attenuation=atof(parameter);
-				if(waterTable!=0)
-					waterTable->setAttenuation(GLfloat(1.0-attenuation));
-				if(waterAttenuationSlider!=0)
-					waterAttenuationSlider->setValue(attenuation);
-				}
 			// MM: this height map loading - is this just a cmdline option or is it regular?
-			else if(strcasecmp(command,"colorMap")==0)
+			if(strcasecmp(command,"colorMap")==0)
 				{
 				try
 					{
@@ -1201,13 +914,7 @@ void Sandbox::frame(void)
 				}
 			}
 		}
-	
-	if(frameRateTextField!=0&&Vrui::getWidgetManager()->isVisible(waterControlDialog))
-		{
-		/* Update the frame rate display: */
-		frameRateTextField->setValue(1.0/Vrui::getCurrentFrameTime());
-		}
-	
+		
 	/* MM: Asks Vrui to update its internal state and redraw the VR windows 
                at the given application time; must be called from main thread */
 	if(pauseUpdates)
@@ -1226,46 +933,7 @@ void Sandbox::display(GLContextData& contextData) const
 	int windowIndex;
 	for(windowIndex=0;windowIndex<Vrui::getNumWindows()&&window!=Vrui::getWindow(windowIndex);++windowIndex)
 		;
-	const RenderSettings& rs=windowIndex<int(renderSettings.size())?renderSettings[windowIndex]:renderSettings.back();
-	
-	/* MM: water stuff unnecessary */
-	/* Check if the water simulation state needs to be updated: */
-	if(waterTable!=0&&dataItem->waterTableTime!=Vrui::getApplicationTime())
-		{
-		/* Update the water table's bathymetry grid: */
-		waterTable->updateBathymetry(contextData);
-		
-		/* Run the water flow simulation's main pass: */
-		GLfloat totalTimeStep=GLfloat(Vrui::getFrameTime()*waterSpeed);
-		unsigned int numSteps=0;
-		while(numSteps<waterMaxSteps-1U&&totalTimeStep>1.0e-8f)
-			{
-			/* Run with a self-determined time step to maintain stability: */
-			waterTable->setMaxStepSize(totalTimeStep);
-			GLfloat timeStep=waterTable->runSimulationStep(false,contextData);
-			totalTimeStep-=timeStep;
-			++numSteps;
-			}
-		
-		// MM: another block comment?
-		#if 0
-		if(totalTimeStep>1.0e-8f)
-			{
-			std::cout<<'.'<<std::flush;
-			/* Force the final step to avoid simulation slow-down: */
-			waterTable->setMaxStepSize(totalTimeStep);
-			GLfloat timeStep=waterTable->runSimulationStep(true,contextData);
-			totalTimeStep-=timeStep;
-			++numSteps;
-			}
-		#else
-		if(totalTimeStep>1.0e-8f)
-			std::cout<<"Ran out of time by "<<totalTimeStep<<std::endl;
-		#endif
-		
-		/* Mark the water simulation state as up-to-date for this frame: */
-		dataItem->waterTableTime=Vrui::getApplicationTime();
-		}
+	const RenderSettings& rs=windowIndex<int(renderSettings.size())?renderSettings[windowIndex]:renderSettings.back();	
 	
 	/* MM: necessary? I think so */
 	/* Calculate the projection matrix: */
@@ -1461,16 +1129,6 @@ void Sandbox::display(GLContextData& contextData) const
 		{
 		/* Render the surface in a single pass: */
 		rs.surfaceRenderer->renderSinglePass(ds.viewport,projection,ds.modelviewNavigational,contextData);
-		}
-	
-	/* MM: water rendering unnecessary */
-	if(rs.waterRenderer!=0)
-		{
-		/* Draw the water surface: */
-		glMaterialAmbientAndDiffuse(GLMaterialEnums::FRONT,GLColor<GLfloat,4>(0.0f,0.5f,0.8f));
-		glMaterialSpecular(GLMaterialEnums::FRONT,GLColor<GLfloat,4>(1.0f,1.0f,1.0f));
-		glMaterialShininess(GLMaterialEnums::FRONT,64.0f);
-		rs.waterRenderer->render(projection,ds.modelviewNavigational,contextData);
 		}
 	}
 

@@ -37,7 +37,6 @@ class DepthImageRenderer;
 class ElevationColorMap;
 class GLLightTracker;
 class DEM;
-class WaterTable2;
 
 class SurfaceRenderer:public GLObject
 	{
@@ -81,13 +80,8 @@ class SurfaceRenderer:public GLObject
 	GLfloat demDistScale; // Maximum deviation from surface to DEM in camera-space units
 	
 	bool illuminate; // Flag whether the surface shall be illuminated
-	
-	WaterTable2* waterTable; // Pointer to the water table object; if NULL, water is ignored
-	bool advectWaterTexture; // Flag whether water texture coordinates are advected to visualize water flow
-	GLfloat waterOpacity; // Scaling factor for water opacity
-	
+		
 	unsigned int surfaceSettingsVersion; // Version number of surface settings to invalidate surface rendering shader on changes
-	double animationTime; // Time value for water animation
 	
 	/* Private methods: */
 	void shaderSourceFileChanged(const IO::FileMonitor::Event& event); // Callback called when one of the external shader source files is changed
@@ -108,10 +102,6 @@ class SurfaceRenderer:public GLObject
 	void setDem(DEM* newDem); // Sets a pre-made digital elevation model to create a zero surface for height color mapping
 	void setDemDistScale(GLfloat newDemDistScale); // Sets the deviation from DEM to surface to saturate the deviation color map
 	void setIlluminate(bool newIlluminate); // Sets the illumination flag
-	void setWaterTable(WaterTable2* newWaterTable); // Sets the pointer to the water table; NULL disables water handling
-	void setAdvectWaterTexture(bool newAdvectWaterTexture); // Sets the water texture coordinate advection flag
-	void setWaterOpacity(GLfloat newWaterOpacity); // Sets the water opacity factor
-	void setAnimationTime(double newAnimationTime); // Sets the time for water animation in seconds
 	void renderSinglePass(const int viewport[4],const PTransform& projection,const OGTransform& modelview,GLContextData& contextData) const; // Renders the surface in a single pass using the current surface settings
 	#if 0
 	void renderGlobalAmbientHeightMap(GLuint heightColorMapTexture,GLContextData& contextData) const; // Renders the global ambient component of the surface as an illuminated height map in the current OpenGL context using the given pixel-corner elevation texture and 1D height color map

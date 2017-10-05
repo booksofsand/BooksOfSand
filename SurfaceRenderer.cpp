@@ -61,7 +61,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #include <Vrui/ToolManager.h>
 #include <Vrui/DisplayState.h>
 #include <Vrui/OpenFile.h>
-#include <IOstream>
+#include <iostream>
 // MM: ^ added
 
 #include "DepthImageRenderer.h"
@@ -511,6 +511,18 @@ SurfaceRenderer::SurfaceRenderer(const DepthImageRenderer* sDepthImageRenderer)
 	fileMonitor.addPath((std::string(CONFIG_SHADERDIR)+std::string("/SurfaceAddContourLines.fs")).c_str(),IO::FileMonitor::Modified,Misc::createFunctionCall(this,&SurfaceRenderer::shaderSourceFileChanged));
 	fileMonitor.addPath((std::string(CONFIG_SHADERDIR)+std::string("/SurfaceIlluminate.fs")).c_str(),IO::FileMonitor::Modified,Misc::createFunctionCall(this,&SurfaceRenderer::shaderSourceFileChanged));
 	fileMonitor.startPolling();
+
+	
+	// MM: ADDED BELOW
+	/* Load the image into the texture set: */
+        // MM: addTexture(BaseImage, open file target, internal format, key)
+	char* filename = "sample_text.jpg";
+	Images::TextureSet::Texture& tex=textures.addTexture(Images::readImageFile(filename,Vrui::openFile(filename)),GL_TEXTURE_2D,GL_RGB8,0U);
+	/* Set clamping and filtering parameters for mip-mapped linear interpolation: */
+	tex.setMipmapRange(0,1000);
+	tex.setWrapModes(GL_CLAMP_TO_EDGE,GL_CLAMP_TO_EDGE);
+	tex.setFilterModes(GL_LINEAR_MIPMAP_LINEAR,GL_LINEAR);
+	// MM: ADDED ABOVE
 	}
 
 void SurfaceRenderer::initContext(GLContextData& contextData) const
@@ -710,37 +722,7 @@ void SurfaceRenderer::renderSinglePass(const int viewport[4],const PTransform& p
 	//depthImageRenderer->renderSurfaceTemplate(contextData);
 	//VRUI_APPLICATION_RUN(ImageViewer) // MM: try running ImageViewer instead to display a jpg
 	
-	
-	string filename = "flower.jpg";
-	Images::TextureSet::Texture& tex=textures.addTexture(Images::readImageFile(filename,Vrui::openFile(filename),GL_TEXTURE_2D,GL_RGB8,0U);
-	tex.setMipmapRange(0,1000);
-	tex.setWrapModes(GL_CLAMP_TO_EDGE,GL_CLAMP_TO_EDGE);
-	tex.setFilterModes(GL_LINEAR_MIPMAP_LINEAR,GL_LINEAR);
-	
-	glPushAttrib(GL_ENABLE_BIT);
-	glEnable(GL_TEXTURE_2D);
-	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);
-	
-	Images::TextureSet::GLState* texGLState=textures.getGLState(contextData);
-	const Images::TextureSet::GLState::Texture& tex=texGLState->bindTexture(0U);
-	const Images::BaseImage& image=tex.getImage();
-	const GLfloat* texMin=tex.getTexCoordMin();
-	const GLfloat* texMax=tex.getTexCoordMax();
-
-	glBegin(GL_QUADS);
-	glTexCoord2f(texMin[0],texMin[1]);
-	glVertex2i(0,0);
-	glTexCoord2f(texMax[0],texMin[1]);
-	glVertex2i(image.getSize(0),0);
-	glTexCoord2f(texMax[0],texMax[1]);
-	glVertex2i(image.getSize(0),image.getSize(1));
-	glTexCoord2f(texMin[0],texMax[1]);
-	glVertex2i(0,image.getSize(1));
-	glEnd();
-	
-	glBindTexture(GL_TEXTURE_2D,0);
-	glPopAttrib();
-	
+	display(contextData);  // MM: TO DO: try this on geosci sandbox. will need to compile & fix errors
 	
 	/* Unbind all textures and buffers: */
 	if(drawContourLines)
@@ -764,6 +746,54 @@ void SurfaceRenderer::renderSinglePass(const int viewport[4],const PTransform& p
 	/* Unbind the height map shader: */
 	glUseProgramObjectARB(0);
 	}
+
+
+void SurfaceRenderer::display(GLContextData& contextData) const
+	{
+	/* Set up OpenGL state: */
+	glPushAttrib(GL_ENABLE_BIT);
+	glEnable(GL_TEXTURE_2D);
+	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);
+	
+	/* Get the texture set's GL state: */
+	// MM: getGLState returns OpenGL texture state object for the given OpenGL context
+	Images::TextureSet::GLState* texGLState=textures.getGLState(contextData);
+	
+	/* Bind the texture object: */
+	// MM: bindTexture binds the texture object associated with the given key
+	//     to its texture target on the current texture unit, returns texture state.
+	//     Note the key is 0U, which was the key in ImageViewer constructor.
+	const Images::TextureSet::GLState::Texture& tex=texGLState->bindTexture(0U);
+	const Images::BaseImage& image=tex.getImage();
+	// MM: try replacing this with Image so can test the setPixel() method (TO DO)
+	
+	/* Query the range of texture coordinates: */
+	const GLfloat* texMin=tex.getTexCoordMin();
+	const GLfloat* texMax=tex.getTexCoordMax();
+	
+	/* Draw the image: */
+	/* MM: Note: texture coordinates specify the point in the texture image that will 
+               correspond to the vertex you're specifying them for. see Vrui and OpenGL notes */
+	glBegin(GL_QUADS);
+	// MM: ^ specifies the following vertices as groups of 4 to interpret as quadrilaterals
+	glTexCoord2f(texMin[0],texMin[1]);  // MM: texture coords. 2f means two floats (for 2D)
+	glVertex2i(0,0);                    // MM: vertex points. 2i means two ints (for 2D)
+	glTexCoord2f(texMax[0],texMin[1]);
+	glVertex2i(image.getSize(0),0);
+	glTexCoord2f(texMax[0],texMax[1]);
+	glVertex2i(image.getSize(0),image.getSize(1));
+	glTexCoord2f(texMin[0],texMax[1]);
+	glVertex2i(0,image.getSize(1));
+	glEnd();
+	// MM: ^ ends the listing of vertices
+	
+	/* Protect the texture object: */
+	glBindTexture(GL_TEXTURE_2D,0);
+
+	/* Restore OpenGL state: */
+	glPopAttrib();
+	}
+
 
 #if 0
 

@@ -29,6 +29,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #include <GL/Extensions/GLARBShaderObjects.h>
 #include <GL/GLObject.h>
 #include <Kinect/FrameBuffer.h>
+#include <Images/TextureSet.h> // MM: ADDED
 
 #include "Types.h"
 
@@ -66,6 +67,7 @@ class SurfaceRenderer:public GLObject
 		};
 	
 	/* Elements: */
+	Images::TextureSet textures; // MM: ADDED - Texture set containing the image to be displayed
 	const DepthImageRenderer* depthImageRenderer; // Renderer for low-level surface rendering
 	unsigned int depthImageSize[2]; // Size of depth image texture
 	PTransform tangentDepthProjection; // Transposed depth projection matrix for tangent planes, i.e., homogeneous normal vectors
@@ -84,6 +86,7 @@ class SurfaceRenderer:public GLObject
 	unsigned int surfaceSettingsVersion; // Version number of surface settings to invalidate surface rendering shader on changes
 	
 	/* Private methods: */
+	void display(GLContextData& contextData);  // MM: ADDED
 	void shaderSourceFileChanged(const IO::FileMonitor::Event& event); // Callback called when one of the external shader source files is changed
 	GLhandleARB createSinglePassSurfaceShader(const GLLightTracker& lt,GLint* uniformLocations) const; // Creates a single-pass surface rendering shader based on current renderer settings
 	void renderPixelCornerElevations(const int viewport[4],const PTransform& projectionModelview,GLContextData& contextData,DataItem* dataItem) const; // Creates texture containing pixel-corner elevations based on the current depth image

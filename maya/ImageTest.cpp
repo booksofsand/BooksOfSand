@@ -65,7 +65,7 @@ ImageViewer::ImageViewer()
 	/* Load the image into the texture set: */
         // MM: addTexture(BaseImage, open file target, internal format, key)
 	//     GL_RGB8 must mean RGB 8-bit image. Note the key, 0U, is referenced in display()
-	  filename = "sample_text.jpg";
+	char* filename = "sample_text.jpg";
 	Images::TextureSet::Texture& tex=textures.addTexture(Images::readImageFile(filename,Vrui::openFile(filename)),GL_TEXTURE_2D,GL_RGB8,0U);
 	
 	/* Set clamping and filtering parameters for mip-mapped linear interpolation: */

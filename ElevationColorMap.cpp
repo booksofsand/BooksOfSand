@@ -30,6 +30,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #include <GL/GLContextData.h>
 #include <GL/Extensions/GLARBShaderObjects.h>
 #include <Vrui/OpenFile.h>
+#include <iostream> // MM: added
 
 #include "Types.h"
 #include "DepthImageRenderer.h"

@@ -96,7 +96,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #include <Kinect/DirectFrameSource.h>
 #include <Kinect/OpenDirectFrameSource.h>
 
-#define SAVEDEPTH 0   /* MM: SAVEDEPTH is used twice as a #if 0 ... #endif block comment /*
+#define SAVEDEPTH 0   // MM: SAVEDEPTH is used twice as a #if 0 ... #endif block comment 
 
 // MM: this does nothing, basically commented out
 #if SAVEDEPTH
@@ -104,7 +104,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #include <Images/WriteImageFile.h>
 #endif
 
-/* MM: SARndbox defined includes */
+// MM: SARndbox defined includes
 #include "FrameFilter.h"
 #include "DepthImageRenderer.h"
 #include "ElevationColorMap.h"
@@ -123,6 +123,7 @@ Methods of class Sandbox::DataItem:
 Sandbox::DataItem::DataItem(void)
 	:shadowFramebufferObject(0),shadowDepthTextureObject(0)
 	{
+	std::cout << "In Sandbox::DataItem::DataItem." << std::endl;  // MM: added
 	/* Check if all required extensions are supported: */
 	// MM: can change this once we determine which extensions we need
 	bool supported=GLEXTFramebufferObject::isSupported();
@@ -147,6 +148,7 @@ Sandbox::DataItem::DataItem(void)
 	GLARBVertexShader::initExtension();
 	GLARBFragmentShader::initExtension();
 	GLARBMultitexture::initExtension();
+	std::cout << "Done with Sandbox::DataItem::DataItem." << std::endl;  // MM: added
 	}
 
 Sandbox::DataItem::~DataItem(void)
@@ -171,8 +173,10 @@ Sandbox::RenderSettings::RenderSettings(void)
 	 useContourLines(true),contourLineSpacing(0.75f),
 	 surfaceRenderer(0)
 	{
+	std::cout << "In Sandbox::RenderSettings::RenderSettings." << std::endl;  // MM: added
 	/* Load the default projector transformation: */
 	loadProjectorTransform(CONFIG_DEFAULTPROJECTIONMATRIXFILENAME);
+	std::cout << "Done with Sandbox::RenderSettings::RenderSettings." << std::endl;  // MM: added
 	}
 
 Sandbox::RenderSettings::RenderSettings(const Sandbox::RenderSettings& source)
@@ -193,6 +197,7 @@ Sandbox::RenderSettings::~RenderSettings(void)
 
 void Sandbox::RenderSettings::loadProjectorTransform(const char* projectorTransformName)
 	{
+	std::cout << "In Sandbox::RenderSettings::loadProjectorTransform." << std::endl;  // MM: added
 	std::string fullProjectorTransformName;
 	try
 		{
@@ -225,6 +230,7 @@ void Sandbox::RenderSettings::loadProjectorTransform(const char* projectorTransf
 		std::cerr<<"Unable to load projector transformation from file "<<fullProjectorTransformName<<" due to exception "<<err.what()<<std::endl;
 		projectorTransformValid=false;
 		}
+	std::cout << "Done with Sandbox::RenderSettings::loadProjectorTransform." << std::endl;  // MM: added
 	}
 
 /* MM: this is specific to the topography map, which we may be able to modify. 
@@ -233,16 +239,16 @@ void Sandbox::RenderSettings::loadProjectorTransform(const char* projectorTransf
        2) using the default height map */
 void Sandbox::RenderSettings::loadHeightMap(const char* heightMapName)
 	{
-	  std::cout << "loadHeightMap called in Sandbox.cpp. skipping..." << std::endl;  // MM: added
-	  return;
+	std::cout << "In Sandbox::loadHeightMap." << std::endl << "Done with Sandbox::loadHeightMap." << std::endl;  // MM: added
+	return;
 	try
 		{
 		/* Load the elevation color map of the given name: */
-		ElevationColorMap* newElevationColorMap=new ElevationColorMap(heightMapName);
+		//ElevationColorMap* newElevationColorMap=new ElevationColorMap(heightMapName);
 		
 		/* Delete the previous elevation color map and assign the new one: */
-		delete elevationColorMap;
-		elevationColorMap=newElevationColorMap;
+		//delete elevationColorMap;  MM: commented out
+		//elevationColorMap=newElevationColorMap;  MM: commented out
 		}
 	catch(std::runtime_error err)
 		{
@@ -257,26 +263,31 @@ Methods of class Sandbox:
 /* MM: is a raw depth frame a collection of data representing a single frame received from Kinect? */
 void Sandbox::rawDepthFrameDispatcher(const Kinect::FrameBuffer& frameBuffer)
 	{
+	std::cout << "In Sandbox::rawDepthFrameDispatcher." << std::endl;  // MM: added
 	/* Pass the received frame to the frame filter and the hand extractor: */
 	if(frameFilter!=0&&!pauseUpdates)
 		frameFilter->receiveRawFrame(frameBuffer);
 	if(handExtractor!=0)                                     // MM: we may be wanting to use their hand extractor
 		handExtractor->receiveRawFrame(frameBuffer);
+	std::cout << "Done with Sandbox::rawDepthFrameDispatcher." << std::endl;  // MM: added
 	}
 
 void Sandbox::receiveFilteredFrame(const Kinect::FrameBuffer& frameBuffer)
 	{
+	std::cout << "In Sandbox::receiveFilteredFrame." << std::endl;  // MM: added
 	/* Put the new frame into the frame input buffer: */
 	filteredFrames.postNewValue(frameBuffer);
 	
 	/* Wake up the foreground thread: */
 	Vrui::requestUpdate();
+	std::cout << "Done with Sandbox::receiveFilteredFrame." << std::endl;  // MM: added
 	}
 
 /* MM: "DEM - Class to represent digital elevation models (DEMs) as float-valued texture objects." - DEM.h 
        does this mean we need to use DEMs? */
 void Sandbox::toggleDEM(DEM* dem)
 	{
+	std::cout << "In Sandbox::toggleDEM." << std::endl;  // MM: added
 	/* Check if this is the active DEM: */
 	if(activeDem==dem)
 		{
@@ -293,19 +304,23 @@ void Sandbox::toggleDEM(DEM* dem)
 	for(std::vector<RenderSettings>::iterator rsIt=renderSettings.begin();rsIt!=renderSettings.end();++rsIt)
 		if(rsIt->fixProjectorView)
 			rsIt->surfaceRenderer->setDem(activeDem);
+	std::cout << "Done with Sandbox::toggleDEM." << std::endl;  // MM: added
 	}
 
 
 /* MM: does this mean don't update the projected output? */
 void Sandbox::pauseUpdatesCallback(GLMotif::ToggleButton::ValueChangedCallbackData* cbData)
 	{
+	std::cout << "In Sandbox::pauseUpdatesCallback." << std::endl;  // MM: added
 	pauseUpdates=cbData->set;
+	std::cout << "Done with Sandbox::pauseUpdatesCallback." << std::endl;  // MM: added
 	}
 
 
 /* MM: the following method shows how to build a main menu; sounds relevant to our project */
 GLMotif::PopupMenu* Sandbox::createMainMenu(void)
 	{
+	std::cout << "In Sandbox::createMainMenu." << std::endl;  // MM: added
 	/* Create a popup shell to hold the main menu: */
 	GLMotif::PopupMenu* mainMenuPopup=new GLMotif::PopupMenu("MainMenuPopup",Vrui::getWidgetManager());
 	mainMenuPopup->setTitle("AR Sandbox");
@@ -320,7 +335,7 @@ GLMotif::PopupMenu* Sandbox::createMainMenu(void)
 		
 	/* Finish building the main menu: */
 	mainMenu->manageChild();
-	
+	std::cout << "Done with Sandbox::createMainMenu." << std::endl;  // MM: added
 	return mainMenuPopup;
 	}
 
@@ -419,6 +434,7 @@ Sandbox::Sandbox(int& argc,char**& argv)
 	 mainMenu(0),pauseUpdatesToggle(0),frameRateTextField(0),
 	 controlPipeFd(-1)
 	{
+	std::cout << "Making a Sandbox!" << std::endl; // MM: added
 	/* Read the sandbox's default configuration parameters: */
 	std::string sandboxConfigFileName=CONFIG_CONFIGDIR;
 	sandboxConfigFileName.push_back('/');
@@ -827,17 +843,20 @@ Sandbox::~Sandbox(void)
 
 void Sandbox::toolDestructionCallback(Vrui::ToolManager::ToolDestructionCallbackData* cbData)
 	{
+	std::cout << "In Sandbox::toolDestructionCallback." << std::endl;  // MM: added
 	/* Check if the destroyed tool is the active DEM tool: */
 	if(activeDem==dynamic_cast<DEM*>(cbData->tool))
 		{
 		/* Deactivate the active DEM tool: */
 		activeDem=0;
 		}
+	std::cout << "Done with Sandbox::toolDestructionCallback." << std::endl;  // MM: added
 	}
 
 /* MM: a Vrui::Application method - necessary for us */
 void Sandbox::frame(void)
 	{
+	std::cout << "In Sandbox::frame." << std::endl;  // MM: added
 	/* Check if the filtered frame has been updated: */
 	if(filteredFrames.lockNewValue())
 		{
@@ -854,8 +873,9 @@ void Sandbox::frame(void)
 
 	// MM: does this update the displayed image? or just the time?
 	/* Update all surface renderers: */
-	for(std::vector<RenderSettings>::iterator rsIt=renderSettings.begin();rsIt!=renderSettings.end();++rsIt)
-		rsIt->surfaceRenderer->setAnimationTime(Vrui::getApplicationTime());
+	// MM: commented out below
+	//for(std::vector<RenderSettings>::iterator rsIt=renderSettings.begin();rsIt!=renderSettings.end();++rsIt)
+	//	rsIt->surfaceRenderer->setAnimationTime(Vrui::getApplicationTime());
 	// getApplicationTime returns seconds since application was started
 	
 	/* MM: I think the following may just be for manually entered data. could be useful */
@@ -890,11 +910,12 @@ void Sandbox::frame(void)
 			/* Parse the command: */
 			*commandEnd='\0';
 			// MM: this height map loading - is this just a cmdline option or is it regular?
+			/* MM: commented out
 			if(strcasecmp(command,"colorMap")==0)
 				{
 				try
 					{
-					/* Update all height color maps: */
+					// Update all height color maps:
 					for(std::vector<RenderSettings>::iterator rsIt=renderSettings.begin();rsIt!=renderSettings.end();++rsIt)
 						if(rsIt->elevationColorMap!=0)
 							rsIt->elevationColorMap->load(parameter);
@@ -903,10 +924,10 @@ void Sandbox::frame(void)
 					{
 					std::cerr<<"Cannot read height color map "<<parameter<<" due to exception "<<err.what()<<std::endl;
 					}
-				}
+				} 
 			else if(strcasecmp(command,"heightMapPlane")==0)
 				{
-				/* Read the height map plane equation: */
+				// Read the height map plane equation: 
 				double hmp[4];
 				char* endPtr=parameter;
 				for(int i=0;i<4;++i)
@@ -914,25 +935,27 @@ void Sandbox::frame(void)
 				Plane heightMapPlane=Plane(Plane::Vector(hmp),hmp[3]);
 				heightMapPlane.normalize();
 				
-				/* Override the height mapping planes of all elevation color maps: */
+				// Override the height mapping planes of all elevation color maps:
 				for(std::vector<RenderSettings>::iterator rsIt=renderSettings.begin();rsIt!=renderSettings.end();++rsIt)
 					if(rsIt->elevationColorMap!=0)
 						rsIt->elevationColorMap->calcTexturePlane(heightMapPlane);
-				}
-			}
+				} */
+			} 
 		}
 		
 	/* MM: Asks Vrui to update its internal state and redraw the VR windows 
                at the given application time; must be called from main thread */
 	if(pauseUpdates)
 		Vrui::scheduleUpdate(Vrui::getApplicationTime()+1.0/30.0);
+	std::cout << "Done with Sandbox::frame." << std::endl;  // MM: added
 	}
 
 /* MM: a Vrui::Application method - necessary for us */
 void Sandbox::display(GLContextData& contextData) const
 	{
+	std::cout << "In Sandbox::display." << std::endl;  // MM: added
 	/* Get the data item: */
-	DataItem* dataItem=contextData.retrieveDataItem<DataItem>(this);
+	//DataItem* dataItem=contextData.retrieveDataItem<DataItem>(this);
 	
 	/* Get the rendering settings for this window: */
 	const Vrui::DisplayState& ds=Vrui::getDisplayState(contextData);
@@ -1138,18 +1161,22 @@ void Sandbox::display(GLContextData& contextData) const
 		/* Render the surface in a single pass: */
 		rs.surfaceRenderer->renderSinglePass(ds.viewport,projection,ds.modelviewNavigational,contextData);
 		}
+	std::cout << "Done with Sandbox::display." << std::endl;  // MM: added
 	}
 
 /* MM: a Vrui::Application method, don't know what it does */
 void Sandbox::resetNavigation(void)
 	{
+	std::cout << "In Sandbox::resetNavigation." << std::endl;  // MM: added
 	/* Set the navigation transformation from the previously computed parameters: */
 	Vrui::setNavigationTransformation(navCenter,navSize,navUp);
+	std::cout << "Done with Sandbox::resetNavigation." << std::endl;  // MM: added
 	}
 
 /* MM: a Vrui::Application method, looks like an event handler from a button click or something */
 void Sandbox::eventCallback(Vrui::Application::EventID eventId,Vrui::InputDevice::ButtonCallbackData* cbData)
 	{
+	std::cout << "In Sandbox::eventCallback." << std::endl; // MM: added
 	if(cbData->newButtonState)
 		{
 		switch(eventId)
@@ -1164,11 +1191,13 @@ void Sandbox::eventCallback(Vrui::Application::EventID eventId,Vrui::InputDevice
 				break;
 			}
 		}
+	std::cout << "Done with Sandbox::eventCallback." << std::endl; // MM: added
 	}
 
 /* MM: a GLObject method - necessary for us? */
 void Sandbox::initContext(GLContextData& contextData) const
 	{
+	std::cout << "In Sandbox::initContext." << std::endl;  // MM: added
 	/* Create a data item and add it to the context: */
 	DataItem* dataItem=new DataItem;
 	contextData.addDataItem(this,dataItem);
@@ -1208,6 +1237,7 @@ void Sandbox::initContext(GLContextData& contextData) const
 	glReadBuffer(GL_NONE);
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,currentFrameBuffer);
 	} 
+	std::cout << "Done with Sandbox::initContext." << std::endl;  // MM: added
 	}
 
 VRUI_APPLICATION_RUN(Sandbox)

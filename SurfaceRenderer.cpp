@@ -27,6 +27,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #include <Misc/PrintInteger.h>
 #include <Misc/ThrowStdErr.h>
 #include <Misc/MessageLogger.h>
+#include <Misc/FunctionCalls.h>  //MM: added bc error "createFunctionCall is not a member of Misc"
 #include <GL/gl.h>
 #include <GL/GLVertexArrayParts.h>
 #include <GL/Extensions/GLARBFragmentShader.h>
@@ -43,14 +44,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #include <GL/GLGeometryVertex.h>
 
 // MM: added
-#include <Misc/MessageLogger.h>
 #include <Math/Math.h>
-#include <GL/gl.h>
 #include <GL/GLColorTemplates.h>
 #include <GL/GLMaterial.h>
 #include <GL/GLObject.h>
-#include <GL/GLContextData.h>
-#include <GL/GLTransformationWrappers.h>
 #include <Images/RGBImage.h>
 #include <Images/ReadImageFile.h>
 #include <Images/TextureSet.h>
@@ -79,6 +76,7 @@ SurfaceRenderer::DataItem::DataItem(void)
 	 heightMapShader(0),surfaceSettingsVersion(0),lightTrackerVersion(0),
 	 globalAmbientHeightMapShader(0),shadowedIlluminatedHeightMapShader(0)
 	{
+	std::cout << "In SurfaceRenderer::DataItem::DataItem." << std::endl;  // MM: added
 	/* Initialize all required extensions: */
 	GLARBFragmentShader::initExtension();
 	GLARBMultitexture::initExtension();
@@ -88,6 +86,7 @@ SurfaceRenderer::DataItem::DataItem(void)
 	GLARBTextureRg::initExtension();
 	GLARBVertexShader::initExtension();
 	GLEXTFramebufferObject::initExtension();
+	std::cout << "Done with SurfaceRenderer::DataItem::DataItem." << std::endl;  // MM: added
 	}
 
 SurfaceRenderer::DataItem::~DataItem(void)
@@ -113,6 +112,7 @@ void SurfaceRenderer::shaderSourceFileChanged(const IO::FileMonitor::Event& even
 
 GLhandleARB SurfaceRenderer::createSinglePassSurfaceShader(const GLLightTracker& lt,GLint* uniformLocations) const
 	{
+	std::cout << "In SurfaceRenderer::createSinglePassSurfaceShader." << std::endl;  // MM: added
 	GLhandleARB result=0;
 	
 	std::vector<GLhandleARB> shaders;
@@ -395,11 +395,13 @@ GLhandleARB SurfaceRenderer::createSinglePassSurfaceShader(const GLLightTracker&
 		throw;
 		}
 	
+	std::cout << "Done with SurfaceRenderer::createSinglePassSurfaceShader." << std::endl;  // MM: added
 	return result;
 	}
 
 void SurfaceRenderer::renderPixelCornerElevations(const int viewport[4],const PTransform& projectionModelview,GLContextData& contextData,SurfaceRenderer::DataItem* dataItem) const
 	{
+	std::cout << "In SurfaceRenderer::renderPixelCornerElevations." << std::endl;  // MM: added
 	/* Save the currently-bound frame buffer and clear color: */
 	GLint currentFrameBuffer;
 	glGetIntegerv(GL_FRAMEBUFFER_BINDING_EXT,&currentFrameBuffer);
@@ -483,6 +485,7 @@ void SurfaceRenderer::renderPixelCornerElevations(const int viewport[4],const PT
 	/* Restore the original clear color and frame buffer binding: */
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,currentFrameBuffer);
 	glClearColor(currentClearColor[0],currentClearColor[1],currentClearColor[2],currentClearColor[3]);
+	std::cout << "Done with SurfaceRenderer::renderPixelCornerElevations." << std::endl;  // MM: added
 	}
 
 SurfaceRenderer::SurfaceRenderer(const DepthImageRenderer* sDepthImageRenderer)
@@ -493,6 +496,7 @@ SurfaceRenderer::SurfaceRenderer(const DepthImageRenderer* sDepthImageRenderer)
 	 illuminate(false),
 	 surfaceSettingsVersion(1)
 	{
+	std::cout << "In SurfaceRenderer::SurfaceRenderer." << std::endl;  // MM: added
 	/* Copy the depth image size: */
 	for(int i=0;i<2;++i)
 		depthImageSize[i]=depthImageRenderer->getDepthImageSize(i);
@@ -519,17 +523,19 @@ SurfaceRenderer::SurfaceRenderer(const DepthImageRenderer* sDepthImageRenderer)
 	// MM: ADDED BELOW
 	/* Load the image into the texture set: */
         // MM: addTexture(BaseImage, open file target, internal format, key)
-	char* filename = "sample_text.jpg";
+	char* filename = "/opt/SARndbox-2.3/flower.jpg";
 	Images::TextureSet::Texture& tex=textures.addTexture(Images::readImageFile(filename,Vrui::openFile(filename)),GL_TEXTURE_2D,GL_RGB8,0U);
 	/* Set clamping and filtering parameters for mip-mapped linear interpolation: */
 	tex.setMipmapRange(0,1000);
 	tex.setWrapModes(GL_CLAMP_TO_EDGE,GL_CLAMP_TO_EDGE);
 	tex.setFilterModes(GL_LINEAR_MIPMAP_LINEAR,GL_LINEAR);
 	// MM: ADDED ABOVE
+	std::cout << "Done with SurfaceRenderer::SurfaceRenderer." << std::endl;  // MM: added
 	}
 
 void SurfaceRenderer::initContext(GLContextData& contextData) const
 	{
+	std::cout << "In SurfaceRenderer::initContext." << std::endl;  // MM: added
 	/* Create a data item and add it to the context: */
 	DataItem* dataItem=new DataItem;
 	contextData.addDataItem(this,dataItem);
@@ -561,6 +567,8 @@ void SurfaceRenderer::initContext(GLContextData& contextData) const
 	dataItem->shadowedIlluminatedHeightMapShaderUniforms[7]=glGetUniformLocationARB(dataItem->shadowedIlluminatedHeightMapShader,"heightColorMapTransformation");
 	dataItem->shadowedIlluminatedHeightMapShaderUniforms[11]=glGetUniformLocationARB(dataItem->shadowedIlluminatedHeightMapShader,"shadowTextureSampler");
 	dataItem->shadowedIlluminatedHeightMapShaderUniforms[12]=glGetUniformLocationARB(dataItem->shadowedIlluminatedHeightMapShader,"shadowProjection");
+	
+	std::cout << "Done with SurfaceRenderer::initContext." << std::endl;  // MM: added
 	}
 
 void SurfaceRenderer::setDrawContourLines(bool newDrawContourLines)
@@ -609,6 +617,7 @@ void SurfaceRenderer::setIlluminate(bool newIlluminate)
 
 void SurfaceRenderer::renderSinglePass(const int viewport[4],const PTransform& projection,const OGTransform& modelview,GLContextData& contextData) const
 	{
+	std::cout << "In SurfaceRenderer::renderSinglePass." << std::endl;  // MM: added
 	/* Get the data item: */
 	DataItem* dataItem=contextData.retrieveDataItem<DataItem>(this);
 	
@@ -659,11 +668,11 @@ void SurfaceRenderer::renderSinglePass(const int viewport[4],const PTransform& p
 	
 	/* Bind the current depth image texture: */
 	glActiveTextureARB(GL_TEXTURE0_ARB);
-	depthImageRenderer->bindDepthTexture(contextData);
+	//depthImageRenderer->bindDepthTexture(contextData);  MM: commented out
 	glUniform1iARB(*(ulPtr++),0);
 	
 	/* Upload the depth projection matrix: */
-	depthImageRenderer->uploadDepthProjection(*(ulPtr++));
+	//depthImageRenderer->uploadDepthProjection(*(ulPtr++)); MM: commented out
 	
 	if(dem!=0)
 		{
@@ -726,8 +735,8 @@ void SurfaceRenderer::renderSinglePass(const int viewport[4],const PTransform& p
 	/* Draw the surface: */
 	//depthImageRenderer->renderSurfaceTemplate(contextData);
 	//VRUI_APPLICATION_RUN(ImageViewer) // MM: try running ImageViewer instead to display a jpg
-	
 	display(contextData);  // MM: TO DO: try this on geosci sandbox. will need to compile & fix errors
+	
 	
 	/* Unbind all textures and buffers: */
 	if(drawContourLines)
@@ -751,11 +760,15 @@ void SurfaceRenderer::renderSinglePass(const int viewport[4],const PTransform& p
 	
 	/* Unbind the height map shader: */
 	glUseProgramObjectARB(0);
+	
+	std::cout << "Done with SurfaceRenderer::renderSinglePass." << std::endl;  // MM: added
 	}
 
 
+// MM: added this function
 void SurfaceRenderer::display(GLContextData& contextData) const
 	{
+	std::cout << "In SurfaceRenderer::display." << std::endl;  // MM: added
 	/* Set up OpenGL state: */
 	glPushAttrib(GL_ENABLE_BIT);
 	glEnable(GL_TEXTURE_2D);
@@ -798,6 +811,7 @@ void SurfaceRenderer::display(GLContextData& contextData) const
 
 	/* Restore OpenGL state: */
 	glPopAttrib();
+	std::cout << "Done with SurfaceRenderer::display." << std::endl;  // MM: added
 	}
 
 

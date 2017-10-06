@@ -167,7 +167,7 @@ Sandbox::RenderSettings::RenderSettings(void)
 	:fixProjectorView(false),projectorTransform(PTransform::identity),projectorTransformValid(false),
 	 hillshade(false),surfaceMaterial(GLMaterial::Color(1.0f,1.0f,1.0f)),
 	 useShadows(false),
-	 elevationColorMap(0),
+	 //elevationColorMap(0),
 	 useContourLines(true),contourLineSpacing(0.75f),
 	 surfaceRenderer(0)
 	{
@@ -179,7 +179,7 @@ Sandbox::RenderSettings::RenderSettings(const Sandbox::RenderSettings& source)
 	:fixProjectorView(source.fixProjectorView),projectorTransform(source.projectorTransform),projectorTransformValid(source.projectorTransformValid),
 	 hillshade(source.hillshade),surfaceMaterial(source.surfaceMaterial),
 	 useShadows(source.useShadows),
-	 elevationColorMap(source.elevationColorMap!=0?new ElevationColorMap(*source.elevationColorMap):0),
+	 //elevationColorMap(source.elevationColorMap!=0?new ElevationColorMap(*source.elevationColorMap):0),
 	 useContourLines(source.useContourLines),contourLineSpacing(source.contourLineSpacing),
 	 surfaceRenderer(0)
 	{
@@ -188,7 +188,7 @@ Sandbox::RenderSettings::RenderSettings(const Sandbox::RenderSettings& source)
 Sandbox::RenderSettings::~RenderSettings(void)
 	{
 	delete surfaceRenderer;
-	delete elevationColorMap;
+	//delete elevationColorMap;
 	}
 
 void Sandbox::RenderSettings::loadProjectorTransform(const char* projectorTransformName)
@@ -233,6 +233,8 @@ void Sandbox::RenderSettings::loadProjectorTransform(const char* projectorTransf
        2) using the default height map */
 void Sandbox::RenderSettings::loadHeightMap(const char* heightMapName)
 	{
+	  std::cout << "loadHeightMap called in Sandbox.cpp. skipping..." << std::endl;  // MM: added
+	  return;
 	try
 		{
 		/* Load the elevation color map of the given name: */
@@ -557,11 +559,11 @@ Sandbox::Sandbox(int& argc,char**& argv)
 				renderSettings.back().useShadows=false;
 			else if(strcasecmp(argv[i]+1,"us")==0)
 				renderSettings.back().useShadows=true;
-			else if(strcasecmp(argv[i]+1,"nhm")==0)
+			/*else if(strcasecmp(argv[i]+1,"nhm")==0)
 				{
 				delete renderSettings.back().elevationColorMap;
 				renderSettings.back().elevationColorMap=0;
-				}
+				}*/
 			else if(strcasecmp(argv[i]+1,"uhm")==0)
 				{
 				if(i+1<argc&&argv[i+1][0]!='-')
@@ -664,13 +666,14 @@ Sandbox::Sandbox(int& argc,char**& argv)
 	}
 	
 	/* Limit the valid elevation range to the intersection of the extents of all height color maps: */
+	/* MM: commented out
 	for(std::vector<RenderSettings>::iterator rsIt=renderSettings.begin();rsIt!=renderSettings.end();++rsIt)
 		if(rsIt->elevationColorMap!=0)
 			{
 			Math::Interval<double> mapRange(rsIt->elevationColorMap->getScalarRangeMin(),rsIt->elevationColorMap->getScalarRangeMax());
 			elevationRange.intersectInterval(mapRange);
 			}
-	
+	*/
 	/* Scale all sizes by the given scale factor: */
 	double sf=scale/100.0; // Scale factor from cm to final units
 	for(int i=0;i<3;++i)
@@ -682,6 +685,7 @@ Sandbox::Sandbox(int& argc,char**& argv)
 			basePlaneCorners[i][j]*=sf;
 	if(elevationRange!=Math::Interval<double>::full)
 		elevationRange*=sf;
+	/* MM: commented out
 	for(std::vector<RenderSettings>::iterator rsIt=renderSettings.begin();rsIt!=renderSettings.end();++rsIt)
 		{
 		if(rsIt->elevationColorMap!=0)
@@ -690,6 +694,7 @@ Sandbox::Sandbox(int& argc,char**& argv)
 		for(int i=0;i<4;++i)
 			rsIt->projectorTransform.getMatrix()(i,3)*=sf;
 		}
+	*/
 	demDistScale*=sf;
 	
 	/* Create the frame filter object: */
@@ -733,6 +738,7 @@ Sandbox::Sandbox(int& argc,char**& argv)
 	for(std::vector<RenderSettings>::iterator rsIt=renderSettings.begin();rsIt!=renderSettings.end();++rsIt)
 		{
 		/* Calculate the texture mapping plane for this renderer's height map: */
+		  /* MM: commented out
 		if(rsIt->elevationColorMap!=0)
 			{
 			if(haveHeightMapPlane)
@@ -740,13 +746,14 @@ Sandbox::Sandbox(int& argc,char**& argv)
 			else
 				rsIt->elevationColorMap->calcTexturePlane(depthImageRenderer);
 			}
+		  */
 
 	        // MM: is this where the image is first drawn?
 		/* Initialize the surface renderer: */
 		rsIt->surfaceRenderer=new SurfaceRenderer(depthImageRenderer);
 		rsIt->surfaceRenderer->setDrawContourLines(rsIt->useContourLines);
 		rsIt->surfaceRenderer->setContourLineDistance(rsIt->contourLineSpacing);
-		rsIt->surfaceRenderer->setElevationColorMap(rsIt->elevationColorMap);
+		//rsIt->surfaceRenderer->setElevationColorMap(rsIt->elevationColorMap); MM: commented out
 		rsIt->surfaceRenderer->setIlluminate(rsIt->hillshade);
 		rsIt->surfaceRenderer->setDemDistScale(demDistScale);
 		}
@@ -957,6 +964,7 @@ void Sandbox::display(GLContextData& contextData) const
 	/* ///////////////////////////////////////////////////////////////////////////////////
 	 MM: this ENTIRE SECTION (about 200 lines) is commented out with the #if 0 ... #endif 
 	/////////////////////////////////////////////////////////////////////////////////// */
+	
 	#if 0
 	if(rs.hillshade&&rs.useShadows)
 		{
@@ -1158,7 +1166,7 @@ void Sandbox::eventCallback(Vrui::Application::EventID eventId,Vrui::InputDevice
 		}
 	}
 
-/* MM: a GLObject method - necessary for us */
+/* MM: a GLObject method - necessary for us? */
 void Sandbox::initContext(GLContextData& contextData) const
 	{
 	/* Create a data item and add it to the context: */

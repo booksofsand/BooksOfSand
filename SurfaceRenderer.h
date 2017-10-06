@@ -35,7 +35,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 /* Forward declarations: */
 class DepthImageRenderer;
-class ElevationColorMap;
+//class ElevationColorMap; MM: commented out
 class GLLightTracker;
 class DEM;
 
@@ -76,7 +76,7 @@ class SurfaceRenderer:public GLObject
 	bool drawContourLines; // Flag if topographic contour lines are enabled
 	GLfloat contourLineFactor; // Inverse elevation distance between adjacent topographic contour lines
 	
-	ElevationColorMap* elevationColorMap; // Pointer to a color map for topographic elevation map coloring
+	//ElevationColorMap* elevationColorMap; // Pointer to a color map for topographic elevation map coloring MM: commented out
 	
 	DEM* dem; // Pointer to a pre-made digital elevation model to create a zero-surface for height color mapping
 	GLfloat demDistScale; // Maximum deviation from surface to DEM in camera-space units
@@ -101,7 +101,7 @@ class SurfaceRenderer:public GLObject
 	/* New methods: */
 	void setDrawContourLines(bool newDrawContourLines); // Enables or disables topographic contour lines
 	void setContourLineDistance(GLfloat newContourLineDistance); // Sets the elevation distance between adjacent topographic contour lines
-	void setElevationColorMap(ElevationColorMap* newElevationColorMap); // Sets an elevation color map
+	//void setElevationColorMap(ElevationColorMap* newElevationColorMap); // Sets an elevation color map MM: commented out
 	void setDem(DEM* newDem); // Sets a pre-made digital elevation model to create a zero surface for height color mapping
 	void setDemDistScale(GLfloat newDemDistScale); // Sets the deviation from DEM to surface to saturate the deviation color map
 	void setIlluminate(bool newIlluminate); // Sets the illumination flag

@@ -166,21 +166,22 @@ GLhandleARB SurfaceRenderer::createSinglePassSurfaceShader(const GLLightTracker&
 				demDist=(vertexDem.z-texture2DRect(demSampler,vertexDem.xy).r)*demDistScale;\n\
 				\n";
 			}
+		/* MM: commented out
 		else if(elevationColorMap!=0)
 			{
-			/* Add declarations for height mapping: */
+			// Add declarations for height mapping: 
 			vertexUniforms+="\
 				uniform vec4 heightColorMapPlaneEq; // Plane equation of the base plane in camera space, scaled for height map textures\n";
 			
 			vertexVaryings+="\
 				varying float heightColorMapTexCoord; // Texture coordinate for the height color map\n";
 			
-			/* Add height mapping code to vertex shader's main function: */
+			// Add height mapping code to vertex shader's main function: 
 			vertexMain+="\
-				/* Plug camera-space vertex into the scaled and offset base plane equation: */\n\
+				// Plug camera-space vertex into the scaled and offset base plane equation: \n\
 				heightColorMapTexCoord=dot(heightColorMapPlaneEq,vertexCc);\n\
 				\n";
-			}
+			}*/
 		
 		if(illuminate)
 			{
@@ -279,20 +280,21 @@ GLhandleARB SurfaceRenderer::createSinglePassSurfaceShader(const GLLightTracker&
 					baseColor=mix(vec4(1.0,1.0,1.0,1.0),vec4(0.0,0.0,1.0,1.0),min(demDist,1.0));\n\
 				\n";
 			}
+		/* MM: commented out
 		else if(elevationColorMap!=0)
 			{
-			/* Add declarations for height mapping: */
+			// Add declarations for height mapping: 
 			fragmentUniforms+="\
 				uniform sampler1D heightColorMapSampler;\n";
 			fragmentVaryings+="\
 				varying float heightColorMapTexCoord; // Texture coordinate for the height color map\n";
 			
-			/* Add height mapping code to the fragment shader's main function: */
+			// Add height mapping code to the fragment shader's main function: 
 			fragmentMain+="\
-				/* Get the fragment's color from the height color map: */\n\
+				// Get the fragment's color from the height color map: \n\
 				vec4 baseColor=texture1D(heightColorMapSampler,heightColorMapTexCoord);\n\
 				\n";
-			}
+				}*/
 		else
 			{
 			fragmentMain+="\
@@ -365,12 +367,13 @@ GLhandleARB SurfaceRenderer::createSinglePassSurfaceShader(const GLLightTracker&
 			*(ulPtr++)=glGetUniformLocationARB(result,"demSampler");
 			*(ulPtr++)=glGetUniformLocationARB(result,"demDistScale");
 			}
+		/* MM: commented out
 		else if(elevationColorMap!=0)
 			{
-			/* Query height color mapping uniform variables: */
+			  // Query height color mapping uniform variables: 
 			*(ulPtr++)=glGetUniformLocationARB(result,"heightColorMapPlaneEq");
 			*(ulPtr++)=glGetUniformLocationARB(result,"heightColorMapSampler");
-			}
+			}*/
 		if(drawContourLines)
 			{
 			*(ulPtr++)=glGetUniformLocationARB(result,"pixelCornerElevationSampler");
@@ -485,7 +488,7 @@ void SurfaceRenderer::renderPixelCornerElevations(const int viewport[4],const PT
 SurfaceRenderer::SurfaceRenderer(const DepthImageRenderer* sDepthImageRenderer)
 	:depthImageRenderer(sDepthImageRenderer),
 	 drawContourLines(true),contourLineFactor(1.0f),
-	 elevationColorMap(0),
+	 //elevationColorMap(0), MM: commented out
 	 dem(0),demDistScale(1.0f),
 	 illuminate(false),
 	 surfaceSettingsVersion(1)
@@ -572,15 +575,16 @@ void SurfaceRenderer::setContourLineDistance(GLfloat newContourLineDistance)
 	contourLineFactor=1.0f/newContourLineDistance;
 	}
 
+/* MM: commented out
 void SurfaceRenderer::setElevationColorMap(ElevationColorMap* newElevationColorMap)
 	{
-	/* Check if setting this elevation color map invalidates the shader: */
+	// Check if setting this elevation color map invalidates the shader:
 	if(dem==0&&((newElevationColorMap!=0&&elevationColorMap==0)||(newElevationColorMap==0&&elevationColorMap!=0)))
 		++surfaceSettingsVersion;
 	
-	/* Set the elevation color map: */
+	// Set the elevation color map:
 	elevationColorMap=newElevationColorMap;
-	}
+	}*/
 
 void SurfaceRenderer::setDem(DEM* newDem)
 	{
@@ -674,16 +678,17 @@ void SurfaceRenderer::renderSinglePass(const int viewport[4],const PTransform& p
 		/* Upload the DEM distance scale factor: */
 		glUniform1fARB(*(ulPtr++),1.0f/(demDistScale*dem->getVerticalScale()));
 		}
+	/* MM: commented out
 	else if(elevationColorMap!=0)
 		{
-		/* Upload the texture mapping plane equation: */
+		  // Upload the texture mapping plane equation:
 		elevationColorMap->uploadTexturePlane(*(ulPtr++));
 		
-		/* Bind the height color map texture: */
+		// Bind the height color map texture:
 		glActiveTextureARB(GL_TEXTURE1_ARB);
 		elevationColorMap->bindTexture(contextData);
 		glUniform1iARB(*(ulPtr++),1);
-		}
+		}*/
 	
 	if(drawContourLines)
 		{
@@ -735,11 +740,12 @@ void SurfaceRenderer::renderSinglePass(const int viewport[4],const PTransform& p
 		glActiveTextureARB(GL_TEXTURE1_ARB);
 		glBindTexture(GL_TEXTURE_RECTANGLE_ARB,0); // MM: texture target and texture name
 		}
+	/* MM: commented out
 	else if(elevationColorMap!=0)
 		{
 		glActiveTextureARB(GL_TEXTURE1_ARB);
 		glBindTexture(GL_TEXTURE_1D,0); // MM: texture target and texture name
-		}
+		}*/
 	glActiveTextureARB(GL_TEXTURE0_ARB);
 	glBindTexture(GL_TEXTURE_RECTANGLE_ARB,0); // MM: texture target and texture name
 	

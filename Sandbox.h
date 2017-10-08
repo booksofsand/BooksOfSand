@@ -43,7 +43,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #include "Types.h"
 
 /* Forward declarations: */
-namespace Misc {
+namespace Misc {                // MM: notice this is related to the error about FunctionCall not being member of Misc...
 template <class ParameterParam>
 class FunctionCall;
 }

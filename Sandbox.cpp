@@ -236,7 +236,8 @@ void Sandbox::RenderSettings::loadProjectorTransform(const char* projectorTransf
 /* MM: this is specific to the topography map, which we may be able to modify. 
        it's called only twice in this file, both times in Sandbox constructor:
        1) with a height map name as an argument
-       2) using the default height map */
+       2) using the default height map 
+       (when user has -uhm in command line execution of SARndbox) */
 void Sandbox::RenderSettings::loadHeightMap(const char* heightMapName)
 	{
 	std::cout << "In Sandbox::loadHeightMap." << std::endl << "Done with Sandbox::loadHeightMap." << std::endl;  // MM: added
@@ -754,7 +755,7 @@ Sandbox::Sandbox(int& argc,char**& argv)
 	for(std::vector<RenderSettings>::iterator rsIt=renderSettings.begin();rsIt!=renderSettings.end();++rsIt)
 		{
 		/* Calculate the texture mapping plane for this renderer's height map: */
-		  /* MM: commented out
+		  /* MM: commented out -- we'll probably need calcTexturePlane method for our display
 		if(rsIt->elevationColorMap!=0)
 			{
 			if(haveHeightMapPlane)
@@ -764,7 +765,6 @@ Sandbox::Sandbox(int& argc,char**& argv)
 			}
 		  */
 
-	        // MM: is this where the image is first drawn?
 		/* Initialize the surface renderer: */
 		rsIt->surfaceRenderer=new SurfaceRenderer(depthImageRenderer);
 		rsIt->surfaceRenderer->setDrawContourLines(rsIt->useContourLines);

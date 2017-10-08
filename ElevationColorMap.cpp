@@ -205,4 +205,10 @@ void ElevationColorMap::uploadTexturePlane(GLint location) const
 	{
 	/* Upload the texture mapping plane equation: */
 	glUniformARB<4>(location,1,texturePlaneEq);
+	/* MM: texturePlaneEq was declared in .h: GLfloat texturePlaneEq[4];
+
+	   glUniform operates on the program object that was made part of current state 
+	   by calling glUseProgram. glUseProgram is called in DepthImageRenderer.cpp and 
+	   SurfaceRenderer.cpp. glUniformARB is deprecated, possibly equivalent to
+	   glUniform2f or glUniform4fv (see Vrui and OpenGL notes). */
 	}

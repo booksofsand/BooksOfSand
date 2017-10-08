@@ -1,3 +1,4 @@
+
 /***********************************************************************
 SurfaceRenderer - Class to render a surface defined by a regular grid in
 depth image space.
@@ -61,8 +62,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #include <Vrui/ToolManager.h>
 #include <Vrui/DisplayState.h>
 #include <Vrui/OpenFile.h>
-#include <IOstream>
-// MM: ^ added
+#include <iostream> // MM: added
 
 #include "DepthImageRenderer.h"
 #include "ElevationColorMap.h"
@@ -80,6 +80,7 @@ SurfaceRenderer::DataItem::DataItem(void)
 	 heightMapShader(0),surfaceSettingsVersion(0),lightTrackerVersion(0),
 	 globalAmbientHeightMapShader(0),shadowedIlluminatedHeightMapShader(0)
 	{
+	std::cout << "In SurfaceRenderer::DataItem::DataItem." << std::endl; // MM: added
 	/* Initialize all required extensions: */
 	GLARBFragmentShader::initExtension();
 	GLARBMultitexture::initExtension();
@@ -89,7 +90,8 @@ SurfaceRenderer::DataItem::DataItem(void)
 	GLARBTextureRg::initExtension();
 	GLARBVertexShader::initExtension();
 	GLEXTFramebufferObject::initExtension();
-	}
+        std::cout << "Done with SurfaceRenderer::DataItem::DataItem." << std::endl; // MM: added
+        }
 
 SurfaceRenderer::DataItem::~DataItem(void)
 	{
@@ -114,6 +116,7 @@ void SurfaceRenderer::shaderSourceFileChanged(const IO::FileMonitor::Event& even
 
 GLhandleARB SurfaceRenderer::createSinglePassSurfaceShader(const GLLightTracker& lt,GLint* uniformLocations) const
 	{
+	std::cout << "In SurfaceRenderer::createSinglePassSurfaceShader." << std::endl; // MM: added
 	GLhandleARB result=0;
 	
 	std::vector<GLhandleARB> shaders;
@@ -444,12 +447,14 @@ GLhandleARB SurfaceRenderer::createSinglePassSurfaceShader(const GLLightTracker&
 			glDeleteObjectARB(*shIt);
 		throw;
 		}
-	
+
+	std::cout << "Done with SurfaceRenderer::createSinglePassSurfaceShader." << std::endl; // MM: added
 	return result;
 	}
 
 void SurfaceRenderer::renderPixelCornerElevations(const int viewport[4],const PTransform& projectionModelview,GLContextData& contextData,SurfaceRenderer::DataItem* dataItem) const
 	{
+	std::cout << "In SurfaceRenderer::renderPixelCornerElevations." << std::endl; // MM: added
 	/* Save the currently-bound frame buffer and clear color: */
 	GLint currentFrameBuffer;
 	glGetIntegerv(GL_FRAMEBUFFER_BINDING_EXT,&currentFrameBuffer);
@@ -533,6 +538,7 @@ void SurfaceRenderer::renderPixelCornerElevations(const int viewport[4],const PT
 	/* Restore the original clear color and frame buffer binding: */
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,currentFrameBuffer);
 	glClearColor(currentClearColor[0],currentClearColor[1],currentClearColor[2],currentClearColor[3]);
+	std::cout << "Done with SurfaceRenderer::renderPixelCornerElevations." << std::endl; // MM: added
 	}
 
 SurfaceRenderer::SurfaceRenderer(const DepthImageRenderer* sDepthImageRenderer)
@@ -545,6 +551,7 @@ SurfaceRenderer::SurfaceRenderer(const DepthImageRenderer* sDepthImageRenderer)
 	 surfaceSettingsVersion(1),
 	 animationTime(0.0)
 	{
+	std::cout << "In SurfaceRenderer::SurfaceRenderer." << std::endl; // MM: added
 	/* Copy the depth image size: */
 	for(int i=0;i<2;++i)
 		depthImageSize[i]=depthImageRenderer->getDepthImageSize(i);
@@ -567,10 +574,12 @@ SurfaceRenderer::SurfaceRenderer(const DepthImageRenderer* sDepthImageRenderer)
 	fileMonitor.addPath((std::string(CONFIG_SHADERDIR)+std::string("/SurfaceIlluminate.fs")).c_str(),IO::FileMonitor::Modified,Misc::createFunctionCall(this,&SurfaceRenderer::shaderSourceFileChanged));
 	fileMonitor.addPath((std::string(CONFIG_SHADERDIR)+std::string("/SurfaceAddWaterColor.fs")).c_str(),IO::FileMonitor::Modified,Misc::createFunctionCall(this,&SurfaceRenderer::shaderSourceFileChanged));
 	fileMonitor.startPolling();
+	std::cout << "Done with SurfaceRenderer::SurfaceRenderer." << std::endl; // MM: added
 	}
 
 void SurfaceRenderer::initContext(GLContextData& contextData) const
 	{
+	std::cout << "In SurfaceRenderer::initContext." << std::endl; // MM: added
 	/* Create a data item and add it to the context: */
 	DataItem* dataItem=new DataItem;
 	contextData.addDataItem(this,dataItem);
@@ -608,6 +617,7 @@ void SurfaceRenderer::initContext(GLContextData& contextData) const
 	dataItem->shadowedIlluminatedHeightMapShaderUniforms[10]=glGetUniformLocationARB(dataItem->shadowedIlluminatedHeightMapShader,"waterOpacity");
 	dataItem->shadowedIlluminatedHeightMapShaderUniforms[11]=glGetUniformLocationARB(dataItem->shadowedIlluminatedHeightMapShader,"shadowTextureSampler");
 	dataItem->shadowedIlluminatedHeightMapShaderUniforms[12]=glGetUniformLocationARB(dataItem->shadowedIlluminatedHeightMapShader,"shadowProjection");
+	std::cout << "Done with SurfaceRenderer::initContext." << std::endl; // MM: added
 	}
 
 void SurfaceRenderer::setDrawContourLines(bool newDrawContourLines)
@@ -624,12 +634,14 @@ void SurfaceRenderer::setContourLineDistance(GLfloat newContourLineDistance)
 
 void SurfaceRenderer::setElevationColorMap(ElevationColorMap* newElevationColorMap)
 	{
+	std::cout << "In SurfaceRenderer::setElevationColorMap." << std::endl; // MM: added
 	/* Check if setting this elevation color map invalidates the shader: */
 	if(dem==0&&((newElevationColorMap!=0&&elevationColorMap==0)||(newElevationColorMap==0&&elevationColorMap!=0)))
 		++surfaceSettingsVersion;
 	
 	/* Set the elevation color map: */
 	elevationColorMap=newElevationColorMap;
+	std::cout << "Done with SurfaceRenderer::setElevationColorMap." << std::endl; // MM: added
 	}
 
 void SurfaceRenderer::setDem(DEM* newDem)
@@ -683,6 +695,7 @@ void SurfaceRenderer::setAnimationTime(double newAnimationTime)
 
 void SurfaceRenderer::renderSinglePass(const int viewport[4],const PTransform& projection,const OGTransform& modelview,GLContextData& contextData) const
 	{
+	std::cout << "In SurfaceRenderer::renderSinglePass." << std::endl; // MM: added
 	/* Get the data item: */
 	DataItem* dataItem=contextData.retrieveDataItem<DataItem>(this);
 	
@@ -902,12 +915,14 @@ void SurfaceRenderer::renderSinglePass(const int viewport[4],const PTransform& p
 	
 	/* Unbind the height map shader: */
 	glUseProgramObjectARB(0);
+	std::cout << "Done with SurfaceRenderer::renderSinglePass." << std::endl; // MM: added
 	}
 
 #if 0
 
 void SurfaceRenderer::renderGlobalAmbientHeightMap(GLuint heightColorMapTexture,GLContextData& contextData) const
 	{
+	std::cout << "In SurfaceRenderer::renderGlobalAmbientHeightMap." << std::endl; // MM: added
 	/* Get the data item: */
 	DataItem* dataItem=contextData.retrieveDataItem<DataItem>(this);
 	
@@ -1017,10 +1032,12 @@ void SurfaceRenderer::renderGlobalAmbientHeightMap(GLuint heightColorMapTexture,
 	
 	/* Unbind the global ambient height map shader: */
 	glUseProgramObjectARB(0);
+	std::cout << "Done with SurfaceRenderer::renderGlobalAmbientHeightMap." << std::endl; // MM: added
 	}
 
 void SurfaceRenderer::renderShadowedIlluminatedHeightMap(GLuint heightColorMapTexture,GLuint shadowTexture,const PTransform& shadowProjection,GLContextData& contextData) const
 	{
+	std::cout << "In SurfaceRenderer::renderShadowedIlluminatedHeightMap." << std::endl; // MM: added
 	/* Get the data item: */
 	DataItem* dataItem=contextData.retrieveDataItem<DataItem>(this);
 	
@@ -1138,6 +1155,7 @@ void SurfaceRenderer::renderShadowedIlluminatedHeightMap(GLuint heightColorMapTe
 	
 	/* Unbind the shadowed illuminated height map shader: */
 	glUseProgramObjectARB(0);
+	std::cout << "Done with SurfaceRenderer::renderShadowedIlluminatedHeightMap." << std::endl; // MM: added
 	}
 
 #endif

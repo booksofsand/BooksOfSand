@@ -38,6 +38,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #include <GL/Extensions/GLARBVertexBufferObject.h>
 #include <GL/Extensions/GLARBVertexShader.h>
 #include <GL/GLTransformationWrappers.h>
+#include <iostream> // MM: added
 
 #include "ShaderHelper.h"
 
@@ -50,6 +51,7 @@ DepthImageRenderer::DataItem::DataItem(void)
 	 depthTexture(0),depthTextureVersion(0),
 	 depthShader(0),elevationShader(0)
 	{
+	std::cout << "In DepthImageRenderer::DataItem::DataItem." << std::endl; // MM: added
 	/* Initialize all required extensions: */
 	GLARBFragmentShader::initExtension();
 	GLARBMultitexture::initExtension();
@@ -66,6 +68,7 @@ DepthImageRenderer::DataItem::DataItem(void)
 	glGenTextures(1,&depthTexture);
 	// MM: generates the specified number of texture objects and places their 
 	// handles in the GLuint array pointer (the second parameter)
+	std::cout << "Done with DepthImageRenderer::DataItem::DataItem." << std::endl; // MM: added
 	}
 
 DepthImageRenderer::DataItem::~DataItem(void)
@@ -85,6 +88,7 @@ Methods of class DepthImageRenderer:
 DepthImageRenderer::DepthImageRenderer(const unsigned int sDepthImageSize[2])
 	:depthImageVersion(0)
 	{
+	std::cout << "In DepthImageRenderer::DepthImageRenderer." << std::endl; // MM: added
 	/* Copy the depth image size: */
 	for(int i=0;i<2;++i)
 		depthImageSize[i]=sDepthImageSize[i];
@@ -96,10 +100,12 @@ DepthImageRenderer::DepthImageRenderer(const unsigned int sDepthImageSize[2])
 		for(unsigned int x=0;x<depthImageSize[0];++x,++diPtr)
 			*diPtr=0.0f;
 	++depthImageVersion;
+	std::cout << "Done with DepthImageRenderer::DepthImageRenderer." << std::endl; // MM: added
 	}
 
 void DepthImageRenderer::initContext(GLContextData& contextData) const
 	{
+	std::cout << "In DepthImageRenderer::initContext." << std::endl; // MM: added
 	/* Create a data item and add it to the context: */
 	DataItem* dataItem=new DataItem;
 	contextData.addDataItem(this,dataItem);
@@ -151,10 +157,12 @@ void DepthImageRenderer::initContext(GLContextData& contextData) const
 	dataItem->elevationShaderUniforms[1]=glGetUniformLocationARB(dataItem->elevationShader,"basePlaneDic");
 	dataItem->elevationShaderUniforms[2]=glGetUniformLocationARB(dataItem->elevationShader,"weightDic");
 	dataItem->elevationShaderUniforms[3]=glGetUniformLocationARB(dataItem->elevationShader,"projectionModelviewDepthProjection");
+	std::cout << "Done with DepthImageRenderer::initContext." << std::endl; // MM: added
 	}
 
 void DepthImageRenderer::setDepthProjection(const PTransform& newDepthProjection)
 	{
+	std::cout << "In DepthImageRenderer::setDepthProjection." << std::endl; // MM: added
 	/* Set the depth unprojection matrix: */
 	depthProjection=newDepthProjection;
 	
@@ -170,10 +178,12 @@ void DepthImageRenderer::setDepthProjection(const PTransform& newDepthProjection
 	
 	/* Recalculate the base plane equation in depth image space: */
 	setBasePlane(basePlane);
+	std::cout << "Done with DepthImageRenderer::setDepthProjection." << std::endl; // MM: added
 	}
 
 void DepthImageRenderer::setBasePlane(const Plane& newBasePlane)
 	{
+	std::cout << "In DepthImageRenderer::setBasePlane." << std::endl; // MM: added
 	/* Set the base plane: */
 	basePlane=newBasePlane;
 	
@@ -183,17 +193,21 @@ void DepthImageRenderer::setBasePlane(const Plane& newBasePlane)
 	Scalar bpo=basePlane.getOffset();
 	for(int i=0;i<4;++i)
 		basePlaneDicEq[i]=GLfloat(dpm(0,i)*bpn[0]+dpm(1,i)*bpn[1]+dpm(2,i)*bpn[2]-dpm(3,i)*bpo);
+	std::cout << "Done with DepthImageRenderer::setBasePlane." << std::endl; // MM: added
 	}
 
 void DepthImageRenderer::setDepthImage(const Kinect::FrameBuffer& newDepthImage)
 	{
+	std::cout << "In DepthImageRenderer::setDepthImage." << std::endl; // MM: added
 	/* Update the depth image: */
 	depthImage=newDepthImage;
 	++depthImageVersion;
+	std::cout << "Done with DepthImageRenderer::setDepthImage." << std::endl; // MM: added
 	}
 
 Scalar DepthImageRenderer::intersectLine(const Point& p0,const Point& p1,Scalar elevationMin,Scalar elevationMax) const
 	{
+	std::cout << "In DepthImageRenderer::intersectLine." << std::endl; // MM: added
 	/* Initialize the line segment: */
 	Scalar lambda0=Scalar(0);
 	Scalar lambda1=Scalar(1);
@@ -215,17 +229,21 @@ Scalar DepthImageRenderer::intersectLine(const Point& p0,const Point& p1,Scalar 
 		return Scalar(2);
 		}
 	
+	std::cout << "Done with DepthImageRenderer::intersectLine." << std::endl; // MM: added
 	return Scalar(2);
 	}
 
 void DepthImageRenderer::uploadDepthProjection(GLint location) const
 	{
+	std::cout << "In DepthImageRenderer::uploadDepthProjection." << std::endl; // MM: added
 	/* Upload the matrix to OpenGL: */
 	glUniformMatrix4fvARB(location,1,GL_FALSE,depthProjectionMatrix);
+	std::cout << "Done with DepthImageRenderer::uploadDepthProjection." << std::endl; // MM: added
 	}
 
 void DepthImageRenderer::bindDepthTexture(GLContextData& contextData) const
 	{
+	std::cout << "In DepthImageRenderer::bindDepthTexture." << std::endl; // MM: added
 	/* Get the data item: */
 	DataItem* dataItem=contextData.retrieveDataItem<DataItem>(this);
 	
@@ -241,12 +259,14 @@ void DepthImageRenderer::bindDepthTexture(GLContextData& contextData) const
 		/* Mark the depth texture as current: */
 		dataItem->depthTextureVersion=depthImageVersion;
 		}
+	std::cout << "Done with DepthImageRenderer::bindDepthTexture." << std::endl; // MM: added
 	}
 
 // MM: I think this does the actual drawing/projecting of the image. not sure
 //     (what counts as surface template? the entire color map?)
 void DepthImageRenderer::renderSurfaceTemplate(GLContextData& contextData) const
 	{
+	std::cout << "In DepthImageRenderer::renderSurfaceTemplate." << std::endl; // MM: added
 	/* Get the data item: */
 	DataItem* dataItem=contextData.retrieveDataItem<DataItem>(this);
 	
@@ -269,10 +289,12 @@ void DepthImageRenderer::renderSurfaceTemplate(GLContextData& contextData) const
 	/* Unbind the vertex and index buffers: */
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB,0);         // MM: entering 0 is like binding to a null buffer
 	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,0);
+	std::cout << "Done with DepthImageRenderer::renderSurfaceTemplate." << std::endl; // MM: added
 	}
 
 void DepthImageRenderer::renderDepth(const PTransform& projectionModelview,GLContextData& contextData) const
 	{
+	std::cout << "In DepthImageRenderer::renderDepth." << std::endl; // MM: added
 	/* Get the data item: */
 	DataItem* dataItem=contextData.retrieveDataItem<DataItem>(this);
 	
@@ -318,10 +340,12 @@ void DepthImageRenderer::renderDepth(const PTransform& projectionModelview,GLCon
 	
 	/* Unbind the depth rendering shader: */
 	glUseProgramObjectARB(0);
+	std::cout << "Done with DepthImageRenderer::renderDepth." << std::endl; // MM: added
 	}
 
 void DepthImageRenderer::renderElevation(const PTransform& projectionModelview,GLContextData& contextData) const
 	{
+	std::cout << "In DepthImageRenderer::renderElevation." << std::endl; // MM: added
 	/* Get the data item: */
 	DataItem* dataItem=contextData.retrieveDataItem<DataItem>(this);
 	
@@ -373,4 +397,5 @@ void DepthImageRenderer::renderElevation(const PTransform& projectionModelview,G
 	
 	/* Unbind the elevation rendering shader: */
 	glUseProgramObjectARB(0);
+	std::cout << "Done with DepthImageRenderer::renderElevation." << std::endl; // MM: added
 	}

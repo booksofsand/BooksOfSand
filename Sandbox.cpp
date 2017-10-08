@@ -42,6 +42,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #include <Misc/ConfigurationFile.h>
 #include <IO/File.h>
 #include <IO/ValueSource.h>
+#include <iostream> // MM: added
 
 // MM: math includes - I don't know how much of this is only used for the topography calculations
 #include <Math/Math.h>
@@ -129,6 +130,7 @@ Sandbox::DataItem::DataItem(void)
 	:waterTableTime(0.0),
 	 shadowFramebufferObject(0),shadowDepthTextureObject(0)
 	{
+	std::cout << "In Sandbox::DataItem::DataItem." << std::endl; // MM: added
 	/* Check if all required extensions are supported: */
 	// MM: can change this once we determine which extensions we need
 	bool supported=GLEXTFramebufferObject::isSupported();
@@ -153,6 +155,7 @@ Sandbox::DataItem::DataItem(void)
 	GLARBVertexShader::initExtension();
 	GLARBFragmentShader::initExtension();
 	GLARBMultitexture::initExtension();
+	std::cout << "Done with Sandbox::DataItem::DataItem." << std::endl; // MM: added
 	}
 
 Sandbox::DataItem::~DataItem(void)
@@ -178,8 +181,10 @@ Sandbox::RenderSettings::RenderSettings(void)
 	 renderWaterSurface(false),waterOpacity(2.0f),
 	 surfaceRenderer(0),waterRenderer(0)
 	{
+	std::cout << "In Sandbox::RenderSettings::RenderSettings." << std::endl; // MM: added
 	/* Load the default projector transformation: */
 	loadProjectorTransform(CONFIG_DEFAULTPROJECTIONMATRIXFILENAME);
+	std::cout << "Done with Sandbox::RenderSettings::RenderSettings." << std::endl; // MM: added
 	}
 
 Sandbox::RenderSettings::RenderSettings(const Sandbox::RenderSettings& source)
@@ -191,6 +196,8 @@ Sandbox::RenderSettings::RenderSettings(const Sandbox::RenderSettings& source)
 	 renderWaterSurface(source.renderWaterSurface),waterOpacity(source.waterOpacity),
 	 surfaceRenderer(0),waterRenderer(0)
 	{
+	  std::cout << "In Sandbox::RenderSettings::RenderSettings." << std::endl; // MM: added
+	  std::cout << "Done with Sandbox::RenderSettings::RenderSettings." << std::endl; // MM: added
 	}
 
 Sandbox::RenderSettings::~RenderSettings(void)
@@ -202,6 +209,7 @@ Sandbox::RenderSettings::~RenderSettings(void)
 
 void Sandbox::RenderSettings::loadProjectorTransform(const char* projectorTransformName)
 	{
+	std::cout << "In Sandbox::RenderSettings::loadProjectorTransform." << std::endl; // MM: added
 	std::string fullProjectorTransformName;
 	try
 		{
@@ -234,6 +242,7 @@ void Sandbox::RenderSettings::loadProjectorTransform(const char* projectorTransf
 		std::cerr<<"Unable to load projector transformation from file "<<fullProjectorTransformName<<" due to exception "<<err.what()<<std::endl;
 		projectorTransformValid=false;
 		}
+	std::cout << "Done with Sandbox::RenderSettings::loadProjectorTransform." << std::endl; // MM: added
 	}
 
 /* MM: this is specific to the topography map, which we may be able to modify. 
@@ -242,6 +251,7 @@ void Sandbox::RenderSettings::loadProjectorTransform(const char* projectorTransf
        2) using the default height map */
 void Sandbox::RenderSettings::loadHeightMap(const char* heightMapName)
 	{
+	std::cout << "In Sandbox::RenderSettings::loadHeightMap." << std::endl; // MM: added
 	try
 		{
 		/* Load the elevation color map of the given name: */
@@ -255,6 +265,7 @@ void Sandbox::RenderSettings::loadHeightMap(const char* heightMapName)
 		{
 		std::cerr<<"Ignoring height map due to exception "<<err.what()<<std::endl;
 		}
+	std::cout << "Done with Sandbox::RenderSettings::loadHeightMap." << std::endl; // MM: added
 	}
 
 /************************
@@ -264,26 +275,31 @@ Methods of class Sandbox:
 /* MM: is a raw depth frame a collection of data representing a single frame received from Kinect? */
 void Sandbox::rawDepthFrameDispatcher(const Kinect::FrameBuffer& frameBuffer)
 	{
+	  std::cout << "In Sandbox::rawDepthFrameDispatcher." << std::endl; // MM: added
 	/* Pass the received frame to the frame filter and the hand extractor: */
 	if(frameFilter!=0&&!pauseUpdates)
 		frameFilter->receiveRawFrame(frameBuffer);
 	if(handExtractor!=0)                                     // MM: we may be wanting to use their hand extractor
 		handExtractor->receiveRawFrame(frameBuffer);
+	  std::cout << "Done with Sandbox::rawDepthFrameDispatcher." << std::endl; // MM: added
 	}
 
 void Sandbox::receiveFilteredFrame(const Kinect::FrameBuffer& frameBuffer)
 	{
+	std::cout << "In Sandbox::receiveFilteredFrame." << std::endl; // MM: added
 	/* Put the new frame into the frame input buffer: */
 	filteredFrames.postNewValue(frameBuffer);
 	
 	/* Wake up the foreground thread: */
 	Vrui::requestUpdate();
+	std::cout << "Done with Sandbox::receiveFilteredFrame." << std::endl; // MM: added
 	}
 
 /* MM: "DEM - Class to represent digital elevation models (DEMs) as float-valued texture objects." - DEM.h 
        does this mean we need to use DEMs? */
 void Sandbox::toggleDEM(DEM* dem)
 	{
+	  std::cout << "In Sandbox::toggleDEM." << std::endl; // MM: added
 	/* Check if this is the active DEM: */
 	if(activeDem==dem)
 		{
@@ -300,6 +316,7 @@ void Sandbox::toggleDEM(DEM* dem)
 	for(std::vector<RenderSettings>::iterator rsIt=renderSettings.begin();rsIt!=renderSettings.end();++rsIt)
 		if(rsIt->fixProjectorView)
 			rsIt->surfaceRenderer->setDem(activeDem);
+	  std::cout << "Done with Sandbox::toggleDEM." << std::endl; // MM: added
 	}
 
 /* MM: obviously we aren't dealing with water, this is unnecessary */
@@ -367,6 +384,7 @@ void Sandbox::waterAttenuationSliderCallback(GLMotif::TextFieldSlider::ValueChan
 /* MM: the following method shows how to build a main menu; sounds relevant to our project */
 GLMotif::PopupMenu* Sandbox::createMainMenu(void)
 	{
+	  std::cout << "In Sandbox::createMainMenu." << std::endl; // MM: added
 	/* Create a popup shell to hold the main menu: */
 	GLMotif::PopupMenu* mainMenuPopup=new GLMotif::PopupMenu("MainMenuPopup",Vrui::getWidgetManager());
 	mainMenuPopup->setTitle("AR Sandbox");
@@ -389,6 +407,7 @@ GLMotif::PopupMenu* Sandbox::createMainMenu(void)
 	/* Finish building the main menu: */
 	mainMenu->manageChild();
 	
+	std::cout << "Done with Sandbox::createMainMenu." << std::endl; // MM: added
 	return mainMenuPopup;
 	}
 
@@ -582,6 +601,8 @@ Sandbox::Sandbox(int& argc,char**& argv)
 	 waterSpeedSlider(0),waterMaxStepsSlider(0),frameRateTextField(0),waterAttenuationSlider(0),
 	 controlPipeFd(-1)
 	{
+	  std::cout << "In Sandbox::Sandbox." << std::endl; // MM: added
+	  
 	/* Read the sandbox's default configuration parameters: */
 	std::string sandboxConfigFileName=CONFIG_CONFIGDIR;
 	sandboxConfigFileName.push_back('/');
@@ -1045,6 +1066,7 @@ Sandbox::Sandbox(int& argc,char**& argv)
 			navSize=dist;
 		}
 	navUp=Geometry::normal(Vrui::Vector(basePlane.getNormal()));
+	std::cout << "Done with Sandbox::Sandbox." << std::endl; // MM: added
 	}
 
 // MM: Sandbox destructor
@@ -1081,6 +1103,7 @@ void Sandbox::toolDestructionCallback(Vrui::ToolManager::ToolDestructionCallback
 /* MM: a Vrui::Application method - necessary for us */
 void Sandbox::frame(void)
 	{
+	  std::cout << "In Sandbox::frame." << std::endl; // MM: added
 	/* Check if the filtered frame has been updated: */
 	if(filteredFrames.lockNewValue())
 		{
@@ -1212,11 +1235,13 @@ void Sandbox::frame(void)
                at the given application time; must be called from main thread */
 	if(pauseUpdates)
 		Vrui::scheduleUpdate(Vrui::getApplicationTime()+1.0/30.0);
+	std::cout << "Done with Sandbox::frame." << std::endl; // MM: added
 	}
 
 /* MM: a Vrui::Application method - necessary for us */
 void Sandbox::display(GLContextData& contextData) const
 	{
+	  std::cout << "In Sandbox::display." << std::endl; // MM: added
 	/* Get the data item: */
 	DataItem* dataItem=contextData.retrieveDataItem<DataItem>(this);
 	
@@ -1472,6 +1497,7 @@ void Sandbox::display(GLContextData& contextData) const
 		glMaterialShininess(GLMaterialEnums::FRONT,64.0f);
 		rs.waterRenderer->render(projection,ds.modelviewNavigational,contextData);
 		}
+	std::cout << "Done with Sandbox::display." << std::endl; // MM: added
 	}
 
 /* MM: a Vrui::Application method, don't know what it does */
@@ -1503,6 +1529,7 @@ void Sandbox::eventCallback(Vrui::Application::EventID eventId,Vrui::InputDevice
 /* MM: a GLObject method - necessary for us */
 void Sandbox::initContext(GLContextData& contextData) const
 	{
+	  std::cout << "In Sandbox::initContext." << std::endl; // MM: added
 	/* Create a data item and add it to the context: */
 	DataItem* dataItem=new DataItem;
 	contextData.addDataItem(this,dataItem);
@@ -1542,6 +1569,7 @@ void Sandbox::initContext(GLContextData& contextData) const
 	glReadBuffer(GL_NONE);
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,currentFrameBuffer);
 	} 
+	std::cout << "Done with Sandbox::initContext." << std::endl; // MM: added
 	}
 
 VRUI_APPLICATION_RUN(Sandbox)

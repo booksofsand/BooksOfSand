@@ -30,6 +30,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #include <GL/GLContextData.h>
 #include <GL/Extensions/GLARBShaderObjects.h>
 #include <Vrui/OpenFile.h>
+#include <iostream> // MM: added
 
 #include "Types.h"
 #include "DepthImageRenderer.h"
@@ -42,22 +43,27 @@ Methods of class ElevationColorMap:
 
 ElevationColorMap::ElevationColorMap(const char* heightMapName)
 	{
+	std::cout << "In ElevationColorMap::ElevationColorMap." << std::endl; // MM: added
 	/* Load the given height map: */
 	load(heightMapName);
+	std::cout << "Done with ElevationColorMap::ElevationColorMap." << std::endl; // MM: added
 	}
 
 void ElevationColorMap::initContext(GLContextData& contextData) const
 	{
+	std::cout << "In ElevationColorMap::initContext." << std::endl; // MM: added
 	/* Initialize required OpenGL extensions: */
 	GLARBShaderObjects::initExtension();
 	
 	/* Create the data item and associate it with this object: */
 	DataItem* dataItem=new DataItem;
 	contextData.addDataItem(this,dataItem);
+	std::cout << "Done with ElevationColorMap::initContext." << std::endl; // MM: added
 	}
 
 void ElevationColorMap::load(const char* heightMapName)
 	{
+	  std::cout << "In ElevationColorMap::load." << std::endl; // MM: added
 	/* Open the height map file: */
 	std::string fullHeightMapName;
 	if(heightMapName[0]=='/')
@@ -158,10 +164,12 @@ void ElevationColorMap::load(const char* heightMapName)
 	/* Invalidate the color map texture object: */
 	// MM: I'm guessing this is so the surface renderer knows to update its display
 	++textureVersion;
+	std::cout << "Done with ElevationColorMap::load." << std::endl; // MM: added
 	}
 
 void ElevationColorMap::calcTexturePlane(const Plane& basePlane)
 	{
+	std::cout << "In ElevationColorMap::calcTexturePlane(const Plane& basePlane)." << std::endl; // MM: added
 	/* Scale and offset the camera-space base plane equation: */
 	const Plane::Vector& bpn=basePlane.getNormal();
 	Scalar bpo=basePlane.getOffset();
@@ -170,16 +178,20 @@ void ElevationColorMap::calcTexturePlane(const Plane& basePlane)
 	for(int i=0;i<3;++i)
 		texturePlaneEq[i]=GLfloat(bpn[i]*hms);
 	texturePlaneEq[3]=GLfloat(-bpo*hms+hmo);
+	std::cout << "Done with ElevationColorMap::calcTexturePlane." << std::endl; // MM: added
 	}
 
 void ElevationColorMap::calcTexturePlane(const DepthImageRenderer* depthImageRenderer)
 	{
+	std::cout << "In ElevationColorMap::calcTexturePlane(const DepthImageRenderer* depthImageRenderer)." << std::endl; // MM: added
 	/* Calculate texture plane based on the given depth image renderer's base plane: */
 	calcTexturePlane(depthImageRenderer->getBasePlane());
+	std::cout << "Done with ElevationColorMap::calcTexturePlane." << std::endl; // MM: added
 	}
 
 void ElevationColorMap::bindTexture(GLContextData& contextData) const
 	{
+	std::cout << "In ElevationColorMap::bindTexture." << std::endl; // MM: added
 	/* Retrieve the data item: */
 	DataItem* dataItem=contextData.retrieveDataItem<DataItem>(this);
 	
@@ -197,10 +209,13 @@ void ElevationColorMap::bindTexture(GLContextData& contextData) const
 		
 		dataItem->textureObjectVersion=textureVersion;
 		}
+	std::cout << "Done with ElevationColorMap::bindTexture." << std::endl; // MM: added
 	}
 
 void ElevationColorMap::uploadTexturePlane(GLint location) const
 	{
+	std::cout << "In ElevationColorMap::uploadTexturePlane." << std::endl; // MM: added
 	/* Upload the texture mapping plane equation: */
 	glUniformARB<4>(location,1,texturePlaneEq);
+	std::cout << "Done with ElevationColorMap::uploadTexturePlane." << std::endl; // MM: added
 	}

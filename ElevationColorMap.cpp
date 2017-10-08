@@ -30,6 +30,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #include <GL/GLContextData.h>
 #include <GL/Extensions/GLARBShaderObjects.h>
 #include <Vrui/OpenFile.h>
+#include <iostream> // MM: added
 
 #include "Types.h"
 #include "DepthImageRenderer.h"
@@ -82,12 +83,13 @@ void ElevationColorMap::load(const char* heightMapName)
                loaded into two different arrays, then passed by reference in the end
                to setColors, which is in Vrui/GL/GLColorMap.cpp. 
 
-               I forget where at the moment, but we saw a file with these values
+	       we saw a file with these values (HeightColorMap.cpt) somewhere
                on the installed and working SARndbox system. it was only a dozen lines
                or so, each with four values (must be the depth and 3 color values),
                so clearly this program colors within the specified ranges.
 
-               problem is, we want to do pixel by pixel. */
+               problem is, we want to do pixel by pixel, so we need to replace 
+	       this color map with an Image that we create. */
 	
 	/* Load the height color map: */
 	std::vector<Color> heightMapColors;
@@ -203,4 +205,10 @@ void ElevationColorMap::uploadTexturePlane(GLint location) const
 	{
 	/* Upload the texture mapping plane equation: */
 	glUniformARB<4>(location,1,texturePlaneEq);
+	/* MM: texturePlaneEq was declared in .h: GLfloat texturePlaneEq[4];
+
+	   glUniform operates on the program object that was made part of current state 
+	   by calling glUseProgram. glUseProgram is called in DepthImageRenderer.cpp and 
+	   SurfaceRenderer.cpp. glUniformARB is deprecated, possibly equivalent to
+	   glUniform2f or glUniform4fv (see Vrui and OpenGL notes). */
 	}

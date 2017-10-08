@@ -239,7 +239,9 @@ void Sandbox::RenderSettings::loadProjectorTransform(const char* projectorTransf
 /* MM: this is specific to the topography map, which we may be able to modify. 
        it's called only twice in this file, both times in Sandbox constructor:
        1) with a height map name as an argument
-       2) using the default height map */
+       2) using the default height map 
+       (when user has -uhm in command line execution of SARndbox) */
+
 void Sandbox::RenderSettings::loadHeightMap(const char* heightMapName)
 	{
 	try

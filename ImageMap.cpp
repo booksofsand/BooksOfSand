@@ -92,7 +92,15 @@ void ImageMap::load(const char* imageName) {
   }
 	
   // Open image file
-  // IO::ValueSource heightMapSource(Vrui::openFile(fullHeightMapName.c_str()));
+  char* filename = "/opt/SARndbox-2.3/maya/sample_text.jpg"; // MM: not sure correct path
+  Images::TextureSet::Texture& tex=textures.addTexture(Images::readImageFile(filename,Vrui::openFile(filename)),GL_TEXTURE_2D,GL_RGB8,0U);
+  // MM: this isn't going to work. there wasn't Images::TextureSet in the normal SARndbox
+  //     how to bind image to texture?
+	
+  // Set clamping and filtering parameters for mip-mapped linear interpolation
+  tex.setMipmapRange(0,1000);
+  tex.setWrapModes(GL_CLAMP_TO_EDGE,GL_CLAMP_TO_EDGE);
+  tex.setFilterModes(GL_LINEAR_MIPMAP_LINEAR,GL_LINEAR);
   
   // Load the height color map
   // setColors(heightMapKeys.size(),&heightMapColors[0],&heightMapKeys[0],256);
@@ -128,6 +136,49 @@ void ImageMap::calcTexturePlane(const DepthImageRenderer* depthImageRenderer) {
 void ImageMap::bindTexture(GLContextData& contextData) const {
   // Binds the image map texture object to the currently active texture unit
 
+  /* Set up OpenGL state: */
+  glPushAttrib(GL_ENABLE_BIT);
+  glEnable(GL_TEXTURE_2D);
+  glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);
+	
+  /* Get the texture set's GL state: */
+  // MM: getGLState returns OpenGL texture state object for the given OpenGL context
+  Images::TextureSet::GLState* texGLState=textures.getGLState(contextData);
+	
+  /* Bind the texture object: */
+  // MM: bindTexture binds the texture object associated with the given key
+  //     to its texture target on the current texture unit, returns texture state.
+  //     Note the key is 0U, which was the key in ImageViewer constructor.
+  const Images::TextureSet::GLState::Texture& tex=texGLState->bindTexture(0U);
+  const Images::BaseImage& image=tex.getImage();
+  // MM: try replacing this with Image so can test the setPixel() method (TO DO)
+	
+  /* Query the range of texture coordinates: */
+  const GLfloat* texMin=tex.getTexCoordMin();
+  const GLfloat* texMax=tex.getTexCoordMax();
+	
+  /* Draw the image: */
+  /* MM: Note: texture coordinates specify the point in the texture image that will 
+     correspond to the vertex you're specifying them for. see Vrui and OpenGL notes */
+  glBegin(GL_QUADS);
+  // MM: ^ specifies the following vertices as groups of 4 to interpret as quadrilaterals
+  glTexCoord2f(texMin[0],texMin[1]);  // MM: texture coords. 2f means two floats (for 2D)
+  glVertex2i(0,0);                    // MM: vertex points. 2i means two ints (for 2D)
+  glTexCoord2f(texMax[0],texMin[1]);
+  glVertex2i(image.getSize(0),0);
+  glTexCoord2f(texMax[0],texMax[1]);
+  glVertex2i(image.getSize(0),image.getSize(1));
+  glTexCoord2f(texMin[0],texMax[1]);
+  glVertex2i(0,image.getSize(1));
+  glEnd();
+  // MM: ^ ends the listing of vertices
+	
+  /* Protect the texture object: */
+  glBindTexture(GL_TEXTURE_2D,0);
+  /* Restore OpenGL state: */
+  glPopAttrib();
+  return;
+  
   // MM: code from ElevationColorMap.cpp
   // TO DO: adapt for image
   // Retrieve the data item

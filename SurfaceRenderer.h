@@ -36,6 +36,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 /* Forward declarations: */
 class DepthImageRenderer;
 //class ElevationColorMap; MM: commented out
+class ImageMap;  // MM: added
 class GLLightTracker;
 class DEM;
 
@@ -53,13 +54,20 @@ class SurfaceRenderer:public GLObject
 		GLuint contourLineColorTextureObject; // Color texture object for topographic contour line frame buffer
 		unsigned int contourLineVersion; // Version number of depth image used for contour line generation
 		GLhandleARB heightMapShader; // Shader program to render the surface using a height color map
+		// MM: ^ this is produced by createSinglePassSurfaceShader()
 		GLint heightMapShaderUniforms[16]; // Locations of the height map shader's uniform variables
 		unsigned int surfaceSettingsVersion; // Version number of surface settings for which the height map shader was built
 		unsigned int lightTrackerVersion; // Version number of light tracker state for which the height map shader was built
 		GLhandleARB globalAmbientHeightMapShader; // Shader program to render the global ambient component of the surface using a height color map
+		// MM: ^ this is produced by linkVertexAndFragmentShader (ShaderHelper.cpp)
 		GLint globalAmbientHeightMapShaderUniforms[11]; // Locations of the global ambient height map shader's uniform variables
 		GLhandleARB shadowedIlluminatedHeightMapShader; // Shader program to render the surface using illumination with shadows and a height color map
+		// MM: ^ this is produced by linkVertexAndFragmentShader (ShaderHelper.cpp)
 		GLint shadowedIlluminatedHeightMapShaderUniforms[14]; // Locations of the shadowed illuminated height map shader's uniform variables
+
+		/* MM: not clear on the purpose of the height map shaders yet. 
+		       I think they're distinct from the topography; height map
+		       shaders seem to be a graphics rendering concept. */
 		
 		/* Constructors and destructors: */
 		DataItem(void);
@@ -73,10 +81,13 @@ class SurfaceRenderer:public GLObject
 	PTransform tangentDepthProjection; // Transposed depth projection matrix for tangent planes, i.e., homogeneous normal vectors
 	IO::FileMonitor fileMonitor; // Monitor to watch the renderer's external shader source files
 	
+	/* MM: commented out - think this is just for lining colored sections of ElevationColorMap
 	bool drawContourLines; // Flag if topographic contour lines are enabled
 	GLfloat contourLineFactor; // Inverse elevation distance between adjacent topographic contour lines
+	*/
 	
 	//ElevationColorMap* elevationColorMap; // Pointer to a color map for topographic elevation map coloring MM: commented out
+	ImageMap* imageMap; // MM: added
 	
 	DEM* dem; // Pointer to a pre-made digital elevation model to create a zero-surface for height color mapping
 	GLfloat demDistScale; // Maximum deviation from surface to DEM in camera-space units
@@ -99,17 +110,15 @@ class SurfaceRenderer:public GLObject
 	virtual void initContext(GLContextData& contextData) const;
 	
 	/* New methods: */
+	/* MM: commented out - think this is just for lining colored sections of ElevationColorMap
 	void setDrawContourLines(bool newDrawContourLines); // Enables or disables topographic contour lines
 	void setContourLineDistance(GLfloat newContourLineDistance); // Sets the elevation distance between adjacent topographic contour lines
+	*/
 	//void setElevationColorMap(ElevationColorMap* newElevationColorMap); // Sets an elevation color map MM: commented out
 	void setDem(DEM* newDem); // Sets a pre-made digital elevation model to create a zero surface for height color mapping
 	void setDemDistScale(GLfloat newDemDistScale); // Sets the deviation from DEM to surface to saturate the deviation color map
 	void setIlluminate(bool newIlluminate); // Sets the illumination flag
 	void renderSinglePass(const int viewport[4],const PTransform& projection,const OGTransform& modelview,GLContextData& contextData) const; // Renders the surface in a single pass using the current surface settings
-	#if 0
-	void renderGlobalAmbientHeightMap(GLuint heightColorMapTexture,GLContextData& contextData) const; // Renders the global ambient component of the surface as an illuminated height map in the current OpenGL context using the given pixel-corner elevation texture and 1D height color map
-	void renderShadowedIlluminatedHeightMap(GLuint heightColorMapTexture,GLuint shadowTexture,const PTransform& shadowProjection,GLContextData& contextData) const; // Renders the surface as an illuminated height map in the current OpenGL context using the given pixel-corner elevation texture and 1D height color map
-	#endif
 	};
 
 #endif

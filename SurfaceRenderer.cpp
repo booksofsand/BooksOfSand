@@ -166,7 +166,7 @@ GLhandleARB SurfaceRenderer::createSinglePassSurfaceShader(const GLLightTracker&
 				demDist=(vertexDem.z-texture2DRect(demSampler,vertexDem.xy).r)*demDistScale;\n\
 				\n";
 			}
-		/* MM: commented out
+		/* MM: commented out, replaced with ImageMap info
 		else if(elevationColorMap!=0)
 			{
 			// Add declarations for height mapping: 
@@ -182,6 +182,23 @@ GLhandleARB SurfaceRenderer::createSinglePassSurfaceShader(const GLLightTracker&
 				heightColorMapTexCoord=dot(heightColorMapPlaneEq,vertexCc);\n\
 				\n";
 			}*/
+		// MM: is this elevation map specific or just general height map stuff? can leave as is?
+		//     (besides changing names from heightColorMap to ImageMap)
+		else if(imageMap!=0)
+			{
+			// Add declarations for height mapping: 
+			vertexUniforms+="\
+				uniform vec4 imageMapPlaneEq; // Plane equation of the base plane in camera space, scaled for height map textures\n";
+			
+			vertexVaryings+="\
+				varying float imageMapTexCoord; // Texture coordinate for the image map\n";
+			
+			// Add height mapping code to vertex shader's main function: 
+			vertexMain+="\
+				// Plug camera-space vertex into the scaled and offset base plane equation: \n\
+				imageMapTexCoord=dot(imageMapPlaneEq,vertexCc);\n\
+				\n";
+			}
 		
 		if(illuminate)
 			{
@@ -280,7 +297,7 @@ GLhandleARB SurfaceRenderer::createSinglePassSurfaceShader(const GLLightTracker&
 					baseColor=mix(vec4(1.0,1.0,1.0,1.0),vec4(0.0,0.0,1.0,1.0),min(demDist,1.0));\n\
 				\n";
 			}
-		/* MM: commented out
+		/* MM: commented out, replaced with ImageMap info
 		else if(elevationColorMap!=0)
 			{
 			// Add declarations for height mapping: 
@@ -295,6 +312,22 @@ GLhandleARB SurfaceRenderer::createSinglePassSurfaceShader(const GLLightTracker&
 				vec4 baseColor=texture1D(heightColorMapSampler,heightColorMapTexCoord);\n\
 				\n";
 				}*/
+		// MM: is this elevation map specific or just general height map stuff? can leave as is?
+		//     (besides changing names from heightColorMap to ImageMap)
+		else if(imageMap!=0)
+			{
+			// Add declarations for height mapping: 
+			fragmentUniforms+="\
+				uniform sampler1D imageMapSampler;\n";
+			fragmentVaryings+="\
+				varying float imageMapTexCoord; // Texture coordinate for the image map\n";
+			
+			// Add height mapping code to the fragment shader's main function: 
+			fragmentMain+="\
+				// Get the fragment's color from the image map: \n\
+				vec4 baseColor=texture1D(imageMapSampler,imageMapTexCoord);\n\
+				\n";
+			}
 		else
 			{
 			fragmentMain+="\
@@ -303,21 +336,23 @@ GLhandleARB SurfaceRenderer::createSinglePassSurfaceShader(const GLLightTracker&
 				\n";
 			}
 		
+		/* MM: commented out - think this is just for lining colored sections of ElevationColorMap
 		if(drawContourLines)
 			{
-			/* Declare the contour line function: */
+			// Declare the contour line function
 			fragmentDeclarations+="\
 				void addContourLines(in vec2,inout vec4);\n";
 			
-			/* Compile the contour line shader: */
+			// Compile the contour line shader
 			shaders.push_back(compileFragmentShader("SurfaceAddContourLines"));
 			
-			/* Call contour line function from fragment shader's main function: */
+			// Call contour line function from fragment shader's main function
 			fragmentMain+="\
-				/* Modulate the base color by contour line color: */\n\
+				// Modulate the base color by contour line color: \n\
 				addContourLines(gl_FragCoord.xy,baseColor);\n\
 				\n";
 			}
+		*/
 		
 		if(illuminate)
 			{
@@ -367,18 +402,26 @@ GLhandleARB SurfaceRenderer::createSinglePassSurfaceShader(const GLLightTracker&
 			*(ulPtr++)=glGetUniformLocationARB(result,"demSampler");
 			*(ulPtr++)=glGetUniformLocationARB(result,"demDistScale");
 			}
-		/* MM: commented out
+		/* MM: commented out, replaced with ImageMap info
 		else if(elevationColorMap!=0)
 			{
 			  // Query height color mapping uniform variables: 
 			*(ulPtr++)=glGetUniformLocationARB(result,"heightColorMapPlaneEq");
 			*(ulPtr++)=glGetUniformLocationARB(result,"heightColorMapSampler");
 			}*/
+		else if(imageMap!=0)
+			{
+			  // Query image mapping uniform variables: 
+			*(ulPtr++)=glGetUniformLocationARB(result,"imageMapPlaneEq");
+			*(ulPtr++)=glGetUniformLocationARB(result,"imageMapSampler");
+			}
+		/* MM: commented out - think this is just for lining colored sections of ElevationColorMap
 		if(drawContourLines)
 			{
 			*(ulPtr++)=glGetUniformLocationARB(result,"pixelCornerElevationSampler");
 			*(ulPtr++)=glGetUniformLocationARB(result,"contourLineFactor");
 			}
+		*/
 		if(illuminate)
 			{
 			/* Query illumination uniform variables: */
@@ -490,8 +533,9 @@ void SurfaceRenderer::renderPixelCornerElevations(const int viewport[4],const PT
 
 SurfaceRenderer::SurfaceRenderer(const DepthImageRenderer* sDepthImageRenderer)
 	:depthImageRenderer(sDepthImageRenderer),
-	 drawContourLines(true),contourLineFactor(1.0f),
+	 //drawContourLines(true),contourLineFactor(1.0f), MM: commented out
 	 //elevationColorMap(0), MM: commented out
+	 imageMap(0), // MM: added
 	 dem(0),demDistScale(1.0f),
 	 illuminate(false),
 	 surfaceSettingsVersion(1)
@@ -519,17 +563,6 @@ SurfaceRenderer::SurfaceRenderer(const DepthImageRenderer* sDepthImageRenderer)
 	fileMonitor.addPath((std::string(CONFIG_SHADERDIR)+std::string("/SurfaceIlluminate.fs")).c_str(),IO::FileMonitor::Modified,Misc::createFunctionCall(this,&SurfaceRenderer::shaderSourceFileChanged));
 	fileMonitor.startPolling();
 
-	
-	// MM: ADDED BELOW
-	/* Load the image into the texture set: */
-        // MM: addTexture(BaseImage, open file target, internal format, key)
-	char* filename = "/opt/SARndbox-2.3/flower.jpg";
-	Images::TextureSet::Texture& tex=textures.addTexture(Images::readImageFile(filename,Vrui::openFile(filename)),GL_TEXTURE_2D,GL_RGB8,0U);
-	/* Set clamping and filtering parameters for mip-mapped linear interpolation: */
-	tex.setMipmapRange(0,1000);
-	tex.setWrapModes(GL_CLAMP_TO_EDGE,GL_CLAMP_TO_EDGE);
-	tex.setFilterModes(GL_LINEAR_MIPMAP_LINEAR,GL_LINEAR);
-	// MM: ADDED ABOVE
 	std::cout << "Done with SurfaceRenderer::SurfaceRenderer." << std::endl;  // MM: added
 	}
 
@@ -539,12 +572,12 @@ void SurfaceRenderer::initContext(GLContextData& contextData) const
 	/* Create a data item and add it to the context: */
 	DataItem* dataItem=new DataItem;
 	contextData.addDataItem(this,dataItem);
-	
+
 	/* Create the height map render shader: */
 	dataItem->heightMapShader=createSinglePassSurfaceShader(*contextData.getLightTracker(),dataItem->heightMapShaderUniforms);
 	dataItem->surfaceSettingsVersion=surfaceSettingsVersion;
 	dataItem->lightTrackerVersion=contextData.getLightTracker()->getVersion();
-	
+
 	/* Create the global ambient height map render shader: */
 	dataItem->globalAmbientHeightMapShader=linkVertexAndFragmentShader("SurfaceGlobalAmbientHeightMapShader");
 	dataItem->globalAmbientHeightMapShaderUniforms[0]=glGetUniformLocationARB(dataItem->globalAmbientHeightMapShader,"depthSampler");
@@ -552,9 +585,9 @@ void SurfaceRenderer::initContext(GLContextData& contextData) const
 	dataItem->globalAmbientHeightMapShaderUniforms[2]=glGetUniformLocationARB(dataItem->globalAmbientHeightMapShader,"basePlane");
 	dataItem->globalAmbientHeightMapShaderUniforms[3]=glGetUniformLocationARB(dataItem->globalAmbientHeightMapShader,"pixelCornerElevationSampler");
 	dataItem->globalAmbientHeightMapShaderUniforms[4]=glGetUniformLocationARB(dataItem->globalAmbientHeightMapShader,"contourLineFactor");
-	dataItem->globalAmbientHeightMapShaderUniforms[5]=glGetUniformLocationARB(dataItem->globalAmbientHeightMapShader,"heightColorMapSampler");
-	dataItem->globalAmbientHeightMapShaderUniforms[6]=glGetUniformLocationARB(dataItem->globalAmbientHeightMapShader,"heightColorMapTransformation");
-	
+	dataItem->globalAmbientHeightMapShaderUniforms[5]=glGetUniformLocationARB(dataItem->globalAmbientHeightMapShader,"imageMapSampler");    // MM: changed to imageMap
+	dataItem->globalAmbientHeightMapShaderUniforms[6]=glGetUniformLocationARB(dataItem->globalAmbientHeightMapShader,"imageMapTransformation");  // MM: changed to imageMap
+
 	/* Create the shadowed illuminated height map render shader: */
 	dataItem->shadowedIlluminatedHeightMapShader=linkVertexAndFragmentShader("SurfaceShadowedIlluminatedHeightMapShader");
 	dataItem->shadowedIlluminatedHeightMapShaderUniforms[0]=glGetUniformLocationARB(dataItem->shadowedIlluminatedHeightMapShader,"depthSampler");
@@ -563,14 +596,15 @@ void SurfaceRenderer::initContext(GLContextData& contextData) const
 	dataItem->shadowedIlluminatedHeightMapShaderUniforms[3]=glGetUniformLocationARB(dataItem->shadowedIlluminatedHeightMapShader,"basePlane");
 	dataItem->shadowedIlluminatedHeightMapShaderUniforms[4]=glGetUniformLocationARB(dataItem->shadowedIlluminatedHeightMapShader,"pixelCornerElevationSampler");
 	dataItem->shadowedIlluminatedHeightMapShaderUniforms[5]=glGetUniformLocationARB(dataItem->shadowedIlluminatedHeightMapShader,"contourLineFactor");
-	dataItem->shadowedIlluminatedHeightMapShaderUniforms[6]=glGetUniformLocationARB(dataItem->shadowedIlluminatedHeightMapShader,"heightColorMapSampler");
-	dataItem->shadowedIlluminatedHeightMapShaderUniforms[7]=glGetUniformLocationARB(dataItem->shadowedIlluminatedHeightMapShader,"heightColorMapTransformation");
+	dataItem->shadowedIlluminatedHeightMapShaderUniforms[6]=glGetUniformLocationARB(dataItem->shadowedIlluminatedHeightMapShader,"imageMapSampler");  // MM: changed to imageMap
+	dataItem->shadowedIlluminatedHeightMapShaderUniforms[7]=glGetUniformLocationARB(dataItem->shadowedIlluminatedHeightMapShader,"imageMapTransformation");  // MM: changed to imageMap
 	dataItem->shadowedIlluminatedHeightMapShaderUniforms[11]=glGetUniformLocationARB(dataItem->shadowedIlluminatedHeightMapShader,"shadowTextureSampler");
 	dataItem->shadowedIlluminatedHeightMapShaderUniforms[12]=glGetUniformLocationARB(dataItem->shadowedIlluminatedHeightMapShader,"shadowProjection");
 	
 	std::cout << "Done with SurfaceRenderer::initContext." << std::endl;  // MM: added
 	}
 
+/* MM: commented out - think this is just for lining colored sections of ElevationColorMap
 void SurfaceRenderer::setDrawContourLines(bool newDrawContourLines)
 	{
 	drawContourLines=newDrawContourLines;
@@ -579,11 +613,12 @@ void SurfaceRenderer::setDrawContourLines(bool newDrawContourLines)
 
 void SurfaceRenderer::setContourLineDistance(GLfloat newContourLineDistance)
 	{
-	/* Set the new contour line factor: */
+	// Set the new contour line factor
 	contourLineFactor=1.0f/newContourLineDistance;
 	}
+*/
 
-/* MM: commented out
+/* MM: commented out - TO DO replace with ImageMap
 void SurfaceRenderer::setElevationColorMap(ElevationColorMap* newElevationColorMap)
 	{
 	// Check if setting this elevation color map invalidates the shader:
@@ -624,16 +659,17 @@ void SurfaceRenderer::renderSinglePass(const int viewport[4],const PTransform& p
 	/* Calculate the required matrices: */
 	PTransform projectionModelview=projection;
 	projectionModelview*=modelview;
-	
-	/* Check if contour line rendering is enabled: */
+
+	/* MM: commented out - think this is just for lining colored sections of ElevationColorMap
+	// Check if contour line rendering is enabled
 	if(drawContourLines)
 		{
-		/* Run the first rendering pass to create a half-pixel offset texture of surface elevations: */
+		  // Run the first rendering pass to create a half-pixel offset texture of surface elevations:
 		renderPixelCornerElevations(viewport,projectionModelview,contextData,dataItem);
 		}
 	else if(dataItem->contourLineFramebufferObject!=0)
 		{
-		/* Delete the contour line rendering frame buffer: */
+		  // Delete the contour line rendering frame buffer
 		glDeleteFramebuffersEXT(1,&dataItem->contourLineFramebufferObject);
 		dataItem->contourLineFramebufferObject=0;
 		glDeleteRenderbuffersEXT(1,&dataItem->contourLineDepthBufferObject);
@@ -641,6 +677,7 @@ void SurfaceRenderer::renderSinglePass(const int viewport[4],const PTransform& p
 		glDeleteTextures(1,&dataItem->contourLineColorTextureObject);
 		dataItem->contourLineColorTextureObject=0;
 		}
+	*/
 	
 	/* Check if the single-pass surface shader is outdated: */
 	if(dataItem->surfaceSettingsVersion!=surfaceSettingsVersion||(illuminate&&dataItem->lightTrackerVersion!=contextData.getLightTracker()->getVersion()))
@@ -668,11 +705,11 @@ void SurfaceRenderer::renderSinglePass(const int viewport[4],const PTransform& p
 	
 	/* Bind the current depth image texture: */
 	glActiveTextureARB(GL_TEXTURE0_ARB);
-	//depthImageRenderer->bindDepthTexture(contextData);  MM: commented out
+	depthImageRenderer->bindDepthTexture(contextData);
 	glUniform1iARB(*(ulPtr++),0);
 	
 	/* Upload the depth projection matrix: */
-	//depthImageRenderer->uploadDepthProjection(*(ulPtr++)); MM: commented out
+	depthImageRenderer->uploadDepthProjection(*(ulPtr++));
 	
 	if(dem!=0)
 		{
@@ -687,7 +724,7 @@ void SurfaceRenderer::renderSinglePass(const int viewport[4],const PTransform& p
 		/* Upload the DEM distance scale factor: */
 		glUniform1fARB(*(ulPtr++),1.0f/(demDistScale*dem->getVerticalScale()));
 		}
-	/* MM: commented out
+	/* MM: commented out, replaced with Image Map info
 	else if(elevationColorMap!=0)
 		{
 		  // Upload the texture mapping plane equation:
@@ -698,17 +735,27 @@ void SurfaceRenderer::renderSinglePass(const int viewport[4],const PTransform& p
 		elevationColorMap->bindTexture(contextData);
 		glUniform1iARB(*(ulPtr++),1);
 		}*/
-	
+	else if(imageMap!=0) {
+	  // Upload the texture mapping plane equation:
+	  imageMap->uploadTexturePlane(*(ulPtr++));
+		
+	  // Bind the image map texture:
+	  glActiveTextureARB(GL_TEXTURE1_ARB); // MM: ??
+	  imageMap->bindTexture(contextData);
+	  glUniform1iARB(*(ulPtr++),1);        // MM: ??
+	}
+	/* MM: commented out - think this is just for lining colored sections of ElevationColorMap
 	if(drawContourLines)
 		{
-		/* Bind the pixel corner elevation texture: */
+		// Bind the pixel corner elevation texture
 		glActiveTextureARB(GL_TEXTURE2_ARB);
 		glBindTexture(GL_TEXTURE_RECTANGLE_ARB,dataItem->contourLineColorTextureObject); // MM: texture target and texture name
 		glUniform1iARB(*(ulPtr++),2);
 		
-		/* Upload the contour line distance factor: */
+		// Upload the contour line distance factor
 		glUniform1fARB(*(ulPtr++),contourLineFactor);
 		}
+	*/
 	
 	if(illuminate)
 		{
@@ -739,22 +786,29 @@ void SurfaceRenderer::renderSinglePass(const int viewport[4],const PTransform& p
 	
 	
 	/* Unbind all textures and buffers: */
+	/* MM: commented out - think this is just for lining colored sections of ElevationColorMap
 	if(drawContourLines)
 		{
 		glActiveTextureARB(GL_TEXTURE2_ARB);
 		glBindTexture(GL_TEXTURE_RECTANGLE_ARB,0); // MM: texture target and texture name
 		}
+	*/
 	if(dem!=0)
 		{
 		glActiveTextureARB(GL_TEXTURE1_ARB);
 		glBindTexture(GL_TEXTURE_RECTANGLE_ARB,0); // MM: texture target and texture name
 		}
-	/* MM: commented out
+	/* MM: commented out, replaced with ImageMap info
 	else if(elevationColorMap!=0)
 		{
 		glActiveTextureARB(GL_TEXTURE1_ARB);
 		glBindTexture(GL_TEXTURE_1D,0); // MM: texture target and texture name
 		}*/
+	else if(imageMap!=0)
+	  {
+	    glActiveTextureARB(GL_TEXTURE1_ARB);  // MM: ??
+	    glBindTexture(GL_TEXTURE_1D,0);       // MM: ??
+	  }
 	glActiveTextureARB(GL_TEXTURE0_ARB);
 	glBindTexture(GL_TEXTURE_RECTANGLE_ARB,0); // MM: texture target and texture name
 	
@@ -814,203 +868,3 @@ void SurfaceRenderer::display(GLContextData& contextData) const
 	std::cout << "Done with SurfaceRenderer::display." << std::endl;  // MM: added
 	}
 
-
-#if 0
-
-void SurfaceRenderer::renderGlobalAmbientHeightMap(GLuint heightColorMapTexture,GLContextData& contextData) const
-	{
-	/* Get the data item: */
-	DataItem* dataItem=contextData.retrieveDataItem<DataItem>(this);
-	
-	/* Check if contour line rendering is enabled: */
-	if(drawContourLines)
-		{
-		/* Run the first rendering pass to create a half-pixel offset texture of surface elevations: */
-		glPrepareContourLines(contextData);
-		}
-	else if(dataItem->contourLineFramebufferObject!=0)
-		{
-		/* Delete the contour line rendering frame buffer: */
-		glDeleteFramebuffersEXT(1,&dataItem->contourLineFramebufferObject);
-		dataItem->contourLineFramebufferObject=0;
-		glDeleteRenderbuffersEXT(1,&dataItem->contourLineDepthBufferObject);
-		dataItem->contourLineDepthBufferObject=0;
-		glDeleteTextures(1,&dataItem->contourLineColorTextureObject);
-		dataItem->contourLineColorTextureObject=0;
-		}
-	
-	/* Bind the global ambient height map shader: */
-	glUseProgramObjectARB(dataItem->globalAmbientHeightMapShader);
-	
-	/* Bind the vertex and index buffers: */
-	glBindBufferARB(GL_ARRAY_BUFFER_ARB,dataItem->vertexBuffer);
-	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,dataItem->indexBuffer);
-	
-	/* Set up the depth image texture: */
-	if(!usePreboundDepthTexture)
-		{
-		glActiveTextureARB(GL_TEXTURE0_ARB);
-		glBindTexture(GL_TEXTURE_RECTANGLE_ARB,dataItem->depthTexture); // MM: texture target and texture name
-		
-		/* Check if the texture is outdated: */
-		if(dataItem->depthTextureVersion!=depthImageVersion)
-			{
-			/* Upload the new depth texture: */
-			glTexSubImage2D(GL_TEXTURE_RECTANGLE_ARB,0,0,0,size[0],size[1],GL_LUMINANCE,GL_FLOAT,depthImage.getBuffer());
-			
-			/* Mark the depth texture as current: */
-			dataItem->depthTextureVersion=depthImageVersion;
-			}
-		}
-	glUniform1iARB(dataItem->globalAmbientHeightMapShaderUniforms[0],0);
-	
-	/* Upload the depth projection matrix: */
-	glUniformMatrix4fvARB(dataItem->globalAmbientHeightMapShaderUniforms[1],1,GL_FALSE,depthProjectionMatrix);
-	
-	/* Upload the base plane equation: */
-	glUniformARB<4>(dataItem->globalAmbientHeightMapShaderUniforms[2],1,basePlaneEq);
-	
-	/* Bind the pixel corner elevation texture: */
-	glActiveTextureARB(GL_TEXTURE1_ARB);
-	glBindTexture(GL_TEXTURE_RECTANGLE_ARB,dataItem->contourLineColorTextureObject); // MM: texture target and texture name
-	glUniform1iARB(dataItem->globalAmbientHeightMapShaderUniforms[3],1);
-	
-	/* Upload the contour line distance factor: */
-	glUniform1fARB(dataItem->globalAmbientHeightMapShaderUniforms[4],contourLineFactor);
-	
-	/* Bind the height color map texture: */
-	glActiveTextureARB(GL_TEXTURE2_ARB);
-	glBindTexture(GL_TEXTURE_1D,heightColorMapTexture); // MM: texture target and texture name
-	glUniform1iARB(dataItem->globalAmbientHeightMapShaderUniforms[5],2);
-	
-	/* Upload the height color map texture coordinate transformation: */
-	glUniform2fARB(dataItem->globalAmbientHeightMapShaderUniforms[6],heightMapScale,heightMapOffset);
-	
-	/* Draw the surface: */
-	typedef GLGeometry::Vertex<void,0,void,0,void,float,3> Vertex;
-	GLVertexArrayParts::enable(Vertex::getPartsMask());
-	glVertexPointer(static_cast<const Vertex*>(0));
-	for(unsigned int y=1;y<size[1];++y)
-		glDrawElements(GL_QUAD_STRIP,size[0]*2,GL_UNSIGNED_INT,static_cast<const GLuint*>(0)+(y-1)*size[0]*2);
-	GLVertexArrayParts::disable(Vertex::getPartsMask());
-	
-	/* Unbind all textures and buffers: */
-	glActiveTextureARB(GL_TEXTURE2_ARB);
-	glBindTexture(GL_TEXTURE_1D,0); // MM: texture target and texture name
-	glActiveTextureARB(GL_TEXTURE1_ARB);
-	glBindTexture(GL_TEXTURE_RECTANGLE_ARB,0); // MM: texture target and texture name
-	if(!usePreboundDepthTexture)
-		{
-		glActiveTextureARB(GL_TEXTURE0_ARB);
-		glBindTexture(GL_TEXTURE_RECTANGLE_ARB,0); // MM: texture target and texture name
-		}
-	glBindBufferARB(GL_ARRAY_BUFFER_ARB,0);
-	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,0);
-	
-	/* Unbind the global ambient height map shader: */
-	glUseProgramObjectARB(0);
-	}
-
-void SurfaceRenderer::renderShadowedIlluminatedHeightMap(GLuint heightColorMapTexture,GLuint shadowTexture,const PTransform& shadowProjection,GLContextData& contextData) const
-	{
-	/* Get the data item: */
-	DataItem* dataItem=contextData.retrieveDataItem<DataItem>(this);
-	
-	/* Bind the shadowed illuminated height map shader: */
-	glUseProgramObjectARB(dataItem->shadowedIlluminatedHeightMapShader);
-	
-	/* Bind the vertex and index buffers: */
-	glBindBufferARB(GL_ARRAY_BUFFER_ARB,dataItem->vertexBuffer);
-	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,dataItem->indexBuffer);
-	
-	/* Set up the depth image texture: */
-	if(!usePreboundDepthTexture)
-		{
-		glActiveTextureARB(GL_TEXTURE0_ARB);
-		glBindTexture(GL_TEXTURE_RECTANGLE_ARB,dataItem->depthTexture); // MM: texture target and texture name
-		
-		/* Check if the texture is outdated: */
-		if(dataItem->depthTextureVersion!=depthImageVersion)
-			{
-			/* Upload the new depth texture: */
-			glTexSubImage2D(GL_TEXTURE_RECTANGLE_ARB,0,0,0,size[0],size[1],GL_LUMINANCE,GL_FLOAT,depthImage.getBuffer());
-			
-			/* Mark the depth texture as current: */
-			dataItem->depthTextureVersion=depthImageVersion;
-			}
-		}
-	glUniform1iARB(dataItem->shadowedIlluminatedHeightMapShaderUniforms[0],0);
-	
-	/* Upload the depth projection matrix: */
-	glUniformMatrix4fvARB(dataItem->shadowedIlluminatedHeightMapShaderUniforms[1],1,GL_FALSE,depthProjectionMatrix);
-	
-	/* Upload the tangent-plane depth projection matrix: */
-	glUniformMatrix4fvARB(dataItem->shadowedIlluminatedHeightMapShaderUniforms[2],1,GL_FALSE,tangentDepthProjectionMatrix);
-	
-	/* Upload the base plane equation: */
-	glUniformARB<4>(dataItem->shadowedIlluminatedHeightMapShaderUniforms[3],1,basePlaneEq);
-	
-	/* Bind the pixel corner elevation texture: */
-	glActiveTextureARB(GL_TEXTURE1_ARB);
-	glBindTexture(GL_TEXTURE_RECTANGLE_ARB,dataItem->contourLineColorTextureObject); // MM: texture target and texture name
-	glUniform1iARB(dataItem->shadowedIlluminatedHeightMapShaderUniforms[4],1);
-	
-	/* Upload the contour line distance factor: */
-	glUniform1fARB(dataItem->shadowedIlluminatedHeightMapShaderUniforms[5],contourLineFactor);
-	
-	/* Bind the height color map texture: */
-	glActiveTextureARB(GL_TEXTURE2_ARB);
-	glBindTexture(GL_TEXTURE_1D,heightColorMapTexture); // MM: texture target and texture name
-	glUniform1iARB(dataItem->shadowedIlluminatedHeightMapShaderUniforms[6],2);
-	
-	/* Upload the height color map texture coordinate transformation: */
-	glUniform2fARB(dataItem->shadowedIlluminatedHeightMapShaderUniforms[7],heightMapScale,heightMapOffset);
-	
-	/* Bind the shadow texture: */
-	glActiveTextureARB(GL_TEXTURE4_ARB);
-	glBindTexture(GL_TEXTURE_2D,shadowTexture); // MM: texture target and texture name
-	glUniform1iARB(dataItem->shadowedIlluminatedHeightMapShaderUniforms[11],4);
-	
-	/* Upload the combined shadow viewport, shadow projection and modelview, and depth projection matrix: */
-	PTransform spdp(1.0);
-	spdp.getMatrix()(0,0)=0.5;
-	spdp.getMatrix()(0,3)=0.5;
-	spdp.getMatrix()(1,1)=0.5;
-	spdp.getMatrix()(1,3)=0.5;
-	spdp.getMatrix()(2,2)=0.5;
-	spdp.getMatrix()(2,3)=0.5;
-	spdp*=shadowProjection;
-	spdp*=depthProjection;
-	GLfloat spdpMatrix[16];
-	GLfloat* spdpPtr=spdpMatrix;
-	for(int j=0;j<4;++j)
-		for(int i=0;i<4;++i,++spdpPtr)
-			*spdpPtr=GLfloat(spdp.getMatrix()(i,j));
-	glUniformMatrix4fvARB(dataItem->shadowedIlluminatedHeightMapShaderUniforms[12],1,GL_FALSE,spdpMatrix);
-	
-	/* Draw the surface: */
-	typedef GLGeometry::Vertex<void,0,void,0,void,float,3> Vertex;
-	GLVertexArrayParts::enable(Vertex::getPartsMask());
-	glVertexPointer(static_cast<const Vertex*>(0));
-	for(unsigned int y=1;y<size[1];++y)
-		glDrawElements(GL_QUAD_STRIP,size[0]*2,GL_UNSIGNED_INT,static_cast<const GLuint*>(0)+(y-1)*size[0]*2);
-	GLVertexArrayParts::disable(Vertex::getPartsMask());
-	
-	/* Unbind all textures and buffers: */
-	glActiveTextureARB(GL_TEXTURE2_ARB);
-	glBindTexture(GL_TEXTURE_1D,0); // MM: texture target and texture name
-	glActiveTextureARB(GL_TEXTURE1_ARB);
-	glBindTexture(GL_TEXTURE_RECTANGLE_ARB,0); // MM: texture target and texture name
-	if(!usePreboundDepthTexture)
-		{
-		glActiveTextureARB(GL_TEXTURE0_ARB);
-		glBindTexture(GL_TEXTURE_RECTANGLE_ARB,0); // MM: texture target and texture name
-		}
-	glBindBufferARB(GL_ARRAY_BUFFER_ARB,0);
-	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,0);
-	
-	/* Unbind the shadowed illuminated height map shader: */
-	glUseProgramObjectARB(0);
-	}
-
-#endif

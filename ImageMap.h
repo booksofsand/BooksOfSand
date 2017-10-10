@@ -53,6 +53,7 @@ class ImageMap:public GLTextureObject
 	/* Elements: */
 	private:	
 	GLfloat texturePlaneEq[4]; // Texture mapping plane equation in GLSL-compatible format
+        Images::TextureSet textures;
 			  
 	/* Constructors and destructors: */
 	public:

@@ -151,6 +151,7 @@ CalibrateProjector: $(EXEDIR)/CalibrateProjector
 
 SARNDBOX_SOURCES = FrameFilter.cpp \
                    ShaderHelper.cpp \
+                   ImageMap.cpp \
                    DepthImageRenderer.cpp \
                    ElevationColorMap.cpp \
                    SurfaceRenderer.cpp \

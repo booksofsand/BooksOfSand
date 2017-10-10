@@ -40,6 +40,8 @@ class ImageMap;  // MM: added
 class GLLightTracker;
 class DEM;
 
+#include "ImageMap.h"
+
 class SurfaceRenderer:public GLObject
 	{
 	/* Embedded classes: */

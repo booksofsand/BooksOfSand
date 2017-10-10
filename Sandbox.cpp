@@ -170,7 +170,7 @@ Sandbox::RenderSettings::RenderSettings(void)
 	 hillshade(false),surfaceMaterial(GLMaterial::Color(1.0f,1.0f,1.0f)),
 	 useShadows(false),
 	 //elevationColorMap(0),
-	 useContourLines(true),contourLineSpacing(0.75f),
+	 //useContourLines(true),contourLineSpacing(0.75f),
 	 surfaceRenderer(0)
 	{
 	std::cout << "In Sandbox::RenderSettings::RenderSettings." << std::endl;  // MM: added
@@ -184,7 +184,7 @@ Sandbox::RenderSettings::RenderSettings(const Sandbox::RenderSettings& source)
 	 hillshade(source.hillshade),surfaceMaterial(source.surfaceMaterial),
 	 useShadows(source.useShadows),
 	 //elevationColorMap(source.elevationColorMap!=0?new ElevationColorMap(*source.elevationColorMap):0),
-	 useContourLines(source.useContourLines),contourLineSpacing(source.contourLineSpacing),
+	 //useContourLines(source.useContourLines),contourLineSpacing(source.contourLineSpacing),
 	 surfaceRenderer(0)
 	{
 	}
@@ -595,18 +595,18 @@ Sandbox::Sandbox(int& argc,char**& argv)
 					renderSettings.back().loadHeightMap(CONFIG_DEFAULTHEIGHTCOLORMAPFILENAME);
 					}
 				}
-			else if(strcasecmp(argv[i]+1,"ncl")==0)
+			/*else if(strcasecmp(argv[i]+1,"ncl")==0)
 				renderSettings.back().useContourLines=false;
 			else if(strcasecmp(argv[i]+1,"ucl")==0)
 				{
 				renderSettings.back().useContourLines=true;
 				if(i+1<argc&&argv[i+1][0]!='-')
 					{
-					/* Read the contour line spacing: */
+					// Read the contour line spacing
 					++i;
 					renderSettings.back().contourLineSpacing=GLfloat(atof(argv[i]));
 					}
-				}
+				}*/
 			else if(strcasecmp(argv[i]+1,"cp")==0)
 				{
 				++i;
@@ -767,8 +767,8 @@ Sandbox::Sandbox(int& argc,char**& argv)
 
 		/* Initialize the surface renderer: */
 		rsIt->surfaceRenderer=new SurfaceRenderer(depthImageRenderer);
-		rsIt->surfaceRenderer->setDrawContourLines(rsIt->useContourLines);
-		rsIt->surfaceRenderer->setContourLineDistance(rsIt->contourLineSpacing);
+		//rsIt->surfaceRenderer->setDrawContourLines(rsIt->useContourLines);
+		//rsIt->surfaceRenderer->setContourLineDistance(rsIt->contourLineSpacing);
 		//rsIt->surfaceRenderer->setElevationColorMap(rsIt->elevationColorMap); MM: commented out
 		rsIt->surfaceRenderer->setIlluminate(rsIt->hillshade);
 		rsIt->surfaceRenderer->setDemDistScale(demDistScale);

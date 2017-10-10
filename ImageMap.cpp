@@ -62,7 +62,7 @@ ImageMap::ImageMap(const char* imageName) {
   load(imageName);
 }
 
-virtual void ImageMap::initContext(GLContextData& contextData) const {
+void ImageMap::initContext(GLContextData& contextData) const {
   // method from GLObject
   // code from ElevationColorMap.cpp
   
@@ -114,7 +114,8 @@ void ImageMap::calcTexturePlane(const Plane& basePlane) {
 
   // MM: code from ElevationColorMap.cpp
   // TO DO: look at GLColorMap to see what this does. need to adapt?
-  
+
+  /*  
   // Scale and offset the camera-space base plane equation
   const Plane::Vector& bpn=basePlane.getNormal();
   Scalar bpo=basePlane.getOffset();
@@ -125,6 +126,7 @@ void ImageMap::calcTexturePlane(const Plane& basePlane) {
   for(int i=0;i<3;++i)
     texturePlaneEq[i]=GLfloat(bpn[i]*hms);
   texturePlaneEq[3]=GLfloat(-bpo*hms+hmo);
+  */
 }
 
 void ImageMap::calcTexturePlane(const DepthImageRenderer* depthImageRenderer) {
@@ -177,10 +179,10 @@ void ImageMap::bindTexture(GLContextData& contextData) const {
   glBindTexture(GL_TEXTURE_2D,0);
   /* Restore OpenGL state: */
   glPopAttrib();
-  return;
   
   // MM: code from ElevationColorMap.cpp
   // TO DO: adapt for image
+  /*
   // Retrieve the data item
   DataItem* dataItem=contextData.retrieveDataItem<DataItem>(this);
 	
@@ -197,6 +199,7 @@ void ImageMap::bindTexture(GLContextData& contextData) const {
 		
     dataItem->textureObjectVersion=textureVersion;
   }
+  */
 }
 
 void ImageMap::uploadTexturePlane(GLint location) const {
@@ -219,6 +222,7 @@ void ImageMap::uploadTexturePlane(GLint location) const {
 Methods of class ImageViewer:
 ****************************/
 
+#if 0
 ImageViewer::ImageViewer()
 	:Vrui::Application()
 	{
@@ -310,4 +314,5 @@ void ImageViewer::resetNavigation(void) {
   Vrui::Scalar size=Math::sqrt(Math::sqr(w)+Math::sqr(h));
   Vrui::setNavigationTransformation(center,size,Vrui::Vector(0,1,0));
 }
+#endif
 

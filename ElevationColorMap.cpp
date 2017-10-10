@@ -83,7 +83,7 @@ void ElevationColorMap::load(const char* heightMapName)
                loaded into two different arrays, then passed by reference in the end
                to setColors, which is in Vrui/GL/GLColorMap.cpp. 
 
-	       we saw a file with these values (HeightColorMap.cpt) somewhere
+               we saw a file with these values (HeightColorMap.cpt) somewhere
                on the installed and working SARndbox system. it was only a dozen lines
                or so, each with four values (must be the depth and 3 color values),
                so clearly this program colors within the specified ranges.

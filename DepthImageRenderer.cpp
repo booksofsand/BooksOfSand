@@ -226,6 +226,7 @@ void DepthImageRenderer::uploadDepthProjection(GLint location) const
 
 void DepthImageRenderer::bindDepthTexture(GLContextData& contextData) const
 	{
+	std::cout << "In DepthImageRenderer::bindDepthTexture." << std::endl;  // MM: added
 	/* Get the data item: */
 	DataItem* dataItem=contextData.retrieveDataItem<DataItem>(this);
 	
@@ -241,12 +242,14 @@ void DepthImageRenderer::bindDepthTexture(GLContextData& contextData) const
 		/* Mark the depth texture as current: */
 		dataItem->depthTextureVersion=depthImageVersion;
 		}
+	std::cout << "Done with DepthImageRenderer::bindDepthTexture." << std::endl;  // MM: added
 	}
 
 // MM: I think this does the actual drawing/projecting of the image. not sure
-//     (what counts as surface template? the entire color map?)
+//     (what counts as surface template? the entire color map?) TO DO - figure out when this happens
 void DepthImageRenderer::renderSurfaceTemplate(GLContextData& contextData) const
 	{
+	std::cout << "In DepthImageRenderer::renderSurfaceTemplate." << std::endl;  // MM: added
 	/* Get the data item: */
 	DataItem* dataItem=contextData.retrieveDataItem<DataItem>(this);
 	
@@ -269,10 +272,12 @@ void DepthImageRenderer::renderSurfaceTemplate(GLContextData& contextData) const
 	/* Unbind the vertex and index buffers: */
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB,0);         // MM: entering 0 is like binding to a null buffer
 	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,0);
+	std::cout << "Done with DepthImageRenderer::renderSurfaceTemplate." << std::endl;  // MM: added
 	}
 
 void DepthImageRenderer::renderDepth(const PTransform& projectionModelview,GLContextData& contextData) const
 	{
+	std::cout << "In DepthImageRenderer::renderDepth." << std::endl;  // MM: added
 	/* Get the data item: */
 	DataItem* dataItem=contextData.retrieveDataItem<DataItem>(this);
 	
@@ -318,10 +323,12 @@ void DepthImageRenderer::renderDepth(const PTransform& projectionModelview,GLCon
 	
 	/* Unbind the depth rendering shader: */
 	glUseProgramObjectARB(0);
+	std::cout << "Done with DepthImageRenderer::renderDepth." << std::endl;  // MM: added
 	}
 
 void DepthImageRenderer::renderElevation(const PTransform& projectionModelview,GLContextData& contextData) const
 	{
+	std::cout << "In DepthImageRenderer::renderElevation." << std::endl;  // MM: added
 	/* Get the data item: */
 	DataItem* dataItem=contextData.retrieveDataItem<DataItem>(this);
 	
@@ -373,4 +380,5 @@ void DepthImageRenderer::renderElevation(const PTransform& projectionModelview,G
 	
 	/* Unbind the elevation rendering shader: */
 	glUseProgramObjectARB(0);
+	std::cout << "Done with DepthImageRenderer::renderElevation." << std::endl;  // MM: added
 	}

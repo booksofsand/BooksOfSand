@@ -767,22 +767,13 @@ Sandbox::Sandbox(int& argc,char**& argv)
 
 		/* Initialize the surface renderer: */
 		rsIt->surfaceRenderer=new SurfaceRenderer(depthImageRenderer);
+		// MM: commenting out all the following to attempt no rendering ImageMap display
 		//rsIt->surfaceRenderer->setDrawContourLines(rsIt->useContourLines);
 		//rsIt->surfaceRenderer->setContourLineDistance(rsIt->contourLineSpacing);
 		//rsIt->surfaceRenderer->setElevationColorMap(rsIt->elevationColorMap); MM: commented out
-		rsIt->surfaceRenderer->setIlluminate(rsIt->hillshade);
-		rsIt->surfaceRenderer->setDemDistScale(demDistScale);
+		//rsIt->surfaceRenderer->setIlluminate(rsIt->hillshade);
+		//rsIt->surfaceRenderer->setDemDistScale(demDistScale);
 		}
-	
-	// MM: block comment here
-	#if 0
-	/* Create a fixed-position light source: */
-	sun=Vrui::getLightsourceManager()->createLightsource(true);
-	for(int i=0;i<Vrui::getNumViewers();++i)
-		Vrui::getViewer(i)->setHeadlightState(false);
-	sun->enable();
-	sun->getLight().position=GLLight::Position(1,0,1,0);
-	#endif
 	
 	// MM: this looks important
 	/* Create the GUI: */
@@ -803,7 +794,7 @@ Sandbox::Sandbox(int& argc,char**& argv)
 		}
 	
 	/* Inhibit the screen saver: */
-	Vrui::inhibitScreenSaver();
+	//Vrui::inhibitScreenSaver();     // MM: this is getting an error when running
 	
 	/* Set the linear unit to support proper scaling: */
 	Vrui::getCoordinateManager()->setUnit(Geometry::LinearUnit(Geometry::LinearUnit::METER,scale/100.0));
@@ -984,183 +975,11 @@ void Sandbox::display(GLContextData& contextData) const
 		glMaterial(GLMaterialEnums::FRONT,rs.surfaceMaterial);
 		}
 	
-	/* ///////////////////////////////////////////////////////////////////////////////////
-	 MM: this ENTIRE SECTION (about 200 lines) is commented out with the #if 0 ... #endif 
-	/////////////////////////////////////////////////////////////////////////////////// */
-	
-	#if 0
-	if(rs.hillshade&&rs.useShadows)
-		{
-		/* Set up OpenGL state: */
-		glPushAttrib(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT|GL_ENABLE_BIT|GL_POLYGON_BIT);
-		
-		GLLightTracker& lt=*contextData.getLightTracker();
-		
-		/* Save the currently-bound frame buffer and viewport: */
-		GLint currentFrameBuffer;
-		glGetIntegerv(GL_FRAMEBUFFER_BINDING_EXT,&currentFrameBuffer);
-		GLint currentViewport[4];
-		glGetIntegerv(GL_VIEWPORT,currentViewport);
-		
-		/*******************************************************************
-		First rendering pass: Global ambient illumination only
-		*******************************************************************/
-		
-		/* Draw the surface mesh: */
-		surfaceRenderer->glRenderGlobalAmbientHeightMap(dataItem->heightColorMapObject,contextData);
-		
-		/*******************************************************************
-		Second rendering pass: Add local illumination for every light source
-		*******************************************************************/
-		
-		/* Enable additive rendering: */
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_ONE,GL_ONE);
-		glDepthFunc(GL_LEQUAL);
-		glDepthMask(GL_FALSE);
-		
-		for(int lightSourceIndex=0;lightSourceIndex<lt.getMaxNumLights();++lightSourceIndex)
-			if(lt.getLightState(lightSourceIndex).isEnabled())
-				{
-				/***************************************************************
-				First step: Render to the light source's shadow map
-				***************************************************************/
-				
-				/* Set up OpenGL state to render to the shadow map: */
-				glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,dataItem->shadowFramebufferObject);
-				glViewport(0,0,dataItem->shadowBufferSize[0],dataItem->shadowBufferSize[1]);
-				glDepthMask(GL_TRUE);
-				glClear(GL_DEPTH_BUFFER_BIT);
-				glCullFace(GL_FRONT);
-				
-				/*************************************************************
-				Calculate the shadow projection matrix:
-				*************************************************************/
-				
-				/* Get the light source position in eye space: */
-				Geometry::HVector<float,3> lightPosEc;
-				glGetLightfv(GL_LIGHT0+lightSourceIndex,GL_POSITION,lightPosEc.getComponents());
-				
-				/* Transform the light source position to camera space: */
-				Vrui::ONTransform::HVector lightPosCc=Vrui::getDisplayState(contextData).modelviewNavigational.inverseTransform(Vrui::ONTransform::HVector(lightPosEc));
-				
-				/* Calculate the direction vector from the center of the bounding box to the light source: */
-				Point bboxCenter=Geometry::mid(bbox.min,bbox.max);
-				Vrui::Vector lightDirCc=Vrui::Vector(lightPosCc.getComponents())-Vrui::Vector(bboxCenter.getComponents())*lightPosCc[3];
-				
-				/* Build a transformation that aligns the light direction with the positive z axis: */
-				Vrui::ONTransform shadowModelview=Vrui::ONTransform::rotate(Vrui::Rotation::rotateFromTo(lightDirCc,Vrui::Vector(0,0,1)));
-				shadowModelview*=Vrui::ONTransform::translateToOriginFrom(bboxCenter);
-				
-				/* Create a projection matrix, based on whether the light is positional or directional: */
-				PTransform shadowProjection(0.0);
-				if(lightPosEc[3]!=0.0f)
-					{
-					/* Modify the modelview transformation such that the light source is at the origin: */
-					shadowModelview.leftMultiply(Vrui::ONTransform::translate(Vrui::Vector(0,0,-lightDirCc.mag())));
-					
-					/***********************************************************
-					Create a perspective projection:
-					***********************************************************/
-					
-					/* Calculate the perspective bounding box of the surface bounding box in eye space: */
-					Box pBox=Box::empty;
-					for(int i=0;i<8;++i)
-						{
-						Point bc=shadowModelview.transform(bbox.getVertex(i));
-						pBox.addPoint(Point(-bc[0]/bc[2],-bc[1]/bc[2],-bc[2]));
-						}
-					
-					/* Upload the frustum matrix: */
-					double l=pBox.min[0]*pBox.min[2];
-					double r=pBox.max[0]*pBox.min[2];
-					double b=pBox.min[1]*pBox.min[2];
-					double t=pBox.max[1]*pBox.min[2];
-					double n=pBox.min[2];
-					double f=pBox.max[2];
-					shadowProjection.getMatrix()(0,0)=2.0*n/(r-l);
-					shadowProjection.getMatrix()(0,2)=(r+l)/(r-l);
-					shadowProjection.getMatrix()(1,1)=2.0*n/(t-b);
-					shadowProjection.getMatrix()(1,2)=(t+b)/(t-b);
-					shadowProjection.getMatrix()(2,2)=-(f+n)/(f-n);
-					shadowProjection.getMatrix()(2,3)=-2.0*f*n/(f-n);
-					shadowProjection.getMatrix()(3,2)=-1.0;
-					}
-				else
-					{
-					/***********************************************************
-					Create a perspective projection:
-					***********************************************************/
-					
-					/* Transform the bounding box with the modelview transformation: */
-					Box bboxEc=bbox;
-					bboxEc.transform(shadowModelview);
-					
-					/* Upload the ortho matrix: */
-					double l=bboxEc.min[0];
-					double r=bboxEc.max[0];
-					double b=bboxEc.min[1];
-					double t=bboxEc.max[1];
-					double n=-bboxEc.max[2];
-					double f=-bboxEc.min[2];
-					shadowProjection.getMatrix()(0,0)=2.0/(r-l);
-					shadowProjection.getMatrix()(0,3)=-(r+l)/(r-l);
-					shadowProjection.getMatrix()(1,1)=2.0/(t-b);
-					shadowProjection.getMatrix()(1,3)=-(t+b)/(t-b);
-					shadowProjection.getMatrix()(2,2)=-2.0/(f-n);
-					shadowProjection.getMatrix()(2,3)=-(f+n)/(f-n);
-					shadowProjection.getMatrix()(3,3)=1.0;
-					}
-				
-				/* Multiply the shadow modelview matrix onto the shadow projection matrix: */
-				shadowProjection*=shadowModelview;
-				
-				/* Draw the surface into the shadow buffer: */
-				surfaceRenderer->glRenderDepthOnly(shadowProjection,contextData);
-				
-				/* Reset OpenGL state: */
-				glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,currentFrameBuffer);
-				glViewport(currentViewport[0],currentViewport[1],currentViewport[2],currentViewport[3]);
-				glCullFace(GL_BACK);
-				glDepthMask(GL_FALSE);
-				
-				// MM: this does nothing (block comment)
-				#if SAVEDEPTH
-				/* Save the depth image: */
-				{
-				glBindTexture(GL_TEXTURE_2D,dataItem->shadowDepthTextureObject); // MM: texture target and texture name
-				GLfloat* depthTextureImage=new GLfloat[dataItem->shadowBufferSize[1]*dataItem->shadowBufferSize[0]];
-				glGetTexImage(GL_TEXTURE_2D,0,GL_DEPTH_COMPONENT,GL_FLOAT,depthTextureImage);
-				glBindTexture(GL_TEXTURE_2D,0); // MM: texture target and texture name
-				Images::RGBImage dti(dataItem->shadowBufferSize[0],dataItem->shadowBufferSize[1]);
-				GLfloat* dtiPtr=depthTextureImage;
-				Images::RGBImage::Color* ciPtr=dti.modifyPixels();
-				for(int y=0;y<dataItem->shadowBufferSize[1];++y)
-					for(int x=0;x<dataItem->shadowBufferSize[0];++x,++dtiPtr,++ciPtr)
-						{
-						GLColor<GLfloat,3> tc(*dtiPtr,*dtiPtr,*dtiPtr);
-						*ciPtr=tc;
-						}
-				delete[] depthTextureImage;
-				Images::writeImageFile(dti,"DepthImage.png");
-				}
-				#endif
-				
-				/* Draw the surface using the shadow texture: */
-				rs.surfaceRenderer->glRenderShadowedIlluminatedHeightMap(dataItem->heightColorMapObject,dataItem->shadowDepthTextureObject,shadowProjection,contextData);
-				}
-		
-		/* Reset OpenGL state: */
-		glPopAttrib();
-		}
-	else
-	#endif
-  	        // MM: I think this is where the image is displayed through the projector
-	        // (see SurfaceRenderer.cpp)
-		{
-		/* Render the surface in a single pass: */
-		rs.surfaceRenderer->renderSinglePass(ds.viewport,projection,ds.modelviewNavigational,contextData);
-		}
+	// MM: I think this is where the image is displayed through the projector
+	// (see SurfaceRenderer.cpp)
+	// MM: currently all of renderSinglePass is commented out except for an ImageMap display attempt
+	// Render the surface in a single pass
+	rs.surfaceRenderer->renderSinglePass(ds.viewport,projection,ds.modelviewNavigational,contextData);
 	std::cout << "Done with Sandbox::display." << std::endl;  // MM: added
 	}
 

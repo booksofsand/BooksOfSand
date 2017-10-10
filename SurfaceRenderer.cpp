@@ -575,7 +575,7 @@ SurfaceRenderer::SurfaceRenderer(const DepthImageRenderer* sDepthImageRenderer)
 void SurfaceRenderer::initContext(GLContextData& contextData) const
 	{
 	std::cout << "In SurfaceRenderer::initContext." << std::endl;  // MM: added
-	/* MM: commenting out entire method to attempt no rendering ImageMap display
+	
 
 	// Create a data item and add it to the context
 	DataItem* dataItem=new DataItem;
@@ -586,6 +586,8 @@ void SurfaceRenderer::initContext(GLContextData& contextData) const
 	dataItem->surfaceSettingsVersion=surfaceSettingsVersion;
 	dataItem->lightTrackerVersion=contextData.getLightTracker()->getVersion();
 
+	/* MM: commenting out entire method to attempt no rendering ImageMap display
+	
 	// Create the global ambient height map render shader
 	dataItem->globalAmbientHeightMapShader=linkVertexAndFragmentShader("SurfaceGlobalAmbientHeightMapShader");
 	dataItem->globalAmbientHeightMapShaderUniforms[0]=glGetUniformLocationARB(dataItem->globalAmbientHeightMapShader,"depthSampler");
@@ -626,7 +628,7 @@ void SurfaceRenderer::setContourLineDistance(GLfloat newContourLineDistance)
 	}
 */
 
-/* MM: commented out - TO DO replace with ImageMap
+/* MM: commented out - replaced with ImageMap
 void SurfaceRenderer::setElevationColorMap(ElevationColorMap* newElevationColorMap)
 	{
 	// Check if setting this elevation color map invalidates the shader:
@@ -636,6 +638,11 @@ void SurfaceRenderer::setElevationColorMap(ElevationColorMap* newElevationColorM
 	// Set the elevation color map:
 	elevationColorMap=newElevationColorMap;
 	}*/
+
+void SurfaceRenderer::setImageMap(ImageMap* newImageMap)
+	{
+	imageMap=newImageMap;
+	}
 
 void SurfaceRenderer::setDem(DEM* newDem)
 	{
@@ -661,8 +668,7 @@ void SurfaceRenderer::setIlluminate(bool newIlluminate)
 void SurfaceRenderer::renderSinglePass(const int viewport[4],const PTransform& projection,const OGTransform& modelview,GLContextData& contextData) const
 	{
 	std::cout << "In SurfaceRenderer::renderSinglePass." << std::endl;  // MM: added
-	/* MM: commenting out entire method to attempt no rendering ImageMap display
-
+	
 	// Get the data item
 	DataItem* dataItem=contextData.retrieveDataItem<DataItem>(this);
 	
@@ -670,6 +676,8 @@ void SurfaceRenderer::renderSinglePass(const int viewport[4],const PTransform& p
 	PTransform projectionModelview=projection;
 	projectionModelview*=modelview;
 
+	/* MM: commenting out entire method to attempt no rendering ImageMap display
+	
 	/* MM: commented out - think this is just for lining colored sections of ElevationColorMap
 	// Check if contour line rendering is enabled
 	if(drawContourLines)
@@ -689,7 +697,7 @@ void SurfaceRenderer::renderSinglePass(const int viewport[4],const PTransform& p
 		}
 	*/
 
-	/* MM: commenting out entire method to attempt no rendering ImageMap display
+	std::cout << "Checking if single-pass surface shader is outdated." << std::endl;
 
 	// Check if the single-pass surface shader is outdated
 	if(dataItem->surfaceSettingsVersion!=surfaceSettingsVersion||(illuminate&&dataItem->lightTrackerVersion!=contextData.getLightTracker()->getVersion()))
@@ -697,9 +705,11 @@ void SurfaceRenderer::renderSinglePass(const int viewport[4],const PTransform& p
 		  // Rebuild the shader
 		try
 			{
+			std::cout << "Single-pass surface shader is outdated." << std::endl;
 			GLhandleARB newShader=createSinglePassSurfaceShader(*contextData.getLightTracker(),dataItem->heightMapShaderUniforms);
 			glDeleteObjectARB(dataItem->heightMapShader);
 			dataItem->heightMapShader=newShader;
+			std::cout << "Done with single-pass surface shader updating." << std::endl;
 			}
 		catch(std::runtime_error err)
 			{
@@ -707,21 +717,27 @@ void SurfaceRenderer::renderSinglePass(const int viewport[4],const PTransform& p
 			}
 		
 		// Mark the shader as up-to-date
+		std::cout << "Mark single-pass surface shader as updated." << std::endl;
 		dataItem->surfaceSettingsVersion=surfaceSettingsVersion;
 		dataItem->lightTrackerVersion=contextData.getLightTracker()->getVersion();
 		}
 	
+	std::cout << "Bind the single-pass surface shader." << std::endl;
 	// Bind the single-pass surface shader
 	glUseProgramObjectARB(dataItem->heightMapShader);
 	const GLint* ulPtr=dataItem->heightMapShaderUniforms;
 	
+	std::cout << "Bind the current depth image texture." << std::endl;
 	// Bind the current depth image texture
 	glActiveTextureARB(GL_TEXTURE0_ARB);
 	depthImageRenderer->bindDepthTexture(contextData);
 	glUniform1iARB(*(ulPtr++),0);
 	
+	std::cout << "Upload the depth projection matrix." << std::endl;
 	// Upload the depth projection matrix
 	depthImageRenderer->uploadDepthProjection(*(ulPtr++));
+	
+	/* MM: commenting out entire method to attempt no rendering ImageMap display
 	
 	if(dem!=0)
 		{
@@ -748,8 +764,9 @@ void SurfaceRenderer::renderSinglePass(const int viewport[4],const PTransform& p
 		glUniform1iARB(*(ulPtr++),1);
 		}*/
 
-	/* MM: commenting out entire method to attempt no rendering ImageMap display
-	else if(imageMap!=0) {
+	
+	//else if(imageMap!=0) {
+	if(imageMap!=0) {
 	  // Upload the texture mapping plane equation:
 	  imageMap->uploadTexturePlane(*(ulPtr++));
 		
@@ -758,6 +775,9 @@ void SurfaceRenderer::renderSinglePass(const int viewport[4],const PTransform& p
 	  imageMap->bindTexture(contextData);
 	  glUniform1iARB(*(ulPtr++),1);        // MM: ??
 	}
+	else
+	  std::cout << "imageMap == 0!" << std::endl;
+	
 	/* MM: commented out - think this is just for lining colored sections of ElevationColorMap
 	if(drawContourLines)
 		{
@@ -787,6 +807,7 @@ void SurfaceRenderer::renderSinglePass(const int viewport[4],const PTransform& p
 				*mPtr=GLfloat(*tmdpPtr);
 		glUniformMatrix4fvARB(*(ulPtr++),1,GL_FALSE,matrix);
 		}
+	*/
 	
 	// Upload the combined projection, modelview, and depth unprojection matrix
 	PTransform projectionModelviewDepthProjection=projectionModelview;
@@ -796,8 +817,7 @@ void SurfaceRenderer::renderSinglePass(const int viewport[4],const PTransform& p
 	// MM: here's where the display happens, I think
 	// Draw the surface
 	depthImageRenderer->renderSurfaceTemplate(contextData);  // MM: not sure if necessary
-	*/
-	display(contextData);  // MM: TO DO: try this on geosci sandbox. will need to compile & fix errors
+	
 	
 	/*
 	// Unbind all textures and buffers
@@ -820,67 +840,21 @@ void SurfaceRenderer::renderSinglePass(const int viewport[4],const PTransform& p
 		glActiveTextureARB(GL_TEXTURE1_ARB);
 		glBindTexture(GL_TEXTURE_1D,0); // MM: texture target and texture name
 		}*/
-	/* MM: commenting out entire method to attempt no rendering ImageMap display
-	else if(imageMap!=0)
+	
+	//else if(imageMap!=0)
+	if(imageMap!=0)
 	  {
-	    glActiveTextureARB(GL_TEXTURE1_ARB);  // MM: ??
-	    glBindTexture(GL_TEXTURE_1D,0);       // MM: ??
+	    glActiveTextureARB(GL_TEXTURE1_ARB);
+	    //glBindTexture(GL_TEXTURE_1D,0);
+	    glBindTexture(GL_TEXTURE_2D,0);
 	  }
 	glActiveTextureARB(GL_TEXTURE0_ARB);
 	glBindTexture(GL_TEXTURE_RECTANGLE_ARB,0); // MM: texture target and texture name
 	
 	// Unbind the height map shader
 	glUseProgramObjectARB(0);
-	*/
+	
 	
 	std::cout << "Done with SurfaceRenderer::renderSinglePass." << std::endl;  // MM: added
 	}
 
-
-// MM: added this function
-void SurfaceRenderer::display(GLContextData& contextData) const {
-  std::cout << "In SurfaceRenderer::display." << std::endl;  // MM: added
-  /* Set up OpenGL state: */
-  glPushAttrib(GL_ENABLE_BIT);
-  glEnable(GL_TEXTURE_2D);
-  glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);
-	
-  /* Get the texture set's GL state: */
-  // MM: getGLState returns OpenGL texture state object for the given OpenGL context
-  Images::TextureSet::GLState* texGLState=textures.getGLState(contextData);
-	
-  /* Bind the texture object: */
-  // MM: bindTexture binds the texture object associated with the given key
-  //     to its texture target on the current texture unit, returns texture state.
-  //     Note the key is 0U, which was the key in ImageViewer constructor.
-  const Images::TextureSet::GLState::Texture& tex=texGLState->bindTexture(0U);
-  const Images::BaseImage& image=tex.getImage();
-  // MM: try replacing this with Image so can test the setPixel() method (TO DO)
-	
-  /* Query the range of texture coordinates: */
-  const GLfloat* texMin=tex.getTexCoordMin();
-  const GLfloat* texMax=tex.getTexCoordMax();
-	
-  /* Draw the image: */
-  /* MM: Note: texture coordinates specify the point in the texture image that will 
-     correspond to the vertex you're specifying them for. see Vrui and OpenGL notes */
-  glBegin(GL_QUADS);
-  // MM: ^ specifies the following vertices as groups of 4 to interpret as quadrilaterals
-  glTexCoord2f(texMin[0],texMin[1]);  // MM: texture coords. 2f means two floats (for 2D)
-  glVertex2i(0,0);                    // MM: vertex points. 2i means two ints (for 2D)
-  glTexCoord2f(texMax[0],texMin[1]);
-  glVertex2i(image.getSize(0),0);
-  glTexCoord2f(texMax[0],texMax[1]);
-  glVertex2i(image.getSize(0),image.getSize(1));
-  glTexCoord2f(texMin[0],texMax[1]);
-  glVertex2i(0,image.getSize(1));
-  glEnd();
-  // MM: ^ ends the listing of vertices
-	
-  /* Protect the texture object: */
-  glBindTexture(GL_TEXTURE_2D,0);
-
-  /* Restore OpenGL state: */
-  glPopAttrib();
-  std::cout << "Done with SurfaceRenderer::display." << std::endl;  // MM: added
-}

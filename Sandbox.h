@@ -61,6 +61,7 @@ class Camera;
 }
 class FrameFilter;
 class DepthImageRenderer;
+class ImageMap;
 //class ElevationColorMap;
 class DEM;
 class SurfaceRenderer;
@@ -98,6 +99,7 @@ class Sandbox:public Vrui::Application,public GLObject
 		GLMaterial surfaceMaterial; // Material properties to render the surface in hill shading mode
 		bool useShadows; // Flag whether to use shadows in augmented reality hill shading
 		  //ElevationColorMap* elevationColorMap; // Pointer to an elevation color map
+		ImageMap* imageMap;
 		bool useContourLines; // Flag whether to draw elevation contour lines
 		GLfloat contourLineSpacing; // Spacing between adjacent contour lines in cm
 		SurfaceRenderer* surfaceRenderer; // Surface rendering object for this window

@@ -59,6 +59,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 */
 
 ImageMap::ImageMap(const char* imageName) {
+  std::cout << "CREATING NEW IMAGE MAP!" << std::endl;
   load(imageName);
 }
 
@@ -70,7 +71,7 @@ void ImageMap::initContext(GLContextData& contextData) const {
   // GLARBShaderObjects::initExtension();    // MM: don't think we need GL extensions for image
 
   // Create the data item and associate it with this object
-  DataItem* dataItem=new DataItem;           // what DataItem struct is this from?
+  DataItem* dataItem=new DataItem;           // this DataItem struct is in GLTextureObject.h
   contextData.addDataItem(this,dataItem);
 }
 
@@ -92,8 +93,8 @@ void ImageMap::load(const char* imageName) {
   }
 	
   // Open image file
-  char* filename = "/opt/SARndbox-2.3/maya/sample_text.jpg"; // MM: not sure correct path
-  Images::TextureSet::Texture& tex=textures.addTexture(Images::readImageFile(filename,Vrui::openFile(filename)),GL_TEXTURE_2D,GL_RGB8,0U);
+  //char* filename = "/opt/SARndbox-2.3/maya/sample_text.jpg"; // MM: not sure correct path
+  Images::TextureSet::Texture& tex=textures.addTexture(Images::readImageFile(imageName,Vrui::openFile(imageName)),GL_TEXTURE_2D,GL_RGB8,0U);
   // MM: this isn't going to work. there wasn't Images::TextureSet in the normal SARndbox
   //     how to bind image to texture?
 	
@@ -102,9 +103,6 @@ void ImageMap::load(const char* imageName) {
   tex.setWrapModes(GL_CLAMP_TO_EDGE,GL_CLAMP_TO_EDGE);
   tex.setFilterModes(GL_LINEAR_MIPMAP_LINEAR,GL_LINEAR);
   
-  // Load the height color map
-  // setColors(heightMapKeys.size(),&heightMapColors[0],&heightMapKeys[0],256);
-	
   // Invalidate the color map texture object
   ++textureVersion;
 }
@@ -137,31 +135,48 @@ void ImageMap::calcTexturePlane(const DepthImageRenderer* depthImageRenderer) {
 
 void ImageMap::bindTexture(GLContextData& contextData) const {
   // Binds the image map texture object to the currently active texture unit
+  std::cout << "In ImageMap::bindTexture." << std::endl; // MM: added
 
-  /* Set up OpenGL state: */
+  // Retrieve the data item
+  //DataItem* dataItem=contextData.retrieveDataItem<DataItem>(this);  // from ElevationColorMap
+  //std::cout << "Retrieved DataItem." << std::endl;
+  
+  // Bind the texture object
+  //glBindTexture(GL_TEXTURE_2D,dataItem->textureObjectId); // from ElevationColorMap. MM: changed to 2D
+  //glBindTexture(GL_TEXTURE_1D,dataItem->textureObjectId); // from ElevationColorMap
+  //std::cout << "glBindTexture(GL_TEXTURE_1D,dataItem->textureObjectId); done." << std::endl;
+  
+  
+  
+  // Code from ImageViewer.cpp:
+  // Set up OpenGL state
   glPushAttrib(GL_ENABLE_BIT);
   glEnable(GL_TEXTURE_2D);
   glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);
-	
-  /* Get the texture set's GL state: */
+  std::cout << "glPushAttrib, glEnable, glTexEnvi done." << std::endl;
+  
+  // Get the texture set's GL state
   // MM: getGLState returns OpenGL texture state object for the given OpenGL context
   Images::TextureSet::GLState* texGLState=textures.getGLState(contextData);
-	
-  /* Bind the texture object: */
+  std::cout << "Got GLState." << std::endl;  // MM: added
+  
+  // Bind the texture object
   // MM: bindTexture binds the texture object associated with the given key
   //     to its texture target on the current texture unit, returns texture state.
   //     Note the key is 0U, which was the key in ImageViewer constructor.
   const Images::TextureSet::GLState::Texture& tex=texGLState->bindTexture(0U);
   const Images::BaseImage& image=tex.getImage();
   // MM: try replacing this with Image so can test the setPixel() method (TO DO)
-	
-  /* Query the range of texture coordinates: */
+  std::cout << "texGLState->bindTexture and tex.getImage() done." << std::endl;  // MM: added
+  
+  // Query the range of texture coordinates
   const GLfloat* texMin=tex.getTexCoordMin();
   const GLfloat* texMax=tex.getTexCoordMax();
+  std::cout << "tex.getTexCoordMax() and Min() done." << std::endl;  // MM: added
 	
-  /* Draw the image: */
-  /* MM: Note: texture coordinates specify the point in the texture image that will 
-     correspond to the vertex you're specifying them for. see Vrui and OpenGL notes */
+  // Draw the image
+  // MM: Note: texture coordinates specify the point in the texture image that will 
+  // correspond to the vertex you're specifying them for. see Vrui and OpenGL notes
   glBegin(GL_QUADS);
   // MM: ^ specifies the following vertices as groups of 4 to interpret as quadrilaterals
   glTexCoord2f(texMin[0],texMin[1]);  // MM: texture coords. 2f means two floats (for 2D)
@@ -174,11 +189,16 @@ void ImageMap::bindTexture(GLContextData& contextData) const {
   glVertex2i(0,image.getSize(1));
   glEnd();
   // MM: ^ ends the listing of vertices
-	
-  /* Protect the texture object: */
-  glBindTexture(GL_TEXTURE_2D,0);
-  /* Restore OpenGL state: */
+
+  //Protect the texture object
+  //glBindTexture(GL_TEXTURE_2D,0); // MM: commented out bc already do this in SurfaceRenderer?
+  // Restore OpenGL state
   glPopAttrib();
+  std::cout << "Done with drawing!" << std::endl;
+  
+  
+  
+  
   
   // MM: code from ElevationColorMap.cpp
   // TO DO: adapt for image
@@ -200,6 +220,7 @@ void ImageMap::bindTexture(GLContextData& contextData) const {
     dataItem->textureObjectVersion=textureVersion;
   }
   */
+  std::cout << "Done with ImageMap::bindTexture." << std::endl; // MM: added
 }
 
 void ImageMap::uploadTexturePlane(GLint location) const {
@@ -215,104 +236,3 @@ void ImageMap::uploadTexturePlane(GLint location) const {
      SurfaceRenderer.cpp. glUniformARB is deprecated, possibly equivalent to
      glUniform2f or glUniform4fv (see Vrui and OpenGL notes). */
 }
-
-
-
-/****************************
-Methods of class ImageViewer:
-****************************/
-
-#if 0
-ImageViewer::ImageViewer()
-	:Vrui::Application()
-	{
-	/* Load the image into the texture set: */
-        // MM: addTexture(BaseImage, open file target, internal format, key)
-	//     GL_RGB8 must mean RGB 8-bit image. Note the key, 0U, is referenced in display()
-	char* filename = "sample_text.jpg";
-	Images::TextureSet::Texture& tex=textures.addTexture(Images::readImageFile(filename,Vrui::openFile(filename)),GL_TEXTURE_2D,GL_RGB8,0U);
-	
-	/* Set clamping and filtering parameters for mip-mapped linear interpolation: */
-	tex.setMipmapRange(0,1000);
-	tex.setWrapModes(GL_CLAMP_TO_EDGE,GL_CLAMP_TO_EDGE);
-	tex.setFilterModes(GL_LINEAR_MIPMAP_LINEAR,GL_LINEAR);
-	}
-
-ImageViewer::~ImageViewer(void)
-	{
-	}
-
-void ImageViewer::display(GLContextData& contextData) const
-	{
-	/* Set up OpenGL state: */
-	glPushAttrib(GL_ENABLE_BIT);
-	glEnable(GL_TEXTURE_2D);
-	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);
-	
-	/* Get the texture set's GL state: */
-	// MM: getGLState returns OpenGL texture state object for the given OpenGL context
-	Images::TextureSet::GLState* texGLState=textures.getGLState(contextData);
-	
-	/* Bind the texture object: */
-	// MM: bindTexture binds the texture object associated with the given key
-	//     to its texture target on the current texture unit, returns texture state.
-	//     Note the key is 0U, which was the key in ImageViewer constructor.
-	const Images::TextureSet::GLState::Texture& tex=texGLState->bindTexture(0U);
-	const Images::BaseImage& image=tex.getImage();
-	// MM: try replacing this with Image so can test the setPixel() method (TO DO)
-	
-	/* Query the range of texture coordinates: */
-	const GLfloat* texMin=tex.getTexCoordMin();
-	const GLfloat* texMax=tex.getTexCoordMax();
-	
-	/* Draw the image: */
-	/* MM: Note: texture coordinates specify the point in the texture image that will 
-               correspond to the vertex you're specifying them for. see Vrui and OpenGL notes */
-	glBegin(GL_QUADS);
-	// MM: ^ specifies the following vertices as groups of 4 to interpret as quadrilaterals
-	glTexCoord2f(texMin[0],texMin[1]);  // MM: texture coords. 2f means two floats (for 2D)
-	glVertex2i(0,0);                    // MM: vertex points. 2i means two ints (for 2D)
-	glTexCoord2f(texMax[0],texMin[1]);
-	glVertex2i(image.getSize(0),0);
-	glTexCoord2f(texMax[0],texMax[1]);
-	glVertex2i(image.getSize(0),image.getSize(1));
-	glTexCoord2f(texMin[0],texMax[1]);
-	glVertex2i(0,image.getSize(1));
-	glEnd();
-	// MM: ^ ends the listing of vertices
-	
-	/* Protect the texture object: */
-	glBindTexture(GL_TEXTURE_2D,0);
-
-	/*
-	// Draw the image's backside:
-	// MM: this is because ImageViewer allows you to tilt & move the image
-	//     so it needs a blank "back" for if you flip the image over
-	glDisable(GL_TEXTURE_2D);
-	glMaterial(GLMaterialEnums::FRONT,GLMaterial(GLMaterial::Color(0.7f,0.7f,0.7f)));
-	
-	glBegin(GL_QUADS);
-	glNormal3f(0.0f,0.0f,-1.0f);
-	glVertex2i(0,0);
-	glVertex2i(0,image.getSize(1));
-	glVertex2i(image.getSize(0),image.getSize(1));
-	glVertex2i(image.getSize(0),0);
-	glEnd();
-	*/	
-	/* Restore OpenGL state: */
-	glPopAttrib();
-	}
-
-void ImageViewer::resetNavigation(void) {
-  /* Access the image: */
-  const Images::BaseImage& image=textures.getTexture(0U).getImage();
-	
-  /* Reset the Vrui navigation transformation: */
-  Vrui::Scalar w=Vrui::Scalar(image.getSize(0));
-  Vrui::Scalar h=Vrui::Scalar(image.getSize(1));
-  Vrui::Point center(Math::div2(w),Math::div2(h),Vrui::Scalar(0.01));
-  Vrui::Scalar size=Math::sqrt(Math::sqr(w)+Math::sqr(h));
-  Vrui::setNavigationTransformation(center,size,Vrui::Vector(0,1,0));
-}
-#endif
-

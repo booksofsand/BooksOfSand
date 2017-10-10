@@ -108,6 +108,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #include "FrameFilter.h"
 #include "DepthImageRenderer.h"
 #include "ElevationColorMap.h"
+#include "ImageMap.h"
 #include "DEM.h"
 #include "SurfaceRenderer.h"
 #include "HandExtractor.h"
@@ -169,6 +170,7 @@ Sandbox::RenderSettings::RenderSettings(void)
 	:fixProjectorView(false),projectorTransform(PTransform::identity),projectorTransformValid(false),
 	 hillshade(false),surfaceMaterial(GLMaterial::Color(1.0f,1.0f,1.0f)),
 	 useShadows(false),
+	 imageMap(0),
 	 //elevationColorMap(0),
 	 //useContourLines(true),contourLineSpacing(0.75f),
 	 surfaceRenderer(0)
@@ -183,6 +185,7 @@ Sandbox::RenderSettings::RenderSettings(const Sandbox::RenderSettings& source)
 	:fixProjectorView(source.fixProjectorView),projectorTransform(source.projectorTransform),projectorTransformValid(source.projectorTransformValid),
 	 hillshade(source.hillshade),surfaceMaterial(source.surfaceMaterial),
 	 useShadows(source.useShadows),
+	 imageMap(source.imageMap!=0?new ImageMap(*source.imageMap):0),
 	 //elevationColorMap(source.elevationColorMap!=0?new ElevationColorMap(*source.elevationColorMap):0),
 	 //useContourLines(source.useContourLines),contourLineSpacing(source.contourLineSpacing),
 	 surfaceRenderer(0)
@@ -192,6 +195,7 @@ Sandbox::RenderSettings::RenderSettings(const Sandbox::RenderSettings& source)
 Sandbox::RenderSettings::~RenderSettings(void)
 	{
 	delete surfaceRenderer;
+	delete imageMap;
 	//delete elevationColorMap;
 	}
 
@@ -244,6 +248,10 @@ void Sandbox::RenderSettings::loadHeightMap(const char* heightMapName)
 	return;
 	try
 		{
+		  ImageMap* newImageMap = new ImageMap("/opt/SARndbox-2.3/maya/sample_text.jpg");
+		  delete imageMap;
+		  imageMap = newImageMap;
+		  
 		/* Load the elevation color map of the given name: */
 		//ElevationColorMap* newElevationColorMap=new ElevationColorMap(heightMapName);
 		
@@ -450,10 +458,10 @@ Sandbox::Sandbox(int& argc,char**& argv)
 	sandboxLayoutFileName.append(CONFIG_DEFAULTBOXLAYOUTFILENAME);
 	sandboxLayoutFileName=cfg.retrieveString("./sandboxLayoutFileName",sandboxLayoutFileName);
 	Math::Interval<double> elevationRange=cfg.retrieveValue<Math::Interval<double> >("./elevationRange",Math::Interval<double>(-1000.0,1000.0));
-	bool haveHeightMapPlane=cfg.hasTag("./heightMapPlane");
+	bool haveHeightMapPlane=cfg.hasTag("./imageMapPlane");
 	Plane heightMapPlane;
 	if(haveHeightMapPlane)
-		heightMapPlane=cfg.retrieveValue<Plane>("./heightMapPlane");
+		heightMapPlane=cfg.retrieveValue<Plane>("./imageMapPlane");
 	unsigned int numAveragingSlots=cfg.retrieveValue<unsigned int>("./numAveragingSlots",30);
 	unsigned int minNumSamples=cfg.retrieveValue<unsigned int>("./minNumSamples",10);
 	unsigned int maxVariance=cfg.retrieveValue<unsigned int>("./maxVariance",2);
@@ -771,6 +779,7 @@ Sandbox::Sandbox(int& argc,char**& argv)
 		//rsIt->surfaceRenderer->setDrawContourLines(rsIt->useContourLines);
 		//rsIt->surfaceRenderer->setContourLineDistance(rsIt->contourLineSpacing);
 		//rsIt->surfaceRenderer->setElevationColorMap(rsIt->elevationColorMap); MM: commented out
+		rsIt->surfaceRenderer->setImageMap(rsIt->imageMap);
 		//rsIt->surfaceRenderer->setIlluminate(rsIt->hillshade);
 		//rsIt->surfaceRenderer->setDemDistScale(demDistScale);
 		}
@@ -901,21 +910,26 @@ void Sandbox::frame(void)
 			/* Parse the command: */
 			*commandEnd='\0';
 			// MM: this height map loading - is this just a cmdline option or is it regular?
-			/* MM: commented out
 			if(strcasecmp(command,"colorMap")==0)
 				{
 				try
 					{
+					  for(std::vector<RenderSettings>::iterator rsIt=renderSettings.begin();rsIt!=renderSettings.end();++rsIt)
+						if(rsIt->imageMap!=0)
+							rsIt->imageMap->load(parameter);
+					  /*
 					// Update all height color maps:
 					for(std::vector<RenderSettings>::iterator rsIt=renderSettings.begin();rsIt!=renderSettings.end();++rsIt)
 						if(rsIt->elevationColorMap!=0)
 							rsIt->elevationColorMap->load(parameter);
+						*/
 					}
 				catch(std::runtime_error err)
 					{
 					std::cerr<<"Cannot read height color map "<<parameter<<" due to exception "<<err.what()<<std::endl;
 					}
 				} 
+			/*
 			else if(strcasecmp(command,"heightMapPlane")==0)
 				{
 				// Read the height map plane equation: 

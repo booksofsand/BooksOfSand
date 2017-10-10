@@ -53,7 +53,7 @@ void ElevationColorMap::initContext(GLContextData& contextData) const
 	GLARBShaderObjects::initExtension();
 	
 	/* Create the data item and associate it with this object: */
-	DataItem* dataItem=new DataItem;
+	DataItem* dataItem=new DataItem;         // this DataItem struct is in GLTextureObject.h
 	contextData.addDataItem(this,dataItem);
 	}
 

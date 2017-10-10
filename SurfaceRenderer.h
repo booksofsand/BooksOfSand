@@ -77,7 +77,7 @@ class SurfaceRenderer:public GLObject
 		};
 	
 	/* Elements: */
-	Images::TextureSet textures; // MM: ADDED - Texture set containing the image to be displayed
+	//Images::TextureSet textures; // MM: ADDED - Texture set containing the image to be displayed
 	const DepthImageRenderer* depthImageRenderer; // Renderer for low-level surface rendering
 	unsigned int depthImageSize[2]; // Size of depth image texture
 	PTransform tangentDepthProjection; // Transposed depth projection matrix for tangent planes, i.e., homogeneous normal vectors
@@ -117,6 +117,7 @@ class SurfaceRenderer:public GLObject
 	void setContourLineDistance(GLfloat newContourLineDistance); // Sets the elevation distance between adjacent topographic contour lines
 	*/
 	//void setElevationColorMap(ElevationColorMap* newElevationColorMap); // Sets an elevation color map MM: commented out
+	void setImageMap(ImageMap* newImageMap);
 	void setDem(DEM* newDem); // Sets a pre-made digital elevation model to create a zero surface for height color mapping
 	void setDemDistScale(GLfloat newDemDistScale); // Sets the deviation from DEM to surface to saturate the deviation color map
 	void setIlluminate(bool newIlluminate); // Sets the illumination flag

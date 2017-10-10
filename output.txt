@@ -1,0 +1,119 @@
+[root@localhost bin]# cd /opt/SARndbox-2.3/
+[root@localhost SARndbox-2.3]# make install
+---- SARndbox installation configuration ----
+Root installation directory: /usr/local
+Configuration data directory: /usr/local/etc/SARndbox-2.3
+Resource data directory: /usr/local/share/SARndbox-2.3
+Shader source code directory: /usr/local/share/SARndbox-2.3/Shaders
+---- End of SARndbox configuration options: ----
+Compiling SurfaceRenderer.cpp...
+Compiling Sandbox.cpp...
+Linking bin/SARndbox...
+Installing the Augmented Reality Sandbox in /usr/local...
+[root@localhost SARndbox-2.3]# cd /usr/local/bin/
+[root@localhost bin]# ./SARndbox -uhm -fpv &
+[1] 3490
+[root@localhost bin]# Making a Sandbox!
+In Sandbox::RenderSettings::RenderSettings.
+In Sandbox::RenderSettings::loadProjectorTransform.
+Done with Sandbox::RenderSettings::loadProjectorTransform.
+Done with Sandbox::RenderSettings::RenderSettings.
+In Sandbox::loadHeightMap.
+Done with Sandbox::loadHeightMap.
+In SurfaceRenderer::SurfaceRenderer.
+Done with SurfaceRenderer::SurfaceRenderer.
+In Sandbox::createMainMenu.
+Done with Sandbox::createMainMenu.
+Vrui: Screen saver inhibition not supported  // MM: error
+
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+
+In Sandbox::initContext.
+In Sandbox::DataItem::DataItem.
+Done with Sandbox::DataItem::DataItem.
+Done with Sandbox::initContext.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+
+In SurfaceRenderer::initContext.
+In SurfaceRenderer::DataItem::DataItem.
+Done with SurfaceRenderer::DataItem::DataItem.
+In SurfaceRenderer::createSinglePassSurfaceShader.
+Done with SurfaceRenderer::createSinglePassSurfaceShader.
+Done with SurfaceRenderer::initContext.
+In Sandbox::resetNavigation.
+Done with Sandbox::resetNavigation.
+In Sandbox::frame.
+Done with Sandbox::frame.
+
+// MM: begin repeating section
+
+In Sandbox::display.
+In SurfaceRenderer::renderSinglePass.
+In SurfaceRenderer::renderPixelCornerElevations.
+Done with SurfaceRenderer::renderPixelCornerElevations.
+In SurfaceRenderer::display.
+Done with SurfaceRenderer::display.
+Done with SurfaceRenderer::renderSinglePass.
+Done with Sandbox::display.
+
+glPrintError: Invalid operation
+In Sandbox::frame.
+Done with Sandbox::frame.
+
+In Sandbox::display.
+In SurfaceRenderer::renderSinglePass.
+In SurfaceRenderer::renderPixelCornerElevations.
+Done with SurfaceRenderer::renderPixelCornerElevations.
+In SurfaceRenderer::display.
+Done with SurfaceRenderer::display.
+Done with SurfaceRenderer::renderSinglePass.
+Done with Sandbox::display.
+
+glPrintError: Invalid operation
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::frame.
+Done with Sandbox::frame.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+
+
+// MM: the last four paragraphs then repeat constantly

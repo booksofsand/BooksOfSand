@@ -38,6 +38,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #include <GL/Extensions/GLARBVertexBufferObject.h>
 #include <GL/Extensions/GLARBVertexShader.h>
 #include <GL/GLTransformationWrappers.h>
+#include <iostream> // MM: added
 
 #include "ShaderHelper.h"
 

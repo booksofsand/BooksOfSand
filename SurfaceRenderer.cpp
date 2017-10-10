@@ -62,7 +62,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 // MM: ^ added
 
 #include "DepthImageRenderer.h"
-#include "ElevationColorMap.h"
+//#include "ElevationColorMap.h"  // MM: commented out
 #include "DEM.h"
 #include "ShaderHelper.h"
 #include "Config.h"
@@ -780,8 +780,8 @@ void SurfaceRenderer::renderSinglePass(const int viewport[4],const PTransform& p
 
 	// MM: here's where the display happens, I think
 	/* Draw the surface: */
-	//depthImageRenderer->renderSurfaceTemplate(contextData);
-	//VRUI_APPLICATION_RUN(ImageViewer) // MM: try running ImageViewer instead to display a jpg
+	depthImageRenderer->renderSurfaceTemplate(contextData);  // MM: not sure if necessary
+
 	display(contextData);  // MM: TO DO: try this on geosci sandbox. will need to compile & fix errors
 	
 	
@@ -812,7 +812,7 @@ void SurfaceRenderer::renderSinglePass(const int viewport[4],const PTransform& p
 	glActiveTextureARB(GL_TEXTURE0_ARB);
 	glBindTexture(GL_TEXTURE_RECTANGLE_ARB,0); // MM: texture target and texture name
 	
-	/* Unbind the height map shader: */
+	// Unbind the height map shader
 	glUseProgramObjectARB(0);
 	
 	std::cout << "Done with SurfaceRenderer::renderSinglePass." << std::endl;  // MM: added

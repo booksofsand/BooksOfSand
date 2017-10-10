@@ -43,25 +43,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #include <GL/GLTransformationWrappers.h>
 #include <GL/GLGeometryVertex.h>
 
-// MM: added
-#include <Misc/MessageLogger.h>
-#include <Math/Math.h>
-#include <GL/gl.h>
-#include <GL/GLColorTemplates.h>
-#include <GL/GLMaterial.h>
-#include <GL/GLObject.h>
-#include <GL/GLContextData.h>
-#include <GL/GLTransformationWrappers.h>
-#include <Images/RGBImage.h>
-#include <Images/ReadImageFile.h>
-#include <Images/TextureSet.h>
-#include <Vrui/Vrui.h>
-#include <Vrui/Application.h>
-#include <Vrui/Tool.h>
-#include <Vrui/GenericToolFactory.h>
-#include <Vrui/ToolManager.h>
-#include <Vrui/DisplayState.h>
-#include <Vrui/OpenFile.h>
 #include <iostream> // MM: added
 
 #include "DepthImageRenderer.h"
@@ -844,40 +825,7 @@ void SurfaceRenderer::renderSinglePass(const int viewport[4],const PTransform& p
 
 	// MM: here's where the display happens, I think
 	/* Draw the surface: */
-	//depthImageRenderer->renderSurfaceTemplate(contextData);
-	//VRUI_APPLICATION_RUN(ImageViewer) // MM: try running ImageViewer instead to display a jpg
-	
-	
-	string filename = "flower.jpg";
-	Images::TextureSet::Texture& tex=textures.addTexture(Images::readImageFile(filename,Vrui::openFile(filename),GL_TEXTURE_2D,GL_RGB8,0U);
-	tex.setMipmapRange(0,1000);
-	tex.setWrapModes(GL_CLAMP_TO_EDGE,GL_CLAMP_TO_EDGE);
-	tex.setFilterModes(GL_LINEAR_MIPMAP_LINEAR,GL_LINEAR);
-	
-	glPushAttrib(GL_ENABLE_BIT);
-	glEnable(GL_TEXTURE_2D);
-	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);
-	
-	Images::TextureSet::GLState* texGLState=textures.getGLState(contextData);
-	const Images::TextureSet::GLState::Texture& tex=texGLState->bindTexture(0U);
-	const Images::BaseImage& image=tex.getImage();
-	const GLfloat* texMin=tex.getTexCoordMin();
-	const GLfloat* texMax=tex.getTexCoordMax();
-
-	glBegin(GL_QUADS);
-	glTexCoord2f(texMin[0],texMin[1]);
-	glVertex2i(0,0);
-	glTexCoord2f(texMax[0],texMin[1]);
-	glVertex2i(image.getSize(0),0);
-	glTexCoord2f(texMax[0],texMax[1]);
-	glVertex2i(image.getSize(0),image.getSize(1));
-	glTexCoord2f(texMin[0],texMax[1]);
-	glVertex2i(0,image.getSize(1));
-	glEnd();
-	
-	glBindTexture(GL_TEXTURE_2D,0);
-	glPopAttrib();
-	
+	depthImageRenderer->renderSurfaceTemplate(contextData);
 	
 	/* Unbind all textures and buffers: */
 	if(waterTable!=0&&dem==0)

@@ -1,0 +1,576 @@
+In Sandbox::Sandbox.
+In Sandbox::RenderSettings::RenderSettings.
+In Sandbox::RenderSettings::loadProjectorTransform.
+Done with Sandbox::RenderSettings::loadProjectorTransform.
+Done with Sandbox::RenderSettings::RenderSettings.
+In Sandbox::RenderSettings::RenderSettings.
+Done with Sandbox::RenderSettings::RenderSettings.
+In Sandbox::RenderSettings::loadHeightMap.
+In ElevationColorMap::ElevationColorMap.
+In ElevationColorMap::load.
+Done with ElevationColorMap::load.
+Done with ElevationColorMap::ElevationColorMap.
+Done with Sandbox::RenderSettings::loadHeightMap.
+In DepthImageRenderer::DepthImageRenderer.
+Done with DepthImageRenderer::DepthImageRenderer.
+In DepthImageRenderer::setDepthProjection.
+In DepthImageRenderer::setBasePlane.
+Done with DepthImageRenderer::setBasePlane.
+Done with DepthImageRenderer::setDepthProjection.
+In DepthImageRenderer::setBasePlane.
+Done with DepthImageRenderer::setBasePlane.
+In ElevationColorMap::calcTexturePlane(const DepthImageRenderer* depthImageRenderer).
+In ElevationColorMap::calcTexturePlane(const Plane& basePlane).
+Done with ElevationColorMap::calcTexturePlane.
+Done with ElevationColorMap::calcTexturePlane.
+In SurfaceRenderer::SurfaceRenderer.
+Done with SurfaceRenderer::SurfaceRenderer.
+In SurfaceRenderer::setElevationColorMap.
+Done with SurfaceRenderer::setElevationColorMap.
+In Sandbox::createMainMenu.
+Done with Sandbox::createMainMenu.
+Done with Sandbox::Sandbox.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::initContext.
+In Sandbox::DataItem::DataItem.
+Done with Sandbox::DataItem::DataItem.
+Done with Sandbox::initContext.
+In ElevationColorMap::initContext.
+Done with ElevationColorMap::initContext.
+In DepthImageRenderer::initContext.
+In DepthImageRenderer::DataItem::DataItem.
+Done with DepthImageRenderer::DataItem::DataItem.
+Done with DepthImageRenderer::initContext.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In SurfaceRenderer::initContext.
+In SurfaceRenderer::DataItem::DataItem.
+Done with SurfaceRenderer::DataItem::DataItem.
+In SurfaceRenderer::createSinglePassSurfaceShader.
+Done with SurfaceRenderer::createSinglePassSurfaceShader.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+Done with SurfaceRenderer::initContext.
+In Sandbox::frame.
+In DepthImageRenderer::setDepthImage.
+Done with DepthImageRenderer::setDepthImage.
+Done with Sandbox::frame.
+In Sandbox::display.
+In DepthImageRenderer::renderElevation.
+Done with DepthImageRenderer::renderElevation.
+In SurfaceRenderer::renderSinglePass.
+In SurfaceRenderer::renderPixelCornerElevations.
+In DepthImageRenderer::renderElevation.
+Done with DepthImageRenderer::renderElevation.
+Done with SurfaceRenderer::renderPixelCornerElevations.
+In DepthImageRenderer::bindDepthTexture.
+Done with DepthImageRenderer::bindDepthTexture.
+In DepthImageRenderer::uploadDepthProjection.
+Done with DepthImageRenderer::uploadDepthProjection.
+In ElevationColorMap::uploadTexturePlane.
+Done with ElevationColorMap::uploadTexturePlane.
+In ElevationColorMap::bindTexture.
+Done with ElevationColorMap::bindTexture.
+In DepthImageRenderer::renderSurfaceTemplate.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+Done with DepthImageRenderer::renderSurfaceTemplate.
+Done with SurfaceRenderer::renderSinglePass.
+Done with Sandbox::display.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+glPrintError: Invalid framebuffer operation
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::frame.
+In DepthImageRenderer::setDepthImage.
+Done with DepthImageRenderer::setDepthImage.
+Done with Sandbox::frame.
+In Sandbox::display.
+In DepthImageRenderer::renderElevation.
+Done with DepthImageRenderer::renderElevation.
+In SurfaceRenderer::renderSinglePass.
+In SurfaceRenderer::renderPixelCornerElevations.
+In DepthImageRenderer::renderElevation.
+Done with DepthImageRenderer::renderElevation.
+Done with SurfaceRenderer::renderPixelCornerElevations.
+In DepthImageRenderer::bindDepthTexture.
+Done with DepthImageRenderer::bindDepthTexture.
+In DepthImageRenderer::uploadDepthProjection.
+Done with DepthImageRenderer::uploadDepthProjection.
+In ElevationColorMap::uploadTexturePlane.
+Done with ElevationColorMap::uploadTexturePlane.
+In ElevationColorMap::bindTexture.
+Done with ElevationColorMap::bindTexture.
+In DepthImageRenderer::renderSurfaceTemplate.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+Done with DepthImageRenderer::renderSurfaceTemplate.
+Done with SurfaceRenderer::renderSinglePass.
+Done with Sandbox::display.
+glPrintError: Invalid framebuffer operation
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::frame.
+In DepthImageRenderer::setDepthImage.
+Done with DepthImageRenderer::setDepthImage.
+Done with Sandbox::frame.
+In Sandbox::display.
+In DepthImageRenderer::renderElevation.
+Done with DepthImageRenderer::renderElevation.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In SurfaceRenderer::renderSinglePass.
+In SurfaceRenderer::renderPixelCornerElevations.
+In DepthImageRenderer::renderElevation.
+Done with DepthImageRenderer::renderElevation.
+Done with SurfaceRenderer::renderPixelCornerElevations.
+In DepthImageRenderer::bindDepthTexture.
+Done with DepthImageRenderer::bindDepthTexture.
+In DepthImageRenderer::uploadDepthProjection.
+Done with DepthImageRenderer::uploadDepthProjection.
+In ElevationColorMap::uploadTexturePlane.
+Done with ElevationColorMap::uploadTexturePlane.
+In ElevationColorMap::bindTexture.
+Done with ElevationColorMap::bindTexture.
+In DepthImageRenderer::renderSurfaceTemplate.
+Done with DepthImageRenderer::renderSurfaceTemplate.
+Done with SurfaceRenderer::renderSinglePass.
+Done with Sandbox::display.
+glPrintError: Invalid framebuffer operation
+In Sandbox::frame.
+In DepthImageRenderer::setDepthImage.
+Done with DepthImageRenderer::setDepthImage.
+Done with Sandbox::frame.
+In Sandbox::display.
+In DepthImageRenderer::renderElevation.
+Done with DepthImageRenderer::renderElevation.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In SurfaceRenderer::renderSinglePass.
+In SurfaceRenderer::renderPixelCornerElevations.
+In DepthImageRenderer::renderElevation.
+Done with DepthImageRenderer::renderElevation.
+Done with SurfaceRenderer::renderPixelCornerElevations.
+In DepthImageRenderer::bindDepthTexture.
+Done with DepthImageRenderer::bindDepthTexture.
+In DepthImageRenderer::uploadDepthProjection.
+Done with DepthImageRenderer::uploadDepthProjection.
+In ElevationColorMap::uploadTexturePlane.
+Done with ElevationColorMap::uploadTexturePlane.
+In ElevationColorMap::bindTexture.
+Done with ElevationColorMap::bindTexture.
+In DepthImageRenderer::renderSurfaceTemplate.
+Done with DepthImageRenderer::renderSurfaceTemplate.
+Done with SurfaceRenderer::renderSinglePass.
+Done with Sandbox::display.
+glPrintError: Invalid framebuffer operation
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::frame.
+In DepthImageRenderer::setDepthImage.
+Done with DepthImageRenderer::setDepthImage.
+Done with Sandbox::frame.
+In Sandbox::display.
+In DepthImageRenderer::renderElevation.
+Done with DepthImageRenderer::renderElevation.
+In SurfaceRenderer::renderSinglePass.
+In SurfaceRenderer::renderPixelCornerElevations.
+In DepthImageRenderer::renderElevation.
+Done with DepthImageRenderer::renderElevation.
+Done with SurfaceRenderer::renderPixelCornerElevations.
+In DepthImageRenderer::bindDepthTexture.
+Done with DepthImageRenderer::bindDepthTexture.
+In DepthImageRenderer::uploadDepthProjection.
+Done with DepthImageRenderer::uploadDepthProjection.
+In ElevationColorMap::uploadTexturePlane.
+Done with ElevationColorMap::uploadTexturePlane.
+In ElevationColorMap::bindTexture.
+Done with ElevationColorMap::bindTexture.
+In DepthImageRenderer::renderSurfaceTemplate.
+Done with DepthImageRenderer::renderSurfaceTemplate.
+Done with SurfaceRenderer::renderSinglePass.
+Done with Sandbox::display.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+glPrintError: Invalid framebuffer operation
+In Sandbox::frame.
+In DepthImageRenderer::setDepthImage.
+Done with DepthImageRenderer::setDepthImage.
+Done with Sandbox::frame.
+In Sandbox::display.
+In DepthImageRenderer::renderElevation.
+Done with DepthImageRenderer::renderElevation.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In SurfaceRenderer::renderSinglePass.
+In SurfaceRenderer::renderPixelCornerElevations.
+In DepthImageRenderer::renderElevation.
+Done with DepthImageRenderer::renderElevation.
+Done with SurfaceRenderer::renderPixelCornerElevations.
+In DepthImageRenderer::bindDepthTexture.
+Done with DepthImageRenderer::bindDepthTexture.
+In DepthImageRenderer::uploadDepthProjection.
+Done with DepthImageRenderer::uploadDepthProjection.
+In ElevationColorMap::uploadTexturePlane.
+Done with ElevationColorMap::uploadTexturePlane.
+In ElevationColorMap::bindTexture.
+Done with ElevationColorMap::bindTexture.
+In DepthImageRenderer::renderSurfaceTemplate.
+Done with DepthImageRenderer::renderSurfaceTemplate.
+Done with SurfaceRenderer::renderSinglePass.
+Done with Sandbox::display.
+glPrintError: Invalid framebuffer operation
+In Sandbox::frame.
+In DepthImageRenderer::setDepthImage.
+Done with DepthImageRenderer::setDepthImage.
+Done with Sandbox::frame.
+In Sandbox::display.
+In DepthImageRenderer::renderElevation.
+Done with DepthImageRenderer::renderElevation.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In SurfaceRenderer::renderSinglePass.
+In SurfaceRenderer::renderPixelCornerElevations.
+In DepthImageRenderer::renderElevation.
+Done with DepthImageRenderer::renderElevation.
+Done with SurfaceRenderer::renderPixelCornerElevations.
+In DepthImageRenderer::bindDepthTexture.
+Done with DepthImageRenderer::bindDepthTexture.
+In DepthImageRenderer::uploadDepthProjection.
+Done with DepthImageRenderer::uploadDepthProjection.
+In ElevationColorMap::uploadTexturePlane.
+Done with ElevationColorMap::uploadTexturePlane.
+In ElevationColorMap::bindTexture.
+Done with ElevationColorMap::bindTexture.
+In DepthImageRenderer::renderSurfaceTemplate.
+Done with DepthImageRenderer::renderSurfaceTemplate.
+Done with SurfaceRenderer::renderSinglePass.
+Done with Sandbox::display.
+glPrintError: Invalid framebuffer operation
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::frame.
+In DepthImageRenderer::setDepthImage.
+Done with DepthImageRenderer::setDepthImage.
+Done with Sandbox::frame.
+In Sandbox::display.
+In DepthImageRenderer::renderElevation.
+Done with DepthImageRenderer::renderElevation.
+In SurfaceRenderer::renderSinglePass.
+In SurfaceRenderer::renderPixelCornerElevations.
+In DepthImageRenderer::renderElevation.
+Done with DepthImageRenderer::renderElevation.
+Done with SurfaceRenderer::renderPixelCornerElevations.
+In DepthImageRenderer::bindDepthTexture.
+Done with DepthImageRenderer::bindDepthTexture.
+In DepthImageRenderer::uploadDepthProjection.
+Done with DepthImageRenderer::uploadDepthProjection.
+In ElevationColorMap::uploadTexturePlane.
+Done with ElevationColorMap::uploadTexturePlane.
+In ElevationColorMap::bindTexture.
+Done with ElevationColorMap::bindTexture.
+In DepthImageRenderer::renderSurfaceTemplate.
+Done with DepthImageRenderer::renderSurfaceTemplate.
+Done with SurfaceRenderer::renderSinglePass.
+Done with Sandbox::display.
+glPrintError: Invalid framebuffer operation
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::frame.
+In DepthImageRenderer::setDepthImage.
+Done with DepthImageRenderer::setDepthImage.
+Done with Sandbox::frame.
+In Sandbox::display.
+In DepthImageRenderer::renderElevation.
+Done with DepthImageRenderer::renderElevation.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In SurfaceRenderer::renderSinglePass.
+In SurfaceRenderer::renderPixelCornerElevations.
+In DepthImageRenderer::renderElevation.
+Done with DepthImageRenderer::renderElevation.
+Done with SurfaceRenderer::renderPixelCornerElevations.
+In DepthImageRenderer::bindDepthTexture.
+Done with DepthImageRenderer::bindDepthTexture.
+In DepthImageRenderer::uploadDepthProjection.
+Done with DepthImageRenderer::uploadDepthProjection.
+In ElevationColorMap::uploadTexturePlane.
+Done with ElevationColorMap::uploadTexturePlane.
+In ElevationColorMap::bindTexture.
+Done with ElevationColorMap::bindTexture.
+In DepthImageRenderer::renderSurfaceTemplate.
+Done with DepthImageRenderer::renderSurfaceTemplate.
+Done with SurfaceRenderer::renderSinglePass.
+Done with Sandbox::display.
+glPrintError: Invalid framebuffer operation
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::frame.
+In DepthImageRenderer::setDepthImage.
+Done with DepthImageRenderer::setDepthImage.
+Done with Sandbox::frame.
+In Sandbox::display.
+In DepthImageRenderer::renderElevation.
+Done with DepthImageRenderer::renderElevation.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In SurfaceRenderer::renderSinglePass.
+In SurfaceRenderer::renderPixelCornerElevations.
+In DepthImageRenderer::renderElevation.
+Done with DepthImageRenderer::renderElevation.
+Done with SurfaceRenderer::renderPixelCornerElevations.
+In DepthImageRenderer::bindDepthTexture.
+Done with DepthImageRenderer::bindDepthTexture.
+In DepthImageRenderer::uploadDepthProjection.
+Done with DepthImageRenderer::uploadDepthProjection.
+In ElevationColorMap::uploadTexturePlane.
+Done with ElevationColorMap::uploadTexturePlane.
+In ElevationColorMap::bindTexture.
+Done with ElevationColorMap::bindTexture.
+In DepthImageRenderer::renderSurfaceTemplate.
+Done with DepthImageRenderer::renderSurfaceTemplate.
+Done with SurfaceRenderer::renderSinglePass.
+Done with Sandbox::display.
+glPrintError: Invalid framebuffer operation
+In Sandbox::frame.
+In DepthImageRenderer::setDepthImage.
+Done with DepthImageRenderer::setDepthImage.
+Done with Sandbox::frame.
+In Sandbox::display.
+In DepthImageRenderer::renderElevation.
+Done with DepthImageRenderer::renderElevation.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In SurfaceRenderer::renderSinglePass.
+In SurfaceRenderer::renderPixelCornerElevations.
+In DepthImageRenderer::renderElevation.
+Done with DepthImageRenderer::renderElevation.
+Done with SurfaceRenderer::renderPixelCornerElevations.
+In DepthImageRenderer::bindDepthTexture.
+Done with DepthImageRenderer::bindDepthTexture.
+In DepthImageRenderer::uploadDepthProjection.
+Done with DepthImageRenderer::uploadDepthProjection.
+In ElevationColorMap::uploadTexturePlane.
+Done with ElevationColorMap::uploadTexturePlane.
+In ElevationColorMap::bindTexture.
+Done with ElevationColorMap::bindTexture.
+In DepthImageRenderer::renderSurfaceTemplate.
+Done with DepthImageRenderer::renderSurfaceTemplate.
+Done with SurfaceRenderer::renderSinglePass.
+Done with Sandbox::display.
+glPrintError: Invalid framebuffer operation
+In Sandbox::frame.
+In DepthImageRenderer::setDepthImage.
+Done with DepthImageRenderer::setDepthImage.
+Done with Sandbox::frame.
+In Sandbox::display.
+In DepthImageRenderer::renderElevation.
+Done with DepthImageRenderer::renderElevation.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In SurfaceRenderer::renderSinglePass.
+In SurfaceRenderer::renderPixelCornerElevations.
+In DepthImageRenderer::renderElevation.
+Done with DepthImageRenderer::renderElevation.
+Done with SurfaceRenderer::renderPixelCornerElevations.
+In DepthImageRenderer::bindDepthTexture.
+Done with DepthImageRenderer::bindDepthTexture.
+In DepthImageRenderer::uploadDepthProjection.
+Done with DepthImageRenderer::uploadDepthProjection.
+In ElevationColorMap::uploadTexturePlane.
+Done with ElevationColorMap::uploadTexturePlane.
+In ElevationColorMap::bindTexture.
+Done with ElevationColorMap::bindTexture.
+In DepthImageRenderer::renderSurfaceTemplate.
+Done with DepthImageRenderer::renderSurfaceTemplate.
+Done with SurfaceRenderer::renderSinglePass.
+Done with Sandbox::display.
+glPrintError: Invalid framebuffer operation
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::frame.
+In DepthImageRenderer::setDepthImage.
+Done with DepthImageRenderer::setDepthImage.
+Done with Sandbox::frame.
+In Sandbox::display.
+In DepthImageRenderer::renderElevation.
+Done with DepthImageRenderer::renderElevation.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In SurfaceRenderer::renderSinglePass.
+In SurfaceRenderer::renderPixelCornerElevations.
+In DepthImageRenderer::renderElevation.
+Done with DepthImageRenderer::renderElevation.
+Done with SurfaceRenderer::renderPixelCornerElevations.
+In DepthImageRenderer::bindDepthTexture.
+Done with DepthImageRenderer::bindDepthTexture.
+In DepthImageRenderer::uploadDepthProjection.
+Done with DepthImageRenderer::uploadDepthProjection.
+In ElevationColorMap::uploadTexturePlane.
+Done with ElevationColorMap::uploadTexturePlane.
+In ElevationColorMap::bindTexture.
+Done with ElevationColorMap::bindTexture.
+In DepthImageRenderer::renderSurfaceTemplate.
+Done with DepthImageRenderer::renderSurfaceTemplate.
+Done with SurfaceRenderer::renderSinglePass.
+Done with Sandbox::display.
+glPrintError: Invalid framebuffer operation
+In Sandbox::frame.
+Done with Sandbox::frame.
+In Sandbox::display.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In SurfaceRenderer::renderSinglePass.
+In SurfaceRenderer::renderPixelCornerElevations.
+In DepthImageRenderer::renderElevation.
+Done with DepthImageRenderer::renderElevation.
+Done with SurfaceRenderer::renderPixelCornerElevations.
+In DepthImageRenderer::bindDepthTexture.
+Done with DepthImageRenderer::bindDepthTexture.
+In DepthImageRenderer::uploadDepthProjection.
+Done with DepthImageRenderer::uploadDepthProjection.
+In ElevationColorMap::uploadTexturePlane.
+Done with ElevationColorMap::uploadTexturePlane.
+In ElevationColorMap::bindTexture.
+Done with ElevationColorMap::bindTexture.
+In DepthImageRenderer::renderSurfaceTemplate.
+Done with DepthImageRenderer::renderSurfaceTemplate.
+Done with SurfaceRenderer::renderSinglePass.
+Done with Sandbox::display.
+glPrintError: Invalid framebuffer operation
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::frame.
+In DepthImageRenderer::setDepthImage.
+Done with DepthImageRenderer::setDepthImage.
+Done with Sandbox::frame.
+In Sandbox::display.
+In DepthImageRenderer::renderElevation.
+Done with DepthImageRenderer::renderElevation.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In SurfaceRenderer::renderSinglePass.
+In SurfaceRenderer::renderPixelCornerElevations.
+In DepthImageRenderer::renderElevation.
+Done with DepthImageRenderer::renderElevation.
+Done with SurfaceRenderer::renderPixelCornerElevations.
+In DepthImageRenderer::bindDepthTexture.
+Done with DepthImageRenderer::bindDepthTexture.
+In DepthImageRenderer::uploadDepthProjection.
+Done with DepthImageRenderer::uploadDepthProjection.
+In ElevationColorMap::uploadTexturePlane.
+Done with ElevationColorMap::uploadTexturePlane.
+In ElevationColorMap::bindTexture.
+Done with ElevationColorMap::bindTexture.
+In DepthImageRenderer::renderSurfaceTemplate.
+Done with DepthImageRenderer::renderSurfaceTemplate.
+Done with SurfaceRenderer::renderSinglePass.
+Done with Sandbox::display.
+glPrintError: Invalid framebuffer operation
+In Sandbox::frame.
+In DepthImageRenderer::setDepthImage.
+Done with DepthImageRenderer::setDepthImage.
+Done with Sandbox::frame.
+In Sandbox::display.
+In DepthImageRenderer::renderElevation.
+Done with DepthImageRenderer::renderElevation.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In SurfaceRenderer::renderSinglePass.
+In SurfaceRenderer::renderPixelCornerElevations.
+In DepthImageRenderer::renderElevation.
+Done with DepthImageRenderer::renderElevation.
+Done with SurfaceRenderer::renderPixelCornerElevations.
+In DepthImageRenderer::bindDepthTexture.
+Done with DepthImageRenderer::bindDepthTexture.
+In DepthImageRenderer::uploadDepthProjection.
+Done with DepthImageRenderer::uploadDepthProjection.
+In ElevationColorMap::uploadTexturePlane.
+Done with ElevationColorMap::uploadTexturePlane.
+In ElevationColorMap::bindTexture.
+Done with ElevationColorMap::bindTexture.
+In DepthImageRenderer::renderSurfaceTemplate.
+Done with DepthImageRenderer::renderSurfaceTemplate.
+Done with SurfaceRenderer::renderSinglePass.
+Done with Sandbox::display.
+glPrintError: Invalid framebuffer operation
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.

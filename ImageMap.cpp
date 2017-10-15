@@ -93,10 +93,12 @@ void ImageMap::load(const char* imageName) {
   }
 	
   // Open image file
-  //char* filename = "/opt/SARndbox-2.3/maya/sample_text.jpg"; // MM: not sure correct path
-  Images::TextureSet::Texture& tex=textures.addTexture(Images::readImageFile(imageName,Vrui::openFile(imageName)),GL_TEXTURE_2D,GL_RGB8,0U);
-  // MM: this isn't going to work. there wasn't Images::TextureSet in the normal SARndbox
-  //     how to bind image to texture?
+  //char* imagename = "/opt/SARndbox-2.3/maya/sample_text.jpg"; // MM: not sure correct path
+  Images::TextureSet::Texture& tex=textures.addTexture(Images::readImageFile(imageName,
+									     Vrui::openFile(imageName)),
+						       GL_TEXTURE_2D,
+						       GL_RGB8,
+						       0U);
 	
   // Set clamping and filtering parameters for mip-mapped linear interpolation
   tex.setMipmapRange(0,1000);
@@ -172,8 +174,9 @@ void ImageMap::bindTexture(GLContextData& contextData) const {
   // Query the range of texture coordinates
   const GLfloat* texMin=tex.getTexCoordMin();
   const GLfloat* texMax=tex.getTexCoordMax();
+  // MM: TO DO: determine if these values are accurate (should they match sandbox dimensions?)
   std::cout << "tex.getTexCoordMax() and Min() done." << std::endl;  // MM: added
-	
+  
   // Draw the image
   // MM: Note: texture coordinates specify the point in the texture image that will 
   // correspond to the vertex you're specifying them for. see Vrui and OpenGL notes

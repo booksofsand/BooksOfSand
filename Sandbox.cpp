@@ -962,16 +962,18 @@ void Sandbox::display(GLContextData& contextData) const
 	// Get the data item
 	//DataItem* dataItem=contextData.retrieveDataItem<DataItem>(this);
 
+	// Get the rendering settings for this window
+	// MM: see Vrui/Vrui/DisplayState.h
+	const Vrui::DisplayState& ds=Vrui::getDisplayState(contextData);
 	// MM: looks like this is where the window is created. can we display an image in it?
 	//     Vrui/Vrui/VRWindow extends GLWindow
-	// Get the rendering settings for this window
-	const Vrui::DisplayState& ds=Vrui::getDisplayState(contextData);
 	const Vrui::VRWindow* window=ds.window;
 	int windowIndex;
 	for(windowIndex=0;windowIndex<Vrui::getNumWindows()&&window!=Vrui::getWindow(windowIndex);++windowIndex)
 		;
-	const RenderSettings& rs=windowIndex<int(renderSettings.size())?renderSettings[windowIndex]:renderSettings.back();	
-	
+	const RenderSettings& rs=windowIndex<int(renderSettings.size())?renderSettings[windowIndex]:renderSettings.back();
+
+	/* MM: commenting out to try simple Window image display
 	// MM: necessary? I think so
 	// Calculate the projection matrix
 	PTransform projection=ds.projection;
@@ -996,6 +998,65 @@ void Sandbox::display(GLContextData& contextData) const
 	//     (see SurfaceRenderer.cpp)
 	// Render the surface in a single pass
 	rs.surfaceRenderer->renderSinglePass(ds.viewport,projection,ds.modelviewNavigational,contextData);
+	*/
+
+
+	// SET VARS
+	GLuint texid; // this should be constant whole time, huh? prob
+	int w = 640;  // default width
+	int h = 480;  // default height
+
+	// INIT OPENGL
+	glViewport(0, 0, w, h); // use a screen size of WIDTH x HEIGHT
+	glEnable(GL_TEXTURE_2D);     // Enable 2D texturing
+ 
+	glMatrixMode(GL_PROJECTION);     // Make a simple 2D projection on the entire window
+	glLoadIdentity();
+	glOrtho(0.0, w, h, 0.0, 0.0, 100.0);
+ 
+	glMatrixMode(GL_MODELVIEW);    // Set the matrix mode to object modeling
+ 
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f); 
+	glClearDepth(0.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear the window
+
+	// BIND TEXTURE
+	
+	Images::TextureSet::GLState* texGLState=rs.imageMap.textures.getGLState(contextData);
+	const Images::TextureSet::GLState::Texture& tex=texGLState->bindTexture(0U);
+	const Images::BaseImage& image=tex.getImage();
+	
+	//glGenTextures(1, &texid); // Texture name generation
+	//glBindTexture(GL_TEXTURE_2D, texid); // Binding of texture name
+  
+	// linear interpolation for magnification filter
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); 
+	// linear interpolation for minifying filter
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	// texture specification
+	glTexImage2D(GL_TEXTURE_2D, 0, rs.imageMap->getFormat(),
+		     rs.imageMap->getWidth(), rs.imageMap->getHeight(), 
+		     0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+	
+	// MM: glTexImage2D args: texture target, level of detail (mipmap; 0 is highest resolution), 
+	// internal format (e.g. GL_RGBA), width (texels), height (texels), border (0 is none), 
+	// source format, source type, source memory address
+
+
+	// DISPLAY
+	// Clear color and depth buffers
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
+	glMatrixMode(GL_MODELVIEW);     // Operate on model-view matrix
+ 
+	// Draw a quad
+	glBegin(GL_QUADS);
+	glTexCoord2i(0, 0); glVertex2i(0, 0);
+	glTexCoord2i(0, 1); glVertex2i(0, h);
+	glTexCoord2i(1, 1); glVertex2i(w, h);
+	glTexCoord2i(1, 0); glVertex2i(w, 0);
+	glEnd();
+	
+	
 	std::cout << "Done with Sandbox::display." << std::endl;  // MM: added
 	}
 

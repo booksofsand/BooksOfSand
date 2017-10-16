@@ -80,12 +80,20 @@ int LoadImage(char *filename)
   ILboolean success; 
   ILuint image; 
  
-  ilGenImages(1, &image); /* Generation of one image name */
-  ilBindImage(image); /* Binding of image name */
+  ilGenImages(1, &image); /* Generation of one image name. 
+			     DevIL operates on the basis of generated image names. 
+			     An image name is simply a 32-bit unsigned integer 
+			     (ILuint) with a unique value.*/
+  ilBindImage(image); /* Binding of image name. 
+			 The only argument ilBindImage accepts is Image, which is 
+			 the image name to bind. Any subsequent operations after 
+			 calling ilBindImage will operate on the image with the 
+			 image name bound. */
   success = ilLoadImage(filename); /* Loading of the image filename by DevIL */
  
   if (success) { /* If no error occured: */
-    /* Convert every colour component into unsigned byte. If your image contains alpha channel you can replace IL_RGB with IL_RGBA */
+    /* Convert every colour component into unsigned byte. 
+       If your image contains alpha channel you can replace IL_RGB with IL_RGBA */
     success = ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);       
     if (!success)
       return -1;
@@ -133,19 +141,25 @@ int main(int argc, char **argv)
     return -1;
   }
  
-  /* OpenGL texture binding of the image loaded by DevIL  */
-  glGenTextures(1, &texid); /* Texture name generation */
-  glBindTexture(GL_TEXTURE_2D, texid); /* Binding of texture name */
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); /* We will use linear interpolation for magnification filter */
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); /* We will use linear interpolation for minifying filter */
-  glTexImage2D(GL_TEXTURE_2D, 0, ilGetInteger(IL_IMAGE_BPP), ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT), 
-	       0, ilGetInteger(IL_IMAGE_FORMAT), GL_UNSIGNED_BYTE, ilGetData()); /* Texture specification */
+  // OpenGL texture binding of the image loaded by DevIL
+  glGenTextures(1, &texid); // Texture name generation
+  glBindTexture(GL_TEXTURE_2D, texid); // Binding of texture name
+  
+  // We will use linear interpolation for magnification filter
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); 
+  // We will use linear interpolation for minifying filter
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  // Texture specification
+  glTexImage2D(GL_TEXTURE_2D, 0, ilGetInteger(IL_IMAGE_BPP),
+	       ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT), 
+	       0, ilGetInteger(IL_IMAGE_FORMAT), GL_UNSIGNED_BYTE, ilGetData()); 
  
   /* Main loop */
   glutMainLoop();
  
   /* Delete used resources and quit */
-  ilDeleteImages(1, &image); /* Because we have already copied image data into texture data we can release memory used by image. */
+  ilDeleteImages(1, &image); /* Because we have already copied image data into 
+				texture data we can release memory used by image. */
   glDeleteTextures(1, &texid);
  
   return 0;

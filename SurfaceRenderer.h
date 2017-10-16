@@ -99,7 +99,6 @@ class SurfaceRenderer:public GLObject
 	unsigned int surfaceSettingsVersion; // Version number of surface settings to invalidate surface rendering shader on changes
 	
 	/* Private methods: */
-	void display(GLContextData& contextData) const;  // MM: ADDED
 	void shaderSourceFileChanged(const IO::FileMonitor::Event& event); // Callback called when one of the external shader source files is changed
 	GLhandleARB createSinglePassSurfaceShader(const GLLightTracker& lt,GLint* uniformLocations) const; // Creates a single-pass surface rendering shader based on current renderer settings
 	void renderPixelCornerElevations(const int viewport[4],const PTransform& projectionModelview,GLContextData& contextData,DataItem* dataItem) const; // Creates texture containing pixel-corner elevations based on the current depth image
@@ -122,6 +121,8 @@ class SurfaceRenderer:public GLObject
 	void setDemDistScale(GLfloat newDemDistScale); // Sets the deviation from DEM to surface to saturate the deviation color map
 	void setIlluminate(bool newIlluminate); // Sets the illumination flag
 	void renderSinglePass(const int viewport[4],const PTransform& projection,const OGTransform& modelview,GLContextData& contextData) const; // Renders the surface in a single pass using the current surface settings
+	// MM: PTransform is defined in Types.h as Geometry::ProjectiveTransformation<Scalar,3>
+	//     It's a type for 3D projective transformations (4x4 matrices)
 	};
 
 #endif

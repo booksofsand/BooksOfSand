@@ -959,10 +959,12 @@ void Sandbox::frame(void)
 void Sandbox::display(GLContextData& contextData) const
 	{
 	std::cout << "In Sandbox::display." << std::endl;  // MM: added
-	/* Get the data item: */
+	// Get the data item
 	//DataItem* dataItem=contextData.retrieveDataItem<DataItem>(this);
-	
-	/* Get the rendering settings for this window: */
+
+	// MM: looks like this is where the window is created. can we display an image in it?
+	//     Vrui/Vrui/VRWindow extends GLWindow
+	// Get the rendering settings for this window
 	const Vrui::DisplayState& ds=Vrui::getDisplayState(contextData);
 	const Vrui::VRWindow* window=ds.window;
 	int windowIndex;
@@ -970,28 +972,28 @@ void Sandbox::display(GLContextData& contextData) const
 		;
 	const RenderSettings& rs=windowIndex<int(renderSettings.size())?renderSettings[windowIndex]:renderSettings.back();	
 	
-	/* MM: necessary? I think so */
-	/* Calculate the projection matrix: */
+	// MM: necessary? I think so
+	// Calculate the projection matrix
 	PTransform projection=ds.projection;
 	if(rs.fixProjectorView&&rs.projectorTransformValid)
 		{
-		/* Use the projector transformation instead: */
+		// Use the projector transformation instead
 		projection=rs.projectorTransform;
 		
-		/* Multiply with the inverse modelview transformation so that lighting still works as usual: */
+		// Multiply with the inverse modelview transformation so that lighting still works as usual
 		projection*=Geometry::invert(ds.modelviewNavigational);
 		}
 	
-	/* MM: I think all the shading is unnecessary for our project... */
+        // MM: I think all the shading is unnecessary for our project...
+	//     This is False by default anyway. 
 	if(rs.hillshade)
 		{
-		/* Set the surface material: */
+		// Set the surface material
 		glMaterial(GLMaterialEnums::FRONT,rs.surfaceMaterial);
 		}
 	
 	// MM: I think this is where the image is displayed through the projector
-	// (see SurfaceRenderer.cpp)
-	// MM: currently all of renderSinglePass is commented out except for an ImageMap display attempt
+	//     (see SurfaceRenderer.cpp)
 	// Render the surface in a single pass
 	rs.surfaceRenderer->renderSinglePass(ds.viewport,projection,ds.modelviewNavigational,contextData);
 	std::cout << "Done with Sandbox::display." << std::endl;  // MM: added

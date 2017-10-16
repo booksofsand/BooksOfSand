@@ -99,6 +99,7 @@ DEM::~DEM(void)
 
 void DEM::initContext(GLContextData& contextData) const
 	{
+	std::cout << "In DEM::initContext." << std::endl;  // MM: added
 	/* Create and register a data item: */
 	DataItem* dataItem=new DataItem;
 	contextData.addDataItem(this,dataItem);
@@ -111,10 +112,12 @@ void DEM::initContext(GLContextData& contextData) const
 	glTexParameteri(GL_TEXTURE_RECTANGLE_ARB,GL_TEXTURE_WRAP_T,GL_CLAMP);
 	glTexImage2D(GL_TEXTURE_RECTANGLE_ARB,0,GL_LUMINANCE32F_ARB,demSize[0],demSize[1],0,GL_LUMINANCE,GL_FLOAT,dem);
 	glBindTexture(GL_TEXTURE_RECTANGLE_ARB,0); // MM: texture target and texture name
+	std::cout << "Done with DEM::initContext." << std::endl;  // MM: added
 	}
 
 void DEM::load(const char* demFileName)
 	{
+	std::cout << "In DEM::load." << std::endl;  // MM: added
 	/* Read the DEM file: */
 	IO::FilePtr demFile=IO::openFile(demFileName);
 	demFile->setEndianness(Misc::LittleEndian);
@@ -126,6 +129,7 @@ void DEM::load(const char* demFileName)
 	
 	/* Update the DEM transformation: */
 	calcMatrix();
+	std::cout << "Done with DEM::load." << std::endl;  // MM: added
 	}
 
 float DEM::calcAverageElevation(void) const
@@ -152,15 +156,19 @@ void DEM::setTransform(const OGTransform& newTransform,Scalar newVerticalScale,S
 
 void DEM::bindTexture(GLContextData& contextData) const
 	{
+	std::cout << "In DEM::bindTexture." << std::endl;  // MM: added
 	/* Get the context data item: */
 	DataItem* dataItem=contextData.retrieveDataItem<DataItem>(this);
 	
 	/* Bind the DEM texture: */
 	glBindTexture(GL_TEXTURE_RECTANGLE_ARB,dataItem->textureObjectId); // MM: texture target and texture name
+	std::cout << "Done with DEM::bindTexture." << std::endl;  // MM: added
 	}
 
 void DEM::uploadDemTransform(GLint location) const
 	{
+	std::cout << "In DEM::uploadDemTransform." << std::endl;  // MM: added
 	/* Upload the matrix to OpenGL: */
 	glUniformMatrix4fvARB(location,1,GL_FALSE,demTransformMatrix);
+	std::cout << "Done with DEM::uploadDemTransform." << std::endl;  // MM: added
 	}

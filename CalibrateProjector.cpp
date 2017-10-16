@@ -177,6 +177,8 @@ CalibrateProjector::CalibrateProjector(int& argc,char**& argv)
 	 capturingTiePoint(false),numCaptureFrames(0),
 	 haveProjection(false),projection(4,4)
 	{
+	std::cout << "In CalibrateProjector::CalibrateProjector." << std::endl;  // MM: added
+
 	/* Register the custom tool class: */
 	CaptureToolFactory* toolFactory1=new CaptureToolFactory("CaptureTool","Capture",0,*Vrui::getToolManager());
 	toolFactory1->setNumButtons(2);
@@ -349,6 +351,7 @@ CalibrateProjector::CalibrateProjector(int& argc,char**& argv)
 	
 	/* Start capturing the initial background frame: */
 	startBackgroundCapture();
+	std::cout << "Done with CalibrateProjector::CalibrateProjector." << std::endl;  // MM: added
 	}
 
 CalibrateProjector::~CalibrateProjector(void)
@@ -368,6 +371,7 @@ CalibrateProjector::~CalibrateProjector(void)
 
 void CalibrateProjector::frame(void)
 	{
+	std::cout << "In CalibrateProjector::frame." << std::endl;  // MM: added
 	/* Check if there is a new raw depth frame: */
 	if(rawFrames.lockNewValue())
 		{
@@ -501,11 +505,13 @@ void CalibrateProjector::frame(void)
 				}
 			}
 		}
+	std::cout << "Done with CalibrateProjector::frame." << std::endl;  // MM: added
 	}
 
 // MM: need to examine this method in detail (TO DO)
 void CalibrateProjector::display(GLContextData& contextData) const
 	{
+	std::cout << "In CalibrateProjector::display." << std::endl;  // MM: added
 	/* Get the context data item: */
 	DataItem* dataItem=contextData.retrieveDataItem<DataItem>(this);
 	
@@ -616,10 +622,12 @@ void CalibrateProjector::display(GLContextData& contextData) const
 	glPopMatrix();
 	
 	glPopAttrib();
+	std::cout << "Done with CalibrateProjector::display." << std::endl;  // MM: added
 	}
 
 void CalibrateProjector::initContext(GLContextData& contextData) const
 	{
+	std::cout << "In CalibrateProjector::initContext." << std::endl;  // MM: added
 	/* Create the data item: */
 	DataItem* dataItem=new DataItem;
 	contextData.addDataItem(this,dataItem);
@@ -660,6 +668,7 @@ void CalibrateProjector::initContext(GLContextData& contextData) const
 	
 	/* Protect the texture object: */
 	glBindTexture(GL_TEXTURE_2D,0); // MM: texture target and texture name
+	std::cout << "Done with CalibrateProjector::initContext." << std::endl;  // MM: added
 	}
 
 void CalibrateProjector::startBackgroundCapture(void)

@@ -53,11 +53,12 @@ class ImageMap:public GLTextureObject
 	/* Elements: */
 	private:	
 	GLfloat texturePlaneEq[4]; // Texture mapping plane equation in GLSL-compatible format
-        Images::TextureSet textures;
+        //Images::TextureSet textures; // MM: making public for Sandbox.cpp
 			  
 	/* Constructors and destructors: */
 	public:
 	ImageMap(const char* imageName);
+	Images::TextureSet textures;
 
 	/* Methods */
 	virtual void initContext(GLContextData& contextData) const; // from GLObject

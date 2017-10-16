@@ -272,6 +272,7 @@ Methods of class Sandbox:
 /* MM: is a raw depth frame a collection of data representing a single frame received from Kinect? */
 void Sandbox::rawDepthFrameDispatcher(const Kinect::FrameBuffer& frameBuffer)
 	{
+	  return; // MM: skipping
 	std::cout << "In Sandbox::rawDepthFrameDispatcher." << std::endl;  // MM: added
 	/* Pass the received frame to the frame filter and the hand extractor: */
 	if(frameFilter!=0&&!pauseUpdates)
@@ -283,6 +284,7 @@ void Sandbox::rawDepthFrameDispatcher(const Kinect::FrameBuffer& frameBuffer)
 
 void Sandbox::receiveFilteredFrame(const Kinect::FrameBuffer& frameBuffer)
 	{
+	  return; // MM: skipping
 	std::cout << "In Sandbox::receiveFilteredFrame." << std::endl;  // MM: added
 	/* Put the new frame into the frame input buffer: */
 	filteredFrames.postNewValue(frameBuffer);
@@ -960,7 +962,7 @@ void Sandbox::display(GLContextData& contextData) const
 	{
 	std::cout << "In Sandbox::display." << std::endl;  // MM: added
 	// Get the data item
-	//DataItem* dataItem=contextData.retrieveDataItem<DataItem>(this);
+	DataItem* dataItem=contextData.retrieveDataItem<DataItem>(this);
 
 	// Get the rendering settings for this window
 	// MM: see Vrui/Vrui/DisplayState.h
@@ -973,7 +975,6 @@ void Sandbox::display(GLContextData& contextData) const
 		;
 	const RenderSettings& rs=windowIndex<int(renderSettings.size())?renderSettings[windowIndex]:renderSettings.back();
 
-	/* MM: commenting out to try simple Window image display
 	// MM: necessary? I think so
 	// Calculate the projection matrix
 	PTransform projection=ds.projection;
@@ -997,34 +998,55 @@ void Sandbox::display(GLContextData& contextData) const
 	// MM: I think this is where the image is displayed through the projector
 	//     (see SurfaceRenderer.cpp)
 	// Render the surface in a single pass
-	rs.surfaceRenderer->renderSinglePass(ds.viewport,projection,ds.modelviewNavigational,contextData);
-	*/
+	//rs.surfaceRenderer->renderSinglePass(ds.viewport,projection,ds.modelviewNavigational,contextData);
 
 
 	// SET VARS
-	GLuint texid; // this should be constant whole time, huh? prob
-	int w = 640;  // default width
-	int h = 480;  // default height
+	//GLuint texid; // this should be constant whole time, huh? prob
+	int w = ds.viewport[2]; //width
+	int h = ds.viewport[3]; //height
 
 	// INIT OPENGL
 	glViewport(0, 0, w, h); // use a screen size of WIDTH x HEIGHT
 	glEnable(GL_TEXTURE_2D);     // Enable 2D texturing
  
 	glMatrixMode(GL_PROJECTION);     // Make a simple 2D projection on the entire window
-	glLoadIdentity();
+	//glLoadIdentity();
 	glOrtho(0.0, w, h, 0.0, 0.0, 100.0);
+	std::cout << "Done with glOrtho." << std::endl;  // MM: added
  
 	glMatrixMode(GL_MODELVIEW);    // Set the matrix mode to object modeling
+        std::cout << "Done with glMatrixMode." << std::endl;  // MM: added
  
-	glClearColor(0.0f, 0.0f, 0.0f, 0.0f); 
-	glClearDepth(0.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear the window
+	//glClearColor(0.0f, 0.0f, 0.0f, 0.0f); 
+	//glClearDepth(0.0f);
+	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear the window
+	//std::cout << "Done with glClear." << std::endl;  // MM: added
 
 	// BIND TEXTURE
+	// MM: Pause/seg fault between last cout and next cout. 
+	//     Doesn't seem to reach Vrui::openFile or Images::readImageFile
+	//     or TextureSet::addTexture (I tested with print stmts)
+	Images::TextureSet::Texture& tex = rs.imageMap->textures.addTexture(
+	  Images::readImageFile("/opt/SARndbox-2.3/maya/sample_text.jpg",
+				Vrui::openFile("/opt/SARndbox-2.3/maya/sample_text.jpg")),
+	  GL_TEXTURE_2D,
+	  GL_RGB8,
+	  0U);
+	std::cout << "Done with tex = textures.addTexture." << std::endl;  // MM: added
+	//tex.setMipmapRange(0,1000);
+	//tex.setWrapModes(GL_CLAMP_TO_EDGE,GL_CLAMP_TO_EDGE);
+	//tex.setFilterModes(GL_LINEAR_MIPMAP_LINEAR,GL_LINEAR);
 	
-	Images::TextureSet::GLState* texGLState=rs.imageMap.textures.getGLState(contextData);
-	const Images::TextureSet::GLState::Texture& tex=texGLState->bindTexture(0U);
-	const Images::BaseImage& image=tex.getImage();
+	/*
+	Images::TextureSet::GLState* texGLState = rs.imageMap->textures.getGLState(contextData);
+	std::cout << "Done with rs.imageMap->textures.getGLState." << std::endl;  // MM: added
+	const Images::TextureSet::GLState::Texture& tex = texGLState->bindTexture(0U);
+	std::cout << "Done with texGLState->bindTexture(0U)." << std::endl;  // MM: added
+	*/
+	
+	const Images::BaseImage& image = tex.getImage();
+	std::cout << "Done with tex.getImage()." << std::endl;  // MM: added
 	
 	//glGenTextures(1, &texid); // Texture name generation
 	//glBindTexture(GL_TEXTURE_2D, texid); // Binding of texture name
@@ -1034,9 +1056,10 @@ void Sandbox::display(GLContextData& contextData) const
 	// linear interpolation for minifying filter
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	// texture specification
-	glTexImage2D(GL_TEXTURE_2D, 0, rs.imageMap->getFormat(),
-		     rs.imageMap->getWidth(), rs.imageMap->getHeight(), 
-		     0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+	glTexImage2D(GL_TEXTURE_2D, 0, image.getFormat(),
+		     image.getWidth(), image.getHeight(), 
+		     0, GL_RGB8, GL_UNSIGNED_BYTE, 0);
+	std::cout << "Done with glTexImage2D." << std::endl;  // MM: added
 	
 	// MM: glTexImage2D args: texture target, level of detail (mipmap; 0 is highest resolution), 
 	// internal format (e.g. GL_RGBA), width (texels), height (texels), border (0 is none), 

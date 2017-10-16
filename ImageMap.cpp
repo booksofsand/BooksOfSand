@@ -91,9 +91,9 @@ void ImageMap::load(const char* imageName) {
       fullImageName.push_back('/');
       fullImageName.append(imageName);
   }
+  return; // MM: skipping
 	
   // Open image file
-  //char* imagename = "/opt/SARndbox-2.3/maya/sample_text.jpg"; // MM: not sure correct path
   Images::TextureSet::Texture& tex=textures.addTexture(Images::readImageFile(imageName,
 									     Vrui::openFile(imageName)),
 						       GL_TEXTURE_2D,

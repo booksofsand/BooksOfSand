@@ -20,6 +20,11 @@ with the Augmented Reality Sandbox; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 ***********************************************************************/
 
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// MM: NO METHODS IN THIS FILE ARE USED IN SARNDBOX
+//     (just for initial setup / recalibration of projector)
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 #include "CalibrateProjector.h"
 
 #include <stdlib.h>
@@ -59,6 +64,7 @@ Methods of class CalibrateProjector::CaptureTool:
 CalibrateProjector::CaptureTool::CaptureTool(const Vrui::ToolFactory* factory,const Vrui::ToolInputAssignment& inputAssignment)
 	:Vrui::Tool(factory,inputAssignment)
 	{
+	  std::cout << "CalibrateProjector::CaptureTool::CaptureTool." << std::endl;  // MM: added
 	}
 
 CalibrateProjector::CaptureTool::~CaptureTool(void)
@@ -67,11 +73,13 @@ CalibrateProjector::CaptureTool::~CaptureTool(void)
 
 const Vrui::ToolFactory* CalibrateProjector::CaptureTool::getFactory(void) const
 	{
+	std::cout << "CalibrateProjector::CaptureTool::getFactory." << std::endl;  // MM: added
 	return factory;
 	}
 
 void CalibrateProjector::CaptureTool::buttonCallback(int buttonSlotIndex,Vrui::InputDevice::ButtonCallbackData* cbData)
 	{
+	std::cout << "CalibrateProjector::CaptureTool::buttonCallback." << std::endl;  // MM: added
 	/* Start capturing a depth frame if the button was just pressed: */
 	if(cbData->newButtonState)
 		{
@@ -89,6 +97,7 @@ Methods of class CalibrateProjector::DataItem:
 CalibrateProjector::DataItem::DataItem(void)
 	:blobImageTextureId(0),blobImageVersion(0)
 	{
+	std::cout << "CalibrateProjector::DataItem::DataItem." << std::endl;  // MM: added
 	glGenTextures(1,&blobImageTextureId); 
         // MM: generates the specified number of texture objects and places their 
 	// handles in the GLuint array pointer (the second parameter)
@@ -111,6 +120,7 @@ class BlobForegroundSelector // Functor class to select foreground pixels
 	public:
 	bool operator()(unsigned int x,unsigned int y,const Kinect::FrameSource::DepthPixel& pixel) const
 		{
+		std::cout << "CalibrateProjector::BlobForegroundSelector." << std::endl;  // MM: added
 		return pixel<Kinect::FrameSource::invalidDepth;
 		}
 	};
@@ -125,12 +135,13 @@ class BlobMergeChecker // Functor class to check whether two pixels can belong t
 	public:
 	BlobMergeChecker(int sMaxDepthDist)
 		:maxDepthDist(sMaxDepthDist)
-		{
+		{std::cout << "CalibrateProjector::BlobMergeChecker." << std::endl;  // MM: added
 		}
 	
 	/* Methods: */
 	bool operator()(unsigned int x1,unsigned int y1,const Kinect::FrameSource::DepthPixel& pixel1,unsigned int x2,unsigned int y2,const Kinect::FrameSource::DepthPixel& pixel2) const
 		{
+		std::cout << "CalibrateProjector::BlobMergeChecker." << std::endl;  // MM: added
 		return Math::abs(int(pixel1)-int(pixel2))<=maxDepthDist;
 		}
 	};
@@ -143,6 +154,7 @@ Methods of class CalibrateProjector:
 
 void CalibrateProjector::depthStreamingCallback(const Kinect::FrameBuffer& frameBuffer)
 	{
+	std::cout << "CalibrateProjector::depthStreamingCallback." << std::endl;  // MM: added
 	/* Do nothing if currently capturing background frames: */
 	if(capturingBackground)
 		return;
@@ -156,6 +168,7 @@ void CalibrateProjector::depthStreamingCallback(const Kinect::FrameBuffer& frame
 
 void CalibrateProjector::backgroundCaptureCompleteCallback(Kinect::DirectFrameSource&)
 	{
+	std::cout << "CalibrateProjector::backgroundCaptureCompleteCallback." << std::endl;  // MM: added
 	/* Reset the background capture flag: */
 	std::cout<<" done"<<std::endl;
 	camera->setRemoveBackground(true);
@@ -508,7 +521,7 @@ void CalibrateProjector::frame(void)
 	std::cout << "Done with CalibrateProjector::frame." << std::endl;  // MM: added
 	}
 
-// MM: need to examine this method in detail (TO DO)
+// MM: this method could be helpful to observe but isn't used in SARndbox
 void CalibrateProjector::display(GLContextData& contextData) const
 	{
 	std::cout << "In CalibrateProjector::display." << std::endl;  // MM: added
@@ -673,6 +686,7 @@ void CalibrateProjector::initContext(GLContextData& contextData) const
 
 void CalibrateProjector::startBackgroundCapture(void)
 	{
+	std::cout << "CalibrateProjector::startBackgroundCapture." << std::endl;  // MM: added
 	/* Bail out if already capturing a tie point or background: */
 	if(capturingBackground||capturingTiePoint)
 		return;
@@ -685,6 +699,7 @@ void CalibrateProjector::startBackgroundCapture(void)
 
 void CalibrateProjector::startTiePointCapture(void)
 	{
+	std::cout << "CalibrateProjector::startTiePointCapture." << std::endl;  // MM: added
 	/* Bail out if already capturing a tie point or background: */
 	if(capturingBackground||capturingTiePoint)
 		return;
@@ -698,6 +713,7 @@ void CalibrateProjector::startTiePointCapture(void)
 
 void CalibrateProjector::calcCalibration(void)
 	{
+	std::cout << "In CalibrateProjector::calcCalibration." << std::endl;  // MM: added
 	/* Create the least-squares system: */
 	Math::Matrix a(12,12,0.0);
 	
@@ -861,6 +877,7 @@ void CalibrateProjector::calcCalibration(void)
 		}
 	else
 		std::cout<<"Calibration error: Some tie points have negative projection weights. Please start from scratch"<<std::endl;
+	std::cout << "Done with CalibrateProjector::calcCalibration." << std::endl;  // MM: added
 	}
 
 /* Create and execute an application object: */

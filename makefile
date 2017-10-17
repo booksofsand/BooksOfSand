@@ -36,7 +36,7 @@ endif
 # directory, respectively.
 # Important note: Do not use ~ as an abbreviation for the user's home
 # directory here; use $(HOME) instead.
-INSTALLDIR := $(PWD)
+INSTALLDIR := /usr/local
 
 ########################################################################
 # Everything below here should not have to be changed

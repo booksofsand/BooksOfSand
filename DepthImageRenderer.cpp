@@ -101,6 +101,7 @@ DepthImageRenderer::DepthImageRenderer(const unsigned int sDepthImageSize[2])
 
 void DepthImageRenderer::initContext(GLContextData& contextData) const
 	{
+	std::cout << "In DepthImageRenderer::initContext." << std::endl;  // MM: added
 	/* Create a data item and add it to the context: */
 	DataItem* dataItem=new DataItem;
 	contextData.addDataItem(this,dataItem);
@@ -141,17 +142,20 @@ void DepthImageRenderer::initContext(GLContextData& contextData) const
 	glTexImage2D(GL_TEXTURE_RECTANGLE_ARB,0,GL_LUMINANCE32F_ARB,depthImageSize[0],depthImageSize[1],0,GL_LUMINANCE,GL_FLOAT,0);
 	glBindTexture(GL_TEXTURE_RECTANGLE_ARB,0); // MM: texture target and texture name
 	
-	/* Create the depth rendering shader: */
+	// Create the depth rendering shader
+	/* MM: commenting out
 	dataItem->depthShader=linkVertexAndFragmentShader("SurfaceDepthShader");
 	dataItem->depthShaderUniforms[0]=glGetUniformLocationARB(dataItem->depthShader,"depthSampler");
 	dataItem->depthShaderUniforms[1]=glGetUniformLocationARB(dataItem->depthShader,"projectionModelviewDepthProjection");
 	
-	/* Create the elevation rendering shader: */
+	// Create the elevation rendering shader
 	dataItem->elevationShader=linkVertexAndFragmentShader("SurfaceElevationShader");
 	dataItem->elevationShaderUniforms[0]=glGetUniformLocationARB(dataItem->elevationShader,"depthSampler");
 	dataItem->elevationShaderUniforms[1]=glGetUniformLocationARB(dataItem->elevationShader,"basePlaneDic");
 	dataItem->elevationShaderUniforms[2]=glGetUniformLocationARB(dataItem->elevationShader,"weightDic");
 	dataItem->elevationShaderUniforms[3]=glGetUniformLocationARB(dataItem->elevationShader,"projectionModelviewDepthProjection");
+	*/
+	std::cout << "Done with DepthImageRenderer::initContext." << std::endl;  // MM: added
 	}
 
 void DepthImageRenderer::setDepthProjection(const PTransform& newDepthProjection)

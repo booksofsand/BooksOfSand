@@ -244,11 +244,11 @@ void Sandbox::RenderSettings::loadProjectorTransform(const char* projectorTransf
        (when user has -uhm in command line execution of SARndbox) */
 void Sandbox::RenderSettings::loadHeightMap(const char* heightMapName)
 	{
-	std::cout << "In Sandbox::loadHeightMap." << std::endl << "Done with Sandbox::loadHeightMap." << std::endl;  // MM: added
-	return;
+	std::cout << "In Sandbox::loadHeightMap." << std::endl;  // MM: added
+
 	try
 		{
-		  ImageMap* newImageMap = new ImageMap("/opt/SARndbox-2.3/maya/sample_text.jpg");
+		  ImageMap* newImageMap = new ImageMap("/opt/SARndbox-2.3/maya/colored_pixels.jpg");
 		  delete imageMap;
 		  imageMap = newImageMap;
 		  
@@ -263,6 +263,7 @@ void Sandbox::RenderSettings::loadHeightMap(const char* heightMapName)
 		{
 		std::cerr<<"Ignoring height map due to exception "<<err.what()<<std::endl;
 		}
+	std::cout << "Done with Sandbox::loadHeightMap." << std::endl;  // MM: added
 	}
 
 /************************
@@ -987,46 +988,41 @@ void Sandbox::display(GLContextData& contextData) const
 		projection*=Geometry::invert(ds.modelviewNavigational);
 		}
 	
-        // MM: I think all the shading is unnecessary for our project...
-	//     This is False by default anyway. 
-	if(rs.hillshade)
-		{
-		// Set the surface material
-		glMaterial(GLMaterialEnums::FRONT,rs.surfaceMaterial);
-		}
-	
 	// MM: I think this is where the image is displayed through the projector
 	//     (see SurfaceRenderer.cpp)
 	// Render the surface in a single pass
 	//rs.surfaceRenderer->renderSinglePass(ds.viewport,projection,ds.modelviewNavigational,contextData);
 
-
+	
+	
 	// SET VARS
 	//GLuint texid; // this should be constant whole time, huh? prob
-	int w = ds.viewport[2]; //width
-	int h = ds.viewport[3]; //height
+	int w = ds.viewport[2]; //width (1024)
+	int h = ds.viewport[3]; //height (768)
 
+	/*
 	// INIT OPENGL
 	glViewport(0, 0, w, h); // use a screen size of WIDTH x HEIGHT
 	glEnable(GL_TEXTURE_2D);     // Enable 2D texturing
  
 	glMatrixMode(GL_PROJECTION);     // Make a simple 2D projection on the entire window
-	//glLoadIdentity();
+	glLoadIdentity();
 	glOrtho(0.0, w, h, 0.0, 0.0, 100.0);
 	std::cout << "Done with glOrtho." << std::endl;  // MM: added
  
 	glMatrixMode(GL_MODELVIEW);    // Set the matrix mode to object modeling
         std::cout << "Done with glMatrixMode." << std::endl;  // MM: added
  
-	//glClearColor(0.0f, 0.0f, 0.0f, 0.0f); 
-	//glClearDepth(0.0f);
-	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear the window
-	//std::cout << "Done with glClear." << std::endl;  // MM: added
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f); 
+	glClearDepth(0.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear the window
+	std::cout << "Done with glClear." << std::endl;  // MM: added
 
 	// BIND TEXTURE
 	// MM: Pause/seg fault between last cout and next cout. 
 	//     Doesn't seem to reach Vrui::openFile or Images::readImageFile
 	//     or TextureSet::addTexture (I tested with print stmts)
+	/*
 	Images::TextureSet::Texture& tex = rs.imageMap->textures.addTexture(
 	  Images::readImageFile("/opt/SARndbox-2.3/maya/sample_text.jpg",
 				Vrui::openFile("/opt/SARndbox-2.3/maya/sample_text.jpg")),
@@ -1034,16 +1030,17 @@ void Sandbox::display(GLContextData& contextData) const
 	  GL_RGB8,
 	  0U);
 	std::cout << "Done with tex = textures.addTexture." << std::endl;  // MM: added
-	//tex.setMipmapRange(0,1000);
-	//tex.setWrapModes(GL_CLAMP_TO_EDGE,GL_CLAMP_TO_EDGE);
-	//tex.setFilterModes(GL_LINEAR_MIPMAP_LINEAR,GL_LINEAR);
+	tex.setMipmapRange(0,1000);
+	tex.setWrapModes(GL_CLAMP_TO_EDGE,GL_CLAMP_TO_EDGE);
+	tex.setFilterModes(GL_LINEAR_MIPMAP_LINEAR,GL_LINEAR);
+	*/
 	
 	/*
 	Images::TextureSet::GLState* texGLState = rs.imageMap->textures.getGLState(contextData);
 	std::cout << "Done with rs.imageMap->textures.getGLState." << std::endl;  // MM: added
 	const Images::TextureSet::GLState::Texture& tex = texGLState->bindTexture(0U);
 	std::cout << "Done with texGLState->bindTexture(0U)." << std::endl;  // MM: added
-	*/
+	
 	
 	const Images::BaseImage& image = tex.getImage();
 	std::cout << "Done with tex.getImage()." << std::endl;  // MM: added
@@ -1051,6 +1048,7 @@ void Sandbox::display(GLContextData& contextData) const
 	//glGenTextures(1, &texid); // Texture name generation
 	//glBindTexture(GL_TEXTURE_2D, texid); // Binding of texture name
   
+        /*
 	// linear interpolation for magnification filter
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); 
 	// linear interpolation for minifying filter
@@ -1064,7 +1062,7 @@ void Sandbox::display(GLContextData& contextData) const
 	// MM: glTexImage2D args: texture target, level of detail (mipmap; 0 is highest resolution), 
 	// internal format (e.g. GL_RGBA), width (texels), height (texels), border (0 is none), 
 	// source format, source type, source memory address
-
+        */
 
 	// DISPLAY
 	// Clear color and depth buffers
@@ -1121,20 +1119,59 @@ void Sandbox::initContext(GLContextData& contextData) const
 	DataItem* dataItem=new DataItem;
 	contextData.addDataItem(this,dataItem);
 	
+	
+	
+	GLuint texid;
+	
+	glViewport(0, 0, w, h);  // use a screen size of WIDTH x HEIGHT
+	glEnable(GL_TEXTURE_2D);     // Enable 2D texturing
+ 
+	glMatrixMode(GL_PROJECTION);     // Make a simple 2D projection on the entire window
+	glLoadIdentity();
+	glOrtho(0.0, w, h, 0.0, 0.0, 100.0);
+ 
+	glMatrixMode(GL_MODELVIEW);    // Set the matrix mode to object modeling
+ 
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f); 
+	glClearDepth(0.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear the window
+	
+	glGenTextures(1, &texid); // Texture name generation
+	glBindTexture(GL_TEXTURE_2D, texid); // Binding of texture name
+  
+	// We will use linear interpolation for magnification filter
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); 
+	// We will use linear interpolation for minifying filter
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	// Texture specification 
+	/*
+	glTexImage2D(GL_TEXTURE_2D, 0, ilGetInteger(IL_IMAGE_BPP),
+	       ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT), 
+	       0, ilGetInteger(IL_IMAGE_FORMAT), GL_UNSIGNED_BYTE, ilGetData()); */
+	glTexImage2D(GL_TEXTURE_2D, 0, image.getFormat(),
+		     image.getWidth(), image.getHeight(), 
+		     0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+	// MM: glTexImage2D args: 
+	//     texture target, level of detail (mipmap; 0 is highest resolution),  internal format (e.g. GL_RGBA), 
+	//     width (texels), height (texels), border (0 is none), 
+	//     source format (should be same as intenrnal), source type, source memory address
+	
+	
+	/* MM: commenting out
 	{
-	/* Save the currently bound frame buffer: */
+	// Save the currently bound frame buffer
 	GLint currentFrameBuffer;
 	glGetIntegerv(GL_FRAMEBUFFER_BINDING_EXT,&currentFrameBuffer);
 	
-	/* MM: don't think we need any of the following shadow lines 
-	///////////////////////////////////////////////////////// */
-	/* Set the default shadow buffer size: */
+	// MM: don't think we need any of the following shadow lines 
+	
+	// Set the default shadow buffer size
 	dataItem->shadowBufferSize[0]=1024;
 	dataItem->shadowBufferSize[1]=1024;
-	/* Generate the shadow rendering frame buffer: */
+	// Generate the shadow rendering frame buffer
 	glGenFramebuffersEXT(1,&dataItem->shadowFramebufferObject);
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,dataItem->shadowFramebufferObject);
-	/* Generate a depth texture for shadow rendering: */
+	// Generate a depth texture for shadow rendering
 	glGenTextures(1,&dataItem->shadowDepthTextureObject);
 	// MM: generates the specified number of texture objects and places their 
 	// handles in the GLuint array pointer (the second parameter)
@@ -1149,13 +1186,14 @@ void Sandbox::initContext(GLContextData& contextData) const
 	glTexImage2D(GL_TEXTURE_2D,0,GL_DEPTH_COMPONENT24_ARB,dataItem->shadowBufferSize[0],dataItem->shadowBufferSize[1],0,GL_DEPTH_COMPONENT,GL_UNSIGNED_BYTE,0);
 	glBindTexture(GL_TEXTURE_2D,0); // MM: texture target and texture name
 	
-	/* MM: without shadows, do we need this? */
-	/* Attach the depth texture to the frame buffer object: */
+	// MM: without shadows, do we need this
+	// Attach the depth texture to the frame buffer object
 	glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,GL_DEPTH_ATTACHMENT_EXT,GL_TEXTURE_2D,dataItem->shadowDepthTextureObject,0);
 	glDrawBuffer(GL_NONE);
 	glReadBuffer(GL_NONE);
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,currentFrameBuffer);
 	} 
+	*/
 	std::cout << "Done with Sandbox::initContext." << std::endl;  // MM: added
 	}
 

@@ -503,8 +503,7 @@ void CalibrateProjector::frame(void)
 		}
 	}
 
-// MM: need to examine this method in detail (TO DO)
-//     (determine what this displays)
+// MM: may want to examine this method as example display (but not used in SARndbox)
 void CalibrateProjector::display(GLContextData& contextData) const
 	{
 	/* Get the context data item: */

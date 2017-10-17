@@ -581,12 +581,11 @@ void SurfaceRenderer::initContext(GLContextData& contextData) const
 	DataItem* dataItem=new DataItem;
 	contextData.addDataItem(this,dataItem);
 
+	/* MM: commenting out entire method to attempt no rendering ImageMap display
 	// Create the height map render shader
 	dataItem->heightMapShader=createSinglePassSurfaceShader(*contextData.getLightTracker(),dataItem->heightMapShaderUniforms);
 	dataItem->surfaceSettingsVersion=surfaceSettingsVersion;
 	dataItem->lightTrackerVersion=contextData.getLightTracker()->getVersion();
-
-	/* MM: commenting out entire method to attempt no rendering ImageMap display
 	
 	// Create the global ambient height map render shader
 	dataItem->globalAmbientHeightMapShader=linkVertexAndFragmentShader("SurfaceGlobalAmbientHeightMapShader");
@@ -614,20 +613,6 @@ void SurfaceRenderer::initContext(GLContextData& contextData) const
 	std::cout << "Done with SurfaceRenderer::initContext." << std::endl;  // MM: added
 	}
 
-/* MM: commented out - think this is just for lining colored sections of ElevationColorMap
-void SurfaceRenderer::setDrawContourLines(bool newDrawContourLines)
-	{
-	drawContourLines=newDrawContourLines;
-	++surfaceSettingsVersion;
-	}
-
-void SurfaceRenderer::setContourLineDistance(GLfloat newContourLineDistance)
-	{
-	// Set the new contour line factor
-	contourLineFactor=1.0f/newContourLineDistance;
-	}
-*/
-
 /* MM: commented out - replaced with ImageMap
 void SurfaceRenderer::setElevationColorMap(ElevationColorMap* newElevationColorMap)
 	{
@@ -640,9 +625,7 @@ void SurfaceRenderer::setElevationColorMap(ElevationColorMap* newElevationColorM
 	}*/
 
 void SurfaceRenderer::setImageMap(ImageMap* newImageMap)
-	{
-	imageMap=newImageMap;
-	}
+	{ imageMap=newImageMap; }
 
 void SurfaceRenderer::setDem(DEM* newDem)
 	{
@@ -655,9 +638,7 @@ void SurfaceRenderer::setDem(DEM* newDem)
 	}
 
 void SurfaceRenderer::setDemDistScale(GLfloat newDemDistScale)
-	{
-	demDistScale=newDemDistScale;
-	}
+	{ demDistScale=newDemDistScale; }
 
 void SurfaceRenderer::setIlluminate(bool newIlluminate)
 	{
@@ -672,11 +653,10 @@ void SurfaceRenderer::renderSinglePass(const int viewport[4],const PTransform& p
 	// Get the data item
 	DataItem* dataItem=contextData.retrieveDataItem<DataItem>(this);
 	
+	
 	// Calculate the required matrices
 	PTransform projectionModelview=projection;
 	projectionModelview*=modelview;
-
-	/* MM: commenting out entire method to attempt no rendering ImageMap display
 	
 	/* MM: commented out - think this is just for lining colored sections of ElevationColorMap
 	// Check if contour line rendering is enabled
@@ -697,6 +677,7 @@ void SurfaceRenderer::renderSinglePass(const int viewport[4],const PTransform& p
 		}
 	*/
 
+	/* MM: commenting out entire method to attempt no rendering ImageMap display
 	std::cout << "Checking if single-pass surface shader is outdated." << std::endl;
 
 	// Check if the single-pass surface shader is outdated
@@ -726,11 +707,12 @@ void SurfaceRenderer::renderSinglePass(const int viewport[4],const PTransform& p
 	// Bind the single-pass surface shader
 	glUseProgramObjectARB(dataItem->heightMapShader);
 	const GLint* ulPtr=dataItem->heightMapShaderUniforms;
-	
+	*/
 	std::cout << "Bind the current depth image texture." << std::endl;
 	// Bind the current depth image texture
 	glActiveTextureARB(GL_TEXTURE0_ARB);
 	depthImageRenderer->bindDepthTexture(contextData);
+	/*
 	glUniform1iARB(*(ulPtr++),0);
 	
 	std::cout << "Upload the depth projection matrix." << std::endl;
@@ -768,12 +750,12 @@ void SurfaceRenderer::renderSinglePass(const int viewport[4],const PTransform& p
 	//else if(imageMap!=0) {
 	if(imageMap!=0) {
 	  // Upload the texture mapping plane equation:
-	  imageMap->uploadTexturePlane(*(ulPtr++));
+	  //imageMap->uploadTexturePlane(*(ulPtr++));
 		
 	  // Bind the image map texture:
 	  glActiveTextureARB(GL_TEXTURE1_ARB); // MM: ??
 	  imageMap->bindTexture(contextData);
-	  glUniform1iARB(*(ulPtr++),1);        // MM: ??
+	  //glUniform1iARB(*(ulPtr++),1);        // MM: ??
 	}
 	else
 	  std::cout << "imageMap == 0!" << std::endl;
@@ -809,6 +791,7 @@ void SurfaceRenderer::renderSinglePass(const int viewport[4],const PTransform& p
 		}
 	*/
 	
+	/* MM: commenting out entire method to attempt no rendering ImageMap display
 	// Upload the combined projection, modelview, and depth unprojection matrix
 	PTransform projectionModelviewDepthProjection=projectionModelview;
 	projectionModelviewDepthProjection*=depthImageRenderer->getDepthProjection();
@@ -821,13 +804,6 @@ void SurfaceRenderer::renderSinglePass(const int viewport[4],const PTransform& p
 	
 	/*
 	// Unbind all textures and buffers
-	/* MM: commented out - think this is just for lining colored sections of ElevationColorMap
-	if(drawContourLines)
-		{
-		glActiveTextureARB(GL_TEXTURE2_ARB);
-		glBindTexture(GL_TEXTURE_RECTANGLE_ARB,0); // MM: texture target and texture name
-		}
-	*/
 	/* MM: commenting out entire method to attempt no rendering ImageMap display
 	if(dem!=0)
 		{

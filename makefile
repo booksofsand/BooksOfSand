@@ -36,7 +36,6 @@ endif
 # directory, respectively.
 # Important note: Do not use ~ as an abbreviation for the user's home
 # directory here; use $(HOME) instead.
-# INSTALLDIR := $(PWD)
 INSTALLDIR := /usr/local
 
 ########################################################################
@@ -52,7 +51,7 @@ VERSION = 2.3
 
 # Set up resource directories: */
 CONFIGDIR = etc/SARndbox-$(VERSION)
-RESOURCEDIR = share/SARndbox-$(VERSION)
+# RESOURCEDIR = share/SARndbox-$(VERSION)
 
 # Include definitions for the system environment and system-provided
 # packages
@@ -66,7 +65,6 @@ include $(VRUI_MAKEDIR)/Packages.Kinect
 # Set installation directory structure:
 EXECUTABLEINSTALLDIR = $(INSTALLDIR)/$(EXEDIR)
 ETCINSTALLDIR = $(INSTALLDIR)/$(CONFIGDIR)
-SHAREINSTALLDIR = $(INSTALLDIR)/$(RESOURCEDIR)
 
 ########################################################################
 # Specify additional compiler and linker flags
@@ -102,7 +100,6 @@ config: Configure-End
 Configure-Begin:
 	@cp Config.h Config.h.temp
 	@$(call CONFIG_SETSTRINGVAR,Config.h.temp,CONFIG_CONFIGDIR,$(ETCINSTALLDIR))
-	@$(call CONFIG_SETSTRINGVAR,Config.h.temp,CONFIG_SHADERDIR,$(SHAREINSTALLDIR)/Shaders)
 	@if ! diff Config.h.temp Config.h > /dev/null ; then cp Config.h.temp Config.h ; fi
 	@rm Config.h.temp
 
@@ -111,8 +108,6 @@ Configure-Install: Configure-Begin
 	@echo "---- SARndbox installation configuration ----"
 	@echo "Root installation directory: $(INSTALLDIR)"
 	@echo "Configuration data directory: $(ETCINSTALLDIR)"
-	@echo "Resource data directory: $(SHAREINSTALLDIR)"
-	@echo "Shader source code directory: $(SHAREINSTALLDIR)/Shaders"
 
 .PHONY: Configure-End
 Configure-End: Configure-Install
@@ -175,6 +170,3 @@ install: $(ALL)
 	@install $(ALL) $(EXECUTABLEINSTALLDIR)
 	@install -d $(ETCINSTALLDIR)
 	@install -m u=rw,go=r $(CONFIGDIR)/* $(ETCINSTALLDIR)
-	@install -d $(SHAREINSTALLDIR)
-	@install -d $(SHAREINSTALLDIR)/Shaders
-	@install -m u=rw,go=r $(RESOURCEDIR)/Shaders/* $(SHAREINSTALLDIR)/Shaders

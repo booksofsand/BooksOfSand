@@ -59,7 +59,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 */
 
 ImageMap::ImageMap(const char* imageName) {
-  std::cout << "CREATING NEW IMAGE MAP!" << std::endl;
+  std::cout << "Making an image map!" << std::endl;
   load(imageName);
 }
 
@@ -77,7 +77,8 @@ void ImageMap::initContext(GLContextData& contextData) const {
 
 void ImageMap::load(const char* imageName) {
   // Overrides image map by loading the given image file
-  // MM: TO DO - implement
+  
+  std::cout << "In ImageMap::load." << std::endl;  // MM: added
 
   // Get image file name
   std::string fullImageName;
@@ -91,8 +92,7 @@ void ImageMap::load(const char* imageName) {
       fullImageName.push_back('/');
       fullImageName.append(imageName);
   }
-  return; // MM: skipping
-	
+  
   // Open image file
   Images::TextureSet::Texture& tex=textures.addTexture(Images::readImageFile(imageName,
 									     Vrui::openFile(imageName)),
@@ -107,6 +107,7 @@ void ImageMap::load(const char* imageName) {
   
   // Invalidate the color map texture object
   ++textureVersion;
+  std::cout << "Done with ImageMap::load." << std::endl;  // MM: added
 }
 
 void ImageMap::calcTexturePlane(const Plane& basePlane) {
@@ -140,22 +141,21 @@ void ImageMap::bindTexture(GLContextData& contextData) const {
   std::cout << "In ImageMap::bindTexture." << std::endl; // MM: added
 
   // Retrieve the data item
-  //DataItem* dataItem=contextData.retrieveDataItem<DataItem>(this);  // from ElevationColorMap
-  //std::cout << "Retrieved DataItem." << std::endl;
+  DataItem* dataItem=contextData.retrieveDataItem<DataItem>(this);  // from ElevationColorMap
+  std::cout << "Retrieved DataItem." << std::endl;
   
   // Bind the texture object
-  //glBindTexture(GL_TEXTURE_2D,dataItem->textureObjectId); // from ElevationColorMap. MM: changed to 2D
+  glBindTexture(GL_TEXTURE_2D,dataItem->textureObjectId); // from ElevationColorMap. MM: changed to 2D
   //glBindTexture(GL_TEXTURE_1D,dataItem->textureObjectId); // from ElevationColorMap
-  //std::cout << "glBindTexture(GL_TEXTURE_1D,dataItem->textureObjectId); done." << std::endl;
-  
+  std::cout << "glBindTexture(GL_TEXTURE_2D,dataItem->textureObjectId); done." << std::endl;
   
   
   // Code from ImageViewer.cpp:
   // Set up OpenGL state
-  glPushAttrib(GL_ENABLE_BIT);
-  glEnable(GL_TEXTURE_2D);
-  glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);
-  std::cout << "glPushAttrib, glEnable, glTexEnvi done." << std::endl;
+  //glPushAttrib(GL_ENABLE_BIT);
+  //glEnable(GL_TEXTURE_2D);
+  //glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);
+  //std::cout << "glPushAttrib, glEnable, glTexEnvi done." << std::endl;
   
   // Get the texture set's GL state
   // MM: getGLState returns OpenGL texture state object for the given OpenGL context
@@ -196,7 +196,7 @@ void ImageMap::bindTexture(GLContextData& contextData) const {
   //Protect the texture object
   //glBindTexture(GL_TEXTURE_2D,0); // MM: commented out bc already do this in SurfaceRenderer?
   // Restore OpenGL state
-  glPopAttrib();
+  //glPopAttrib();
   std::cout << "Done with drawing!" << std::endl;
   
   

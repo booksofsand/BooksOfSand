@@ -242,7 +242,12 @@ void DepthImageRenderer::bindDepthTexture(GLContextData& contextData) const
 	if(dataItem->depthTextureVersion!=depthImageVersion)
 		{
 		/* Upload the new depth texture: */
-		glTexSubImage2D(GL_TEXTURE_RECTANGLE_ARB,0,0,0,depthImageSize[0],depthImageSize[1],GL_LUMINANCE,GL_FLOAT,depthImage.getData<GLfloat>());
+		glTexSubImage2D(GL_TEXTURE_RECTANGLE_ARB,0,0,0,depthImageSize[0],
+				depthImageSize[1],GL_LUMINANCE,GL_FLOAT,depthImage.getData<GLfloat>());
+		// MM: ^ Texturing maps a portion of a specified texture image onto each graphical primitive
+		// for which texturing is enabled. glTexSubImage2D redefines a contiguous subregion of
+		// an existing two-dimensional or one-dimensional array texture image.
+		// NOTE that depthImage.getData<GLfloat>() is getting the Kinect::FrameBuffer depth map. 
 		
 		/* Mark the depth texture as current: */
 		dataItem->depthTextureVersion=depthImageVersion;

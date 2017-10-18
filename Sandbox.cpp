@@ -1241,7 +1241,7 @@ void Sandbox::frame(void)
 /* MM: a Vrui::Application method - necessary for us */
 void Sandbox::display(GLContextData& contextData) const
 	{
-	  std::cout << "In Sandbox::display." << std::endl; // MM: added
+	std::cout << "In Sandbox::display." << std::endl; // MM: added
 	/* Get the data item: */
 	DataItem* dataItem=contextData.retrieveDataItem<DataItem>(this);
 	
@@ -1497,6 +1497,8 @@ void Sandbox::display(GLContextData& contextData) const
 		glMaterialShininess(GLMaterialEnums::FRONT,64.0f);
 		rs.waterRenderer->render(projection,ds.modelviewNavigational,contextData);
 		}
+	// MM: output depth image data
+	std::cout << std::endl << "DEPTH IMAGE" << std::endl << depthImageRenderer->depthImage.getData<GLfloat>() << std::endl << std::endl;
 	std::cout << "Done with Sandbox::display." << std::endl; // MM: added
 	}
 

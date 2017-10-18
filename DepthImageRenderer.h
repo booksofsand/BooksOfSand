@@ -69,11 +69,12 @@ class DepthImageRenderer:public GLObject
 	GLfloat basePlaneDicEq[4]; // Base plane equation in depth image space in GLSL-compatible format
 	
 	/* Transient state: */
-	Kinect::FrameBuffer depthImage; // The most recent float-pixel depth image
+	//Kinect::FrameBuffer depthImage; // The most recent float-pixel depth image MM: changed to public
 	unsigned int depthImageVersion; // Version number of the depth image
 	
 	/* Constructors and destructors: */
 	public:
+	Kinect::FrameBuffer depthImage; // The most recent float-pixel depth image MM: changed to public
 	DepthImageRenderer(const unsigned int sDepthImageSize[2]); // Creates an elevation renderer for the given depth image size
 	
 	/* Methods from GLObject: */

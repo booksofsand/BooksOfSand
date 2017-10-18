@@ -132,6 +132,8 @@ class Sandbox:public Vrui::Application,public GLObject
 	FrameFilter* frameFilter; // Processing object to filter raw depth frames from the Kinect camera
 	bool pauseUpdates; // Pauses updates of the topography
 	Threads::TripleBuffer<Kinect::FrameBuffer> filteredFrames; // Triple buffer for incoming filtered depth frames
+	// MM: ^ is this more important to look at than the depthImageRenderer->depthImage? how to display this data?
+	//     See Vrui/Threads/TripleBuffer.h
 	DepthImageRenderer* depthImageRenderer; // Object managing the current filtered depth image
 	ONTransform boxTransform; // Transformation from camera space to baseplane space (x along long sandbox axis, z up)
 	Box bbox; // Bounding box around the surface

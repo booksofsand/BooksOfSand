@@ -846,7 +846,11 @@ Sandbox::Sandbox(int& argc,char**& argv)
 		camera=realCamera;
 		}
 	for(int i=0;i<2;++i)
+	{
 		frameSize[i]=camera->getActualFrameSize(Kinect::FrameSource::DEPTH)[i];
+		//std::cout << "FRAME[" << i << "]: " << frameSize[i] << std::endl;  //LJ CHECK WHAT THE FRAME SIZE IS
+		// MM: ^ it's 480 by 640
+	}
 	
 	/* Get the camera's per-pixel depth correction parameters and evaluate it on the depth frame's pixel grid: */
 	Kinect::FrameSource::DepthCorrection* depthCorrection=camera->getDepthCorrectionParameters();
@@ -1498,7 +1502,12 @@ void Sandbox::display(GLContextData& contextData) const
 		rs.waterRenderer->render(projection,ds.modelviewNavigational,contextData);
 		}
 	// MM: output depth image data
-	std::cout << std::endl << "DEPTH IMAGE" << std::endl << depthImageRenderer->depthImage.getData<GLfloat>() << std::endl << std::endl;
+	//std::cout << std::endl << "DEPTH IMAGE" << std::endl << depthImageRenderer->depthImage.getData<GLfloat>() << std::endl << std::endl;
+	// ^ this prints a pointer address
+	//const Kinect::FrameBuffer& f = filteredFrames.getLockedValue();
+	//std::cout << std::endl << "DEPTH IMAGE" << std::endl << f.getData<GLfloat>()[2] << std::endl << std::endl;  //LJ PRINT STUFF
+	// MM: f.getData<GLfloat>() is a pointer to a list of 307200 floats (the frame is 480 by 640 in dimension)
+	
 	std::cout << "Done with Sandbox::display." << std::endl; // MM: added
 	}
 

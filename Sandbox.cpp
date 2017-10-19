@@ -1507,6 +1507,45 @@ void Sandbox::display(GLContextData& contextData) const
 	//const Kinect::FrameBuffer& f = filteredFrames.getLockedValue();
 	//std::cout << std::endl << "DEPTH IMAGE" << std::endl << f.getData<GLfloat>()[2] << std::endl << std::endl;  //LJ PRINT STUFF
 	// MM: f.getData<GLfloat>() is a pointer to a list of 307200 floats (the frame is 480 by 640 in dimension)
+
+	std::cout << std::endl;
+	//for (int i = 0; i < 307200; ;) {
+	int i = 0;
+	for (int count = 0; count < 100; count++;) {    // just print 50 pairs
+	  	  
+	  if (i % 640 == 0) {
+	    std::cout << f.getData<GLfloat>()[i] << ", ";
+	    i = i + 639;  // go to rightmost spot
+	  }
+	  else {
+	    std::cout << f.getData<GLfloat>()[i] << std::endl;
+	    i++;          // go to leftmost spot
+	  }
+
+	  /*
+	  if (i % 480 == 0) {
+	    std::cout << f.getData<GLfloat>()[i] << ", ";
+	    i = i + 479;  // go to bottommost spot
+	  }
+	  else {
+	    std::cout << f.getData<GLfloat>()[i] << std::endl;
+	    i++;          // go to topmost spot
+	  }
+	  */
+
+	  /* MM: trying to determine organization of depth map floats.
+	     box is 480 by 640. assuming f.getData()[0] is a corner.
+	     will test this by drastically different depths of sand on either side.
+	     ________________      ________________
+	     |0          639|      |0   480 960 ..|
+	     |640       1279|  OR  |              |  ?
+	     |1280       ...|      |              |
+	     |...     307199|      |479 959 307199|
+	     ----------------      ----------------
+	   */
+
+	}
+	std::cout << std::endl;
 	
 	std::cout << "Done with Sandbox::display." << std::endl; // MM: added
 	}

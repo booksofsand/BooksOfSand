@@ -1,0 +1,295 @@
+In Sandbox::Sandbox.
+In Sandbox::RenderSettings::RenderSettings.
+In Sandbox::RenderSettings::loadProjectorTransform.
+Done with Sandbox::RenderSettings::loadProjectorTransform.
+Done with Sandbox::RenderSettings::RenderSettings.
+In Sandbox::RenderSettings::RenderSettings.
+Done with Sandbox::RenderSettings::RenderSettings.
+In Sandbox::RenderSettings::loadHeightMap.
+Done with Sandbox::RenderSettings::loadHeightMap.
+In Sandbox::createMainMenu.
+Done with Sandbox::createMainMenu.
+Done with Sandbox::Sandbox.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::initContext.
+In Sandbox::DataItem::DataItem.
+Done with Sandbox::DataItem::DataItem.
+Done with Sandbox::initContext.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::frame.
+Done with Sandbox::frame.
+In Sandbox::display.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+
+	0	20	40	60	80	100	120	140	160	180	200	220	240	260	280	300	320	340	360	380	400	420	440	460	480	500	520	540	560	580	600	620	
+0	734.521	734.43	734.337	734.243	733.391	724.046	728.427	728.919	714.8	715.005	708.675	713.5	699.198	693.788	692.018	691.527	691.861	689.46	688.295	687.826	686.58	685.534	685.097	693.244	699.704	732.191	732.098	732.005	731.911	731.818	731.725	731.631	
+20	734.844	734.754	733.885	734.324	734.474	732.971	733.291	722.791	722.605	719.152	717.161	714.734	712.906	711.603	710.326	710.061	710.563	708.506	706.259	701.785	700.177	693.5	689.547	689.471	688.868	687.319	685.959	685.052	688.068	714.553	717.139	729.462	
+40	735.177	735.086	734.993	734.9	734.806	734.713	731.343	734.068	722.043	722.944	718.485	716.441	714.345	713.941	713.921	713.051	712.432	713.102	716.405	716.101	713.95	712.727	712.127	712.607	712.003	710.875	718.454	712.986	717.827	704.307	711.901	731.054	
+60	735.51	735.419	735.326	735.232	735.139	729.179	726.61	731.242	722.389	720.371	717.898	715.516	713.286	717.375	718.222	719.025	717.84	715.67	717.144	719.969	719.991	718.051	715.68	715.622	716.204	717.615	718.576	717.573	718.418	718.76	724.663	732.62	
+80	735.842	725.601	735.658	735.565	735.472	733.474	726.661	734.39	728.845	719.268	716.796	713.546	713.693	719.643	725.076	725.836	724.763	721.223	717.675	718.949	718.948	715.741	714.962	716.075	718.783	721.292	722.163	722.975	722.331	733.14	721.04	732.953	
+100	736.175	736.084	735.991	735.898	735.804	727.523	735.389	731.269	730.239	724.509	715.16	715.973	717.384	721.601	726.354	730.371	729.855	725.96	723.729	719.703	716.819	713.73	712.98	715.952	718.603	722.338	723.743	726.122	728.389	722.743	731.462	732.814	
+120	736.508	736.417	736.324	736.23	736.137	736.044	733.804	728.564	727.389	720.563	721.69	722.709	722.739	725.75	728.939	730.716	734.697	731.927	728.034	723.836	720.212	713.013	712.016	716.072	720.152	720.928	724.204	726.071	730.032	733.393	721.548	733.618	
+140	736.84	736.75	736.656	736.563	736.47	736.377	733.552	731.11	717.661	722.467	726.935	729.437	729.219	732.411	735.925	737.511	738.57	736.457	733.276	728.654	724.049	717.207	714.779	717.541	720.962	723.747	725.933	726.567	730.049	734.138	734.044	733.951	
+160	737.173	737.082	736.989	736.896	736.803	736.709	736.616	735.461	725.112	725.812	729.404	732.547	733.973	737.982	741.047	744.004	745.829	743.775	738.644	733.795	728.827	721.522	717.403	719.673	723.703	724.581	724.97	730.531	727.381	733.931	731.402	734.284	
+180	737.506	737.415	737.322	737.229	737.135	736.853	736.949	733.991	724.911	725.937	728.61	733.011	737.824	742.432	748.054	751.282	752.605	748.888	743.511	737.31	732.659	726.064	719.756	720.615	724.983	726.352	724.429	731.838	729.918	734.398	734.71	732.011	
+200	737.839	737.748	737.655	737.561	737.468	737.375	737.281	737.188	730.631	726.313	730.863	736.355	741.623	747.161	751.908	752.922	756.516	752.737	746.466	741.737	735.911	728.747	723.793	719.797	721.569	726.376	726.989	727.688	735.229	735.136	735.042	734.949	
+220	738.171	738.081	737.987	737.894	737.801	737.707	737.614	732.7	724.204	737.138	730.796	736.471	740.738	745.823	749.74	751.152	751.879	753.066	748.399	742.952	736.834	731.488	727.929	723.848	719.68	724.76	724.783	727.272	735.562	735.469	735.375	735.282	
+240	738.504	738.413	738.32	738.227	738.133	738.04	737.947	735.121	737.452	723.251	728.794	734.439	737.312	740.605	744.732	746.507	747.053	746.272	744.848	740.292	735.314	729.137	726.679	723.512	720.601	720.692	723.311	726.744	725.975	735.801	735.708	735.615	
+260	738.837	738.746	738.653	738.559	738.466	738.373	738.28	736.267	737.081	723.018	730.968	732.236	732.88	735.359	738.371	741.085	738.528	739.916	738.993	737.355	732.373	727.029	721.949	719.166	715.529	719.645	721.509	734.096	727.215	735.038	736.041	735.947	
+280	739.169	739.079	738.985	738.892	738.799	738.705	738.612	738.519	724.331	724.167	727.76	727.263	727.587	729.072	734.712	735.479	732.835	732.67	732.947	732.948	729.897	723.555	718.93	715.179	714.058	717.966	719.837	732.129	728.825	734.17	736.373	736.28	
+300	728.404	739.411	739.318	739.225	739.131	739.038	738.945	738.852	738.758	737.591	719.583	722.292	720.738	724.922	729.883	729.218	726.397	726.754	726.789	726.531	725.983	720.144	715.894	713.798	716.408	719.339	724.495	736.753	736.893	736.799	736.706	736.613	
+320	739.835	739.744	739.651	739.557	739.464	739.371	739.278	738.928	729.733	726.271	716.495	717.896	716.01	722.111	724.914	724.785	720.866	721.041	721.037	720.745	719.823	717.294	712.278	714.039	720.032	722.662	723.526	729.063	737.225	737.132	737.039	736.945	
+340	740.167	740.077	739.984	739.89	739.797	739.704	739.61	739.517	739.179	727.935	721.999	718.219	714.833	717.446	719.506	719.986	715.39	715.457	715.456	714.355	713.258	711.098	710.393	715.784	721.357	724.125	727.048	733.611	737.301	737.465	737.371	737.278	
+360	739.136	740.409	740.316	740.223	740.13	740.036	739.943	736.896	739.536	727.588	725.749	725.101	716.48	713.25	712.91	714.845	712.807	709.192	708.736	708.535	707.995	706.191	708.909	717.598	722.289	726.067	726.475	737.08	737.891	737.797	737.704	737.611	
+380	740.833	740.742	740.649	740.556	740.462	740.369	740.276	740.182	740.089	738.73	728.501	724.763	717.38	713.554	713.825	716.743	717.126	712.051	707.579	704.117	704.21	706.623	712.75	719.12	723.491	728.163	735.953	733.977	738.223	738.13	738.037	737.943	
+400	741.166	741.075	740.982	740.888	740.795	740.702	740.608	740.515	740.422	740.329	726.295	722.292	717.553	714.891	716.065	718.593	719.778	715.429	711.215	709.021	709.769	712.084	716.633	721.265	723.848	725.454	731.953	737.024	738.556	738.463	738.37	738.276	
+420	741.498	741.408	741.314	741.221	741.128	741.034	740.941	740.848	736.756	740.249	735.054	721.861	718.414	715.892	716.045	717.833	718.747	716.234	714.568	713.145	714.145	716.471	719.482	723.228	724.807	728.653	737.41	738.982	738.889	737.345	738.702	735.766	
+440	741.831	741.74	741.647	741.554	741.46	741.367	741.274	741.181	741.087	734.47	724.508	711.124	703.308	730.455	709.938	711.979	714.446	713.566	713.319	714.457	716.08	717.695	720.485	721.533	728.192	739.501	720.422	739.315	739.222	739.128	739.035	738.942	
+460	742.164	742.073	741.98	741.886	741.793	741.7	741.607	741.513	741.42	741.327	738.483	714.374	694.234	693.505	693.482	693.001	692.221	691.726	692.68	693.332	697.596	700.029	704.281	710.279	725.368	717.472	736.457	739.648	739.554	739.461	739.368	739.274	
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In Sandbox::rawDepthFrameDispatcher.
+Done with Sandbox::rawDepthFrameDispatcher.

@@ -28,6 +28,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #include <Misc/FunctionCalls.h>
 #include <Geometry/HVector.h>
 #include <Geometry/Matrix.h>
+#include <iostream>  // MM: added
 
 /****************************
 Methods of class FrameFilter:
@@ -36,9 +37,10 @@ Methods of class FrameFilter:
 void* FrameFilter::filterThreadMethod(void)
 	{
 	unsigned int lastInputFrameVersion=0;
-	
+	std::cout << "In FrameFilter::filterThreadMethod!!!!!!!!!!!!!!!!!!!!!!!!!!" << std::endl;  // MM: added
 	while(true)
 		{
+		std::cout << "In FrameFilter::filterThreadMethod LOOP!!!!!!!!!!!!!!!!!!!!!" << std::endl;  // MM: added
 		Kinect::FrameBuffer frame;
 		{
 		Threads::MutexCond::Lock inputLock(inputCond);

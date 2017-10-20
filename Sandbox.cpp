@@ -1511,6 +1511,21 @@ void Sandbox::display(GLContextData& contextData) const
 	std::cout << std::endl;
 	
 	/*
+	std::cout << "\t";
+	for (int col = 0; col < 640; col+=20)  
+	  std::cout << col << "\t";   // print row labels
+	std::cout << std::endl;
+	
+	for (int row = 0; row < 480; row = row+20) {
+	  std::cout << row << "\t";         // print col label
+	  for (int col = 0; col < 640; col+=20)
+	    std::cout << f.getData<GLfloat>()[(row*640)+col] << "\t";
+	  std::cout << std::endl;
+	}
+	exit(0);
+	
+	
+	
 	int nums[8] = {1, 100, 200, 300, 400, 500, 600, 639};
 	std::cout << "\t";
 	for (int j = 0; j < 8; j++)

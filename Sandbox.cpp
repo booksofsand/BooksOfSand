@@ -97,7 +97,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #include <Kinect/DirectFrameSource.h>
 #include <Kinect/OpenDirectFrameSource.h>
 
-#define SAVEDEPTH 0   /* MM: SAVEDEPTH is used twice as a #if 0 ... #endif block comment /*
+#define SAVEDEPTH 0   // MM: SAVEDEPTH is used twice as a #if 0 ... #endif block comment
 
 // MM: this does nothing, basically commented out
 #if SAVEDEPTH
@@ -105,7 +105,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #include <Images/WriteImageFile.h>
 #endif
 
-/* MM: SARndbox defined includes */
+// MM: SARndbox defined includes
 #include "FrameFilter.h"
 #include "DepthImageRenderer.h"
 #include "ElevationColorMap.h"
@@ -1509,6 +1509,7 @@ void Sandbox::display(GLContextData& contextData) const
 	// MM: f.getData<GLfloat>() is a pointer to a list of 307200 floats (the frame is 480 by 640 in dimension)
 
 	std::cout << std::endl;
+	exit(0);  // MM: added to terminate program after init, for test output viewing
 	
 	/*
 	std::cout << "\t";

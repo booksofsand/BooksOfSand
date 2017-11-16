@@ -1,0 +1,563 @@
+11/15 9:30pm flow MM
+
+In Application::Application (Vrui::Application.cpp).
+In init (Vrui::Vrui.Workbench.cpp).
+In vruiOpenConfigurationFile (Vrui::Vrui.Workbench.cpp).
+In VruiState::VruiState (Vrui::Vrui.General.cpp).
+In VruiState::initialize (Vrui::Vrui.General.cpp).
+In IO::DirectoryPtr openDirectory (Cluster::OpenFile.cpp).
+    Dir: .
+In Directory::Directory (IO::Directory.cpp).
+In StandardDirectory::StandardDirectory (IO::StandardDirectory).
+    Path: .
+In Directory::normalizePath (IO::Directory.cpp).
+   Path: /opt/SARndbox-2.3/.                                                                                                                                                                                                                 
+In Directory::setCurrent (IO::Directory.cpp).                                                                                                                                                                                                
+In FilePtr openFile (IO::OpenFile.cpp).                                                                                                                                                                                                      
+    File: TimesBoldUpright12.fnt                                                                                                                                                                                                             
+Created File object at 0x7eaef0                                                                                                                                                                                                              
+In StandardFile::StandardFile (IO::StandardFile.cpp).                                                                                                                                                                                        
+In StandardFile::openFile (IO::StandardFile.cpp)                                                                                                                                                                                             
+    File: TimesBoldUpright12.fnt                                                                                                                                                                                                             
+Destroyed File object at 0x7eaef0                                                                                                                                                                                                            
+In FilePtr openFile (IO::OpenFile.cpp).                                                                                                                                                                                                      
+    File: /usr/local/share/Vrui-4.2/GLFonts/TimesBoldUpright12.fnt                                                                                                                                                                           
+Created File object at 0x7eaef0                                                                                                                                                                                                              
+In StandardFile::StandardFile (IO::StandardFile.cpp).                                                                                                                                                                                        
+In StandardFile::openFile (IO::StandardFile.cpp)                                                                                                                                                                                             
+    File: /usr/local/share/Vrui-4.2/GLFonts/TimesBoldUpright12.fnt                                                                                                                                                                           
+Reading from 0x7eaef0                                                                                                                                                                                                                        
+In size_t StandardFile::readData (IO::StandardFile.cpp).                                                                                                                                                                                     
+Reading from 0x7eaef0                                                                                                                                                                                                                        
+In size_t StandardFile::readData (IO::StandardFile.cpp).                                                                                                                                                                                     
+Destroyed File object at 0x7eaef0                                                                                                                                                                                                            
+In IO::DirectoryPtr openDirectory (Cluster::OpenFile.cpp).                                                                                                                                                                                   
+    Dir: .                                                                                                                                                                                                                                   
+In Directory::Directory (IO::Directory.cpp).                                                                                                                                                                                                 
+In StandardDirectory::StandardDirectory (IO::StandardDirectory).                                                                                                                                                                             
+    Path: .
+In Directory::normalizePath (IO::Directory.cpp).
+   Path: /opt/SARndbox-2.3/.
+In IO::DirectoryPtr openDirectory (Cluster::OpenFile.cpp).
+    Dir: .
+In Directory::Directory (IO::Directory.cpp).
+In StandardDirectory::StandardDirectory (IO::StandardDirectory).
+    Path: .
+In Directory::normalizePath (IO::Directory.cpp).
+   Path: /opt/SARndbox-2.3/.
+Done with VruiState::initialize (Vrui::Vrui.General.cpp).
+In Sandbox::Sandbox.
+In Sandbox::RenderSettings::RenderSettings.
+In Sandbox::RenderSettings::loadProjectorTransform.
+In IO::FilePtr openFile (Cluster::OpenFile.cpp).
+    File: /usr/local/etc/SARndbox-2.3/ProjectorMatrix.dat
+Created File object at 0x837570
+In StandardFile::StandardFile (IO::StandardFile.cpp).
+In StandardFile::openFile (IO::StandardFile.cpp)
+    File: /usr/local/etc/SARndbox-2.3/ProjectorMatrix.dat
+Reading from 0x837570
+In size_t StandardFile::readData (IO::StandardFile.cpp).
+Destroyed File object at 0x837570
+Done with Sandbox::RenderSettings::loadProjectorTransform.
+Done with Sandbox::RenderSettings::RenderSettings.
+In Sandbox::RenderSettings::RenderSettings.
+Done with Sandbox::RenderSettings::RenderSettings.
+In Sandbox::RenderSettings::loadHeightMap.
+In ElevationColorMap::ElevationColorMap.
+In ElevationColorMap::load.
+In IO::FilePtr openFile (Cluster::OpenFile.cpp).
+    File: /usr/local/etc/SARndbox-2.3/HeightColorMap.cpt
+Created File object at 0x812750
+In StandardFile::StandardFile (IO::StandardFile.cpp).
+In StandardFile::openFile (IO::StandardFile.cpp)
+    File: /usr/local/etc/SARndbox-2.3/HeightColorMap.cpt
+In size_t StandardFile::readData (IO::StandardFile.cpp).
+heightMapName: HeightColorMap.cpt
+In size_t StandardFile::readData (IO::StandardFile.cpp).
+heightMapKeys.size(): 15
+Done with ElevationColorMap::load.
+Destroyed File object at 0x812750
+Done with ElevationColorMap::ElevationColorMap.
+Done with Sandbox::RenderSettings::loadHeightMap.
+In FrameSource::FrameSource (Kinect::FrameSource.cpp).
+In Camera::initialize (Kinect::Camera.cpp).
+In Camera::configure (Kinect::Camera.cpp).
+In FrameSource::DepthCorrection* Camera::getDepthCorrectionParameters (Kinect::Camera.cpp.
+In FrameSource::DepthCorrection* FrameSource::getDepthCorrectionParameters (Kinect::FrameSource.cpp).
+In FrameSource::DepthCorrection::DepthCorrection (Kinect::FrameSource.cpp).
+In FrameSource::DepthCorrection::getPixelCorrection (Kinect::FrameSource.cpp).
+In FrameSource::IntrinsicParameters Camera::getIntrinsicParameters (Kinect::Camera.cpp).
+Trying to open file:
+/usr/local/etc/Vrui-4.2/Kinect-3.2/IntrinsicParameters-A00365A20759047A.dat
+In FilePtr StandardDirectory::openFile (IO::StandardDirectory.cpp).
+    File name: /usr/local/etc/Vrui-4.2/Kinect-3.2/IntrinsicParameters-A00365A20759047A.dat
+In FilePtr openFile (IO::OpenFile.cpp).
+    File: /usr/local/etc/Vrui-4.2/Kinect-3.2/IntrinsicParameters-A00365A20759047A.dat
+Created File object at 0x837a60
+In StandardFile::StandardFile (IO::StandardFile.cpp).
+In StandardFile::openFile (IO::StandardFile.cpp)
+    File: /usr/local/etc/Vrui-4.2/Kinect-3.2/IntrinsicParameters-A00365A20759047A.dat
+Post trying to open file
+Reading from 0x837a60
+In size_t StandardFile::readData (IO::StandardFile.cpp).
+Destroyed File object at 0x837a60
+Done with FrameSource::IntrinsicParameters Camera::getIntrinsicParameters.
+In IO::FilePtr openFile (Cluster::OpenFile.cpp).
+    File: /usr/local/etc/SARndbox-2.3/BoxLayout.txt
+Created File object at 0x83d030
+In StandardFile::StandardFile (IO::StandardFile.cpp).
+In StandardFile::openFile (IO::StandardFile.cpp)
+    File: /usr/local/etc/SARndbox-2.3/BoxLayout.txt
+In size_t StandardFile::readData (IO::StandardFile.cpp).
+Destroyed File object at 0x83d030
+In FrameFilter::FrameFilter.
+In FrameFilter::setValidDepthInterval.
+In FrameBuffer (Kinect::FrameBuffer.cpp).
+In FrameBuffer (Kinect::FrameBuffer.cpp).
+In FrameBuffer (Kinect::FrameBuffer.cpp).
+In FrameFilter::setValidElevationInterval.
+In FrameFilter::filterThreadMethod
+In FrameFilter::filterThreadMethod loop
+In Camera::startStreaming (Kinect::Camera.cpp).
+In DepthImageRenderer::DepthImageRenderer.
+Done with DepthImageRenderer::DepthImageRenderer.
+In DepthImageRenderer::setDepthProjection.
+In DepthImageRenderer::setBasePlane.
+Done with DepthImageRenderer::setBasePlane.
+Done with DepthImageRenderer::setDepthProjection.
+In DepthImageRenderer::setBasePlane.
+Done with DepthImageRenderer::setBasePlane.
+In ElevationColorMap::calcTexturePlane(const DepthImageRenderer* depthImageRenderer).
+In ElevationColorMap::calcTexturePlane(const Plane& basePlane).
+Done with ElevationColorMap::calcTexturePlane.
+Done with ElevationColorMap::calcTexturePlane.
+In SurfaceRenderer::SurfaceRenderer.
+Done with SurfaceRenderer::SurfaceRenderer.
+In SurfaceRenderer::setElevationColorMap.
+Done with SurfaceRenderer::setElevationColorMap.
+In Sandbox::createMainMenu.
+Done with Sandbox::createMainMenu.
+In DEMTool::initClass.
+In IO::DirectoryPtr openDirectory (Cluster::OpenFile.cpp).
+    Dir: .
+In Directory::Directory (IO::Directory.cpp).
+In StandardDirectory::StandardDirectory (IO::StandardDirectory).
+    Path: .
+In Directory::normalizePath (IO::Directory.cpp).
+   Path: /opt/SARndbox-2.3/.
+Done with DEMTool::initClass.
+Vrui: Screen saver inhibition not supported
+Done with Sandbox::Sandbox.
+In Application::run (Vrui::Application.cpp).
+In mainLoop (Vrui::Vrui.Workbench.cpp).
+In FrameBuffer (Kinect::FrameBuffer.cpp).
+In Sandbox::rawDepthFrameDispatcher.
+In FrameFilter::receiveRawFrame.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In FrameFilter::filterThreadMethod loop
+In FrameBuffer (Kinect::FrameBuffer.cpp).
+In Sandbox::rawDepthFrameDispatcher.
+In FrameFilter::receiveRawFrame.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In FrameFilter::filterThreadMethod loop
+In FrameBuffer (Kinect::FrameBuffer.cpp).
+In Sandbox::rawDepthFrameDispatcher.
+In FrameFilter::receiveRawFrame.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In FrameFilter::filterThreadMethod loop
+In FrameBuffer (Kinect::FrameBuffer.cpp).
+In Sandbox::rawDepthFrameDispatcher.
+In FrameFilter::receiveRawFrame.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In FrameFilter::filterThreadMethod loop
+In FrameBuffer (Kinect::FrameBuffer.cpp).
+In Sandbox::rawDepthFrameDispatcher.
+In FrameFilter::receiveRawFrame.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In FrameFilter::filterThreadMethod loop
+In FrameBuffer (Kinect::FrameBuffer.cpp).
+In Sandbox::rawDepthFrameDispatcher.
+In FrameFilter::receiveRawFrame.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In FrameFilter::filterThreadMethod loop
+In FrameBuffer (Kinect::FrameBuffer.cpp).
+In Sandbox::rawDepthFrameDispatcher.
+In FrameFilter::receiveRawFrame.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In FrameFilter::filterThreadMethod loop
+In FrameBuffer (Kinect::FrameBuffer.cpp).
+In Sandbox::rawDepthFrameDispatcher.
+In FrameFilter::receiveRawFrame.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In FrameFilter::filterThreadMethod loop
+In FrameBuffer (Kinect::FrameBuffer.cpp).
+In Sandbox::rawDepthFrameDispatcher.
+In FrameFilter::receiveRawFrame.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In FrameFilter::filterThreadMethod loop
+In FrameBuffer (Kinect::FrameBuffer.cpp).
+VRWindow::VRWindow: Vertical retrace synchronization requested but not supported
+In FilePtr openFile (IO::OpenFile.cpp).
+    File: HelveticaMediumUpright12.fnt
+Created File object at 0xad1af0
+In StandardFile::StandardFile (IO::StandardFile.cpp).
+In StandardFile::openFile (IO::StandardFile.cpp)
+    File: HelveticaMediumUpright12.fnt
+Destroyed File object at 0xad1af0
+In FilePtr openFile (IO::OpenFile.cpp).
+    File: /usr/local/share/Vrui-4.2/GLFonts/HelveticaMediumUpright12.fnt
+Created File object at 0xad1af0
+In StandardFile::StandardFile (IO::StandardFile.cpp).
+In StandardFile::openFile (IO::StandardFile.cpp)
+    File: /usr/local/share/Vrui-4.2/GLFonts/HelveticaMediumUpright12.fnt
+Reading from 0xad1af0
+In size_t StandardFile::readData (IO::StandardFile.cpp).
+Reading from 0xad1af0
+In size_t StandardFile::readData (IO::StandardFile.cpp).
+Destroyed File object at 0xad1af0
+In Sandbox::rawDepthFrameDispatcher.
+In FrameFilter::receiveRawFrame.
+Done with Sandbox::rawDepthFrameDispatcher.
+In FilePtr openFile (IO::OpenFile.cpp).
+    File: /usr/local/share/Vrui-4.2/Textures/Cursor.Xcur
+Created File object at 0xad1c60
+In StandardFile::StandardFile (IO::StandardFile.cpp).
+In StandardFile::openFile (IO::StandardFile.cpp)
+    File: /usr/local/share/Vrui-4.2/Textures/Cursor.Xcur
+Reading from 0xad1c60
+In size_t StandardFile::readData (IO::StandardFile.cpp).
+Destroyed File object at 0xad1c60
+In Sandbox::initContext.
+In Sandbox::DataItem::DataItem.
+Done with Sandbox::DataItem::DataItem.
+Done with Sandbox::initContext.
+In ElevationColorMap::initContext.
+Done with ElevationColorMap::initContext.
+In DepthImageRenderer::initContext.
+In DepthImageRenderer::DataItem::DataItem.
+Done with DepthImageRenderer::DataItem::DataItem.
+In FilePtr openFile (IO::OpenFile.cpp).
+    File: /usr/local/share/SARndbox-2.3/Shaders/SurfaceDepthShader.vs
+Created File object at 0xc9c410
+In StandardFile::StandardFile (IO::StandardFile.cpp).
+In StandardFile::openFile (IO::StandardFile.cpp)
+    File: /usr/local/share/SARndbox-2.3/Shaders/SurfaceDepthShader.vs
+In size_t StandardFile::readData (IO::StandardFile.cpp).
+In size_t StandardFile::readData (IO::StandardFile.cpp).
+Destroyed File object at 0xc9c410
+In FilePtr openFile (IO::OpenFile.cpp).
+    File: /usr/local/share/SARndbox-2.3/Shaders/SurfaceDepthShader.fs
+Created File object at 0xca7930
+In StandardFile::StandardFile (IO::StandardFile.cpp).
+In StandardFile::openFile (IO::StandardFile.cpp)
+    File: /usr/local/share/SARndbox-2.3/Shaders/SurfaceDepthShader.fs
+In size_t StandardFile::readData (IO::StandardFile.cpp).
+In size_t StandardFile::readData (IO::StandardFile.cpp).
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In FrameFilter::filterThreadMethod loop
+Destroyed File object at 0xca7930
+In FilePtr openFile (IO::OpenFile.cpp).
+    File: /usr/local/share/SARndbox-2.3/Shaders/SurfaceElevationShader.vs
+Created File object at 0xc9f0a0
+In StandardFile::StandardFile (IO::StandardFile.cpp).
+In StandardFile::openFile (IO::StandardFile.cpp)
+    File: /usr/local/share/SARndbox-2.3/Shaders/SurfaceElevationShader.vs
+In size_t StandardFile::readData (IO::StandardFile.cpp).
+In size_t StandardFile::readData (IO::StandardFile.cpp).
+Destroyed File object at 0xc9f0a0
+In FilePtr openFile (IO::OpenFile.cpp).
+    File: /usr/local/share/SARndbox-2.3/Shaders/SurfaceElevationShader.fs
+Created File object at 0x107bbb0
+In StandardFile::StandardFile (IO::StandardFile.cpp).
+In StandardFile::openFile (IO::StandardFile.cpp)
+    File: /usr/local/share/SARndbox-2.3/Shaders/SurfaceElevationShader.fs
+In size_t StandardFile::readData (IO::StandardFile.cpp).
+In size_t StandardFile::readData (IO::StandardFile.cpp).
+Destroyed File object at 0x107bbb0
+Done with DepthImageRenderer::initContext.
+In FrameBuffer (Kinect::FrameBuffer.cpp).
+In Sandbox::rawDepthFrameDispatcher.
+In FrameFilter::receiveRawFrame.
+Done with Sandbox::rawDepthFrameDispatcher.
+In FilePtr openFile (IO::OpenFile.cpp).
+    File: /usr/local/share/SARndbox-2.3/Shaders/Water2BathymetryUpdateShader.fs
+Created File object at 0x1099db0
+In StandardFile::StandardFile (IO::StandardFile.cpp).
+In StandardFile::openFile (IO::StandardFile.cpp)
+    File: /usr/local/share/SARndbox-2.3/Shaders/Water2BathymetryUpdateShader.fs
+In size_t StandardFile::readData (IO::StandardFile.cpp).
+In size_t StandardFile::readData (IO::StandardFile.cpp).
+Destroyed File object at 0x1099db0
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In FrameFilter::filterThreadMethod loop
+In FilePtr openFile (IO::OpenFile.cpp).
+    File: /usr/local/share/SARndbox-2.3/Shaders/Water2WaterAdaptShader.fs
+Created File object at 0x10d6a90
+In StandardFile::StandardFile (IO::StandardFile.cpp).
+In StandardFile::openFile (IO::StandardFile.cpp)
+    File: /usr/local/share/SARndbox-2.3/Shaders/Water2WaterAdaptShader.fs
+In size_t StandardFile::readData (IO::StandardFile.cpp).
+In size_t StandardFile::readData (IO::StandardFile.cpp).
+Destroyed File object at 0x10d6a90
+In FilePtr openFile (IO::OpenFile.cpp).
+    File: /usr/local/share/SARndbox-2.3/Shaders/Water2SlopeAndFluxAndDerivativeShader.fs
+Created File object at 0x10faa60
+In StandardFile::StandardFile (IO::StandardFile.cpp).
+In StandardFile::openFile (IO::StandardFile.cpp)
+    File: /usr/local/share/SARndbox-2.3/Shaders/Water2SlopeAndFluxAndDerivativeShader.fs
+In size_t StandardFile::readData (IO::StandardFile.cpp).
+In size_t StandardFile::readData (IO::StandardFile.cpp).
+Destroyed File object at 0x10faa60
+In FrameBuffer (Kinect::FrameBuffer.cpp).
+In Sandbox::rawDepthFrameDispatcher.
+In FrameFilter::receiveRawFrame.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In FrameFilter::filterThreadMethod loop
+In FrameBuffer (Kinect::FrameBuffer.cpp).
+In Sandbox::rawDepthFrameDispatcher.
+In FrameFilter::receiveRawFrame.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In FrameFilter::filterThreadMethod loop
+In FrameBuffer (Kinect::FrameBuffer.cpp).
+In Sandbox::rawDepthFrameDispatcher.
+In FrameFilter::receiveRawFrame.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In FrameFilter::filterThreadMethod loop
+In FilePtr openFile (IO::OpenFile.cpp).
+    File: /usr/local/share/SARndbox-2.3/Shaders/Water2MaxStepSizeShader.fs
+Created File object at 0x11ab090
+In StandardFile::StandardFile (IO::StandardFile.cpp).
+In StandardFile::openFile (IO::StandardFile.cpp)
+    File: /usr/local/share/SARndbox-2.3/Shaders/Water2MaxStepSizeShader.fs
+In size_t StandardFile::readData (IO::StandardFile.cpp).
+In size_t StandardFile::readData (IO::StandardFile.cpp).
+Destroyed File object at 0x11ab090
+In FrameBuffer (Kinect::FrameBuffer.cpp).
+In Sandbox::rawDepthFrameDispatcher.
+In FrameFilter::receiveRawFrame.
+Done with Sandbox::rawDepthFrameDispatcher.
+In FilePtr openFile (IO::OpenFile.cpp).
+    File: /usr/local/share/SARndbox-2.3/Shaders/Water2BoundaryShader.fs
+Created File object at 0x12632e0
+In StandardFile::StandardFile (IO::StandardFile.cpp).
+In StandardFile::openFile (IO::StandardFile.cpp)
+    File: /usr/local/share/SARndbox-2.3/Shaders/Water2BoundaryShader.fs
+In size_t StandardFile::readData (IO::StandardFile.cpp).
+In size_t StandardFile::readData (IO::StandardFile.cpp).
+Destroyed File object at 0x12632e0
+In FilePtr openFile (IO::OpenFile.cpp).
+    File: /usr/local/share/SARndbox-2.3/Shaders/Water2EulerStepShader.fs
+Created File object at 0x1285f40
+In StandardFile::StandardFile (IO::StandardFile.cpp).
+In StandardFile::openFile (IO::StandardFile.cpp)
+    File: /usr/local/share/SARndbox-2.3/Shaders/Water2EulerStepShader.fs
+In size_t StandardFile::readData (IO::StandardFile.cpp).
+In size_t StandardFile::readData (IO::StandardFile.cpp).
+Destroyed File object at 0x1285f40
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In FrameFilter::filterThreadMethod loop
+In FilePtr openFile (IO::OpenFile.cpp).
+    File: /usr/local/share/SARndbox-2.3/Shaders/Water2RungeKuttaStepShader.fs
+Created File object at 0x126faa0
+In StandardFile::StandardFile (IO::StandardFile.cpp).
+In StandardFile::openFile (IO::StandardFile.cpp)
+    File: /usr/local/share/SARndbox-2.3/Shaders/Water2RungeKuttaStepShader.fs
+In size_t StandardFile::readData (IO::StandardFile.cpp).
+In size_t StandardFile::readData (IO::StandardFile.cpp).
+Destroyed File object at 0x126faa0
+In FilePtr openFile (IO::OpenFile.cpp).
+    File: /usr/local/share/SARndbox-2.3/Shaders/Water2WaterAddShader.vs
+Created File object at 0x12ca8f0
+In StandardFile::StandardFile (IO::StandardFile.cpp).
+In StandardFile::openFile (IO::StandardFile.cpp)
+    File: /usr/local/share/SARndbox-2.3/Shaders/Water2WaterAddShader.vs
+In size_t StandardFile::readData (IO::StandardFile.cpp).
+In size_t StandardFile::readData (IO::StandardFile.cpp).
+Destroyed File object at 0x12ca8f0
+In FilePtr openFile (IO::OpenFile.cpp).
+    File: /usr/local/share/SARndbox-2.3/Shaders/Water2WaterAddShader.fs
+Created File object at 0x118a270
+In StandardFile::StandardFile (IO::StandardFile.cpp).
+In StandardFile::openFile (IO::StandardFile.cpp)
+    File: /usr/local/share/SARndbox-2.3/Shaders/Water2WaterAddShader.fs
+In size_t StandardFile::readData (IO::StandardFile.cpp).
+In size_t StandardFile::readData (IO::StandardFile.cpp).
+Destroyed File object at 0x118a270
+In FilePtr openFile (IO::OpenFile.cpp).
+    File: /usr/local/share/SARndbox-2.3/Shaders/Water2WaterUpdateShader.fs
+Created File object at 0x1129620
+In StandardFile::StandardFile (IO::StandardFile.cpp).
+In StandardFile::openFile (IO::StandardFile.cpp)
+    File: /usr/local/share/SARndbox-2.3/Shaders/Water2WaterUpdateShader.fs
+In size_t StandardFile::readData (IO::StandardFile.cpp).
+In size_t StandardFile::readData (IO::StandardFile.cpp).
+Destroyed File object at 0x1129620
+In SurfaceRenderer::initContext.
+In SurfaceRenderer::DataItem::DataItem.
+Done with SurfaceRenderer::DataItem::DataItem.
+In SurfaceRenderer::createSinglePassSurfaceShader.
+In FilePtr openFile (IO::OpenFile.cpp).
+    File: /usr/local/share/SARndbox-2.3/Shaders/SurfaceAddContourLines.fs
+Created File object at 0x14b6bc0
+In StandardFile::StandardFile (IO::StandardFile.cpp).
+In StandardFile::openFile (IO::StandardFile.cpp)
+    File: /usr/local/share/SARndbox-2.3/Shaders/SurfaceAddContourLines.fs
+In size_t StandardFile::readData (IO::StandardFile.cpp).
+In size_t StandardFile::readData (IO::StandardFile.cpp).
+Destroyed File object at 0x14b6bc0
+In FilePtr openFile (IO::OpenFile.cpp).
+    File: /usr/local/share/SARndbox-2.3/Shaders/SurfaceAddWaterColor.fs
+Created File object at 0x1114760
+In StandardFile::StandardFile (IO::StandardFile.cpp).
+In StandardFile::openFile (IO::StandardFile.cpp)
+    File: /usr/local/share/SARndbox-2.3/Shaders/SurfaceAddWaterColor.fs
+In size_t StandardFile::readData (IO::StandardFile.cpp).
+In size_t StandardFile::readData (IO::StandardFile.cpp).
+In size_t StandardFile::readData (IO::StandardFile.cpp).
+Destroyed File object at 0x1114760
+In FrameBuffer (Kinect::FrameBuffer.cpp).
+In Sandbox::rawDepthFrameDispatcher.
+In FrameFilter::receiveRawFrame.
+Done with Sandbox::rawDepthFrameDispatcher.
+Done with SurfaceRenderer::createSinglePassSurfaceShader.
+In FilePtr openFile (IO::OpenFile.cpp).
+    File: /usr/local/share/SARndbox-2.3/Shaders/SurfaceGlobalAmbientHeightMapShader.vs
+Created File object at 0x148cdf0
+In StandardFile::StandardFile (IO::StandardFile.cpp).
+In StandardFile::openFile (IO::StandardFile.cpp)
+    File: /usr/local/share/SARndbox-2.3/Shaders/SurfaceGlobalAmbientHeightMapShader.vs
+In size_t StandardFile::readData (IO::StandardFile.cpp).
+In size_t StandardFile::readData (IO::StandardFile.cpp).
+Destroyed File object at 0x148cdf0
+In FilePtr openFile (IO::OpenFile.cpp).
+    File: /usr/local/share/SARndbox-2.3/Shaders/SurfaceGlobalAmbientHeightMapShader.fs
+Created File object at 0x138d810
+In StandardFile::StandardFile (IO::StandardFile.cpp).
+In StandardFile::openFile (IO::StandardFile.cpp)
+    File: /usr/local/share/SARndbox-2.3/Shaders/SurfaceGlobalAmbientHeightMapShader.fs
+In size_t StandardFile::readData (IO::StandardFile.cpp).
+In size_t StandardFile::readData (IO::StandardFile.cpp).
+Destroyed File object at 0x138d810
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In FrameFilter::filterThreadMethod loop
+In FilePtr openFile (IO::OpenFile.cpp).
+    File: /usr/local/share/SARndbox-2.3/Shaders/SurfaceShadowedIlluminatedHeightMapShader.vs
+Created File object at 0x138d810
+In StandardFile::StandardFile (IO::StandardFile.cpp).
+In StandardFile::openFile (IO::StandardFile.cpp)
+    File: /usr/local/share/SARndbox-2.3/Shaders/SurfaceShadowedIlluminatedHeightMapShader.vs
+In size_t StandardFile::readData (IO::StandardFile.cpp).
+In size_t StandardFile::readData (IO::StandardFile.cpp).
+Destroyed File object at 0x138d810
+In FilePtr openFile (IO::OpenFile.cpp).
+    File: /usr/local/share/SARndbox-2.3/Shaders/SurfaceShadowedIlluminatedHeightMapShader.fs
+Created File object at 0x147a500
+In StandardFile::StandardFile (IO::StandardFile.cpp).
+In StandardFile::openFile (IO::StandardFile.cpp)
+    File: /usr/local/share/SARndbox-2.3/Shaders/SurfaceShadowedIlluminatedHeightMapShader.fs
+In size_t StandardFile::readData (IO::StandardFile.cpp).
+In size_t StandardFile::readData (IO::StandardFile.cpp).
+Destroyed File object at 0x147a500
+Done with SurfaceRenderer::initContext.
+In Sandbox::frame.
+In DepthImageRenderer::setDepthImage.
+Done with DepthImageRenderer::setDepthImage.
+Done with Sandbox::frame.
+In VruiState::display (Vrui::Vrui.General.cpp).
+In Sandbox::display.
+In DepthImageRenderer::renderElevation.
+Done with DepthImageRenderer::renderElevation.
+In SurfaceRenderer::renderSinglePass.
+In SurfaceRenderer::renderPixelCornerElevations.
+In DepthImageRenderer::renderElevation.
+In FrameBuffer (Kinect::FrameBuffer.cpp).
+Done with DepthImageRenderer::renderElevation.
+Done with SurfaceRenderer::renderPixelCornerElevations.
+In DepthImageRenderer::bindDepthTexture.
+Done with DepthImageRenderer::bindDepthTexture.
+In DepthImageRenderer::uploadDepthProjection.
+Done with DepthImageRenderer::uploadDepthProjection.
+In ElevationColorMap::uploadTexturePlane.
+Done with ElevationColorMap::uploadTexturePlane.
+In ElevationColorMap::bindTexture.
+Done with ElevationColorMap::bindTexture.
+In DepthImageRenderer::renderSurfaceTemplate.
+In Sandbox::rawDepthFrameDispatcher.
+In FrameFilter::receiveRawFrame.
+Done with Sandbox::rawDepthFrameDispatcher.
+Done with DepthImageRenderer::renderSurfaceTemplate.
+Done with SurfaceRenderer::renderSinglePass.
+
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In FrameFilter::filterThreadMethod loop
+In FrameBuffer (Kinect::FrameBuffer.cpp).
+In Sandbox::rawDepthFrameDispatcher.
+In FrameFilter::receiveRawFrame.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In FrameFilter::filterThreadMethod loop
+In FrameBuffer (Kinect::FrameBuffer.cpp).
+In Sandbox::rawDepthFrameDispatcher.
+In FrameFilter::receiveRawFrame.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In FrameFilter::filterThreadMethod loop
+In FrameBuffer (Kinect::FrameBuffer.cpp).
+In Sandbox::rawDepthFrameDispatcher.
+In FrameFilter::receiveRawFrame.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In FrameFilter::filterThreadMethod loop
+In FrameBuffer (Kinect::FrameBuffer.cpp).
+In Sandbox::rawDepthFrameDispatcher.
+In FrameFilter::receiveRawFrame.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In FrameFilter::filterThreadMethod loop
+In FrameBuffer (Kinect::FrameBuffer.cpp).
+In Sandbox::rawDepthFrameDispatcher.
+In FrameFilter::receiveRawFrame.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In FrameFilter::filterThreadMethod loop
+In FrameBuffer (Kinect::FrameBuffer.cpp).
+In Sandbox::rawDepthFrameDispatcher.
+In FrameFilter::receiveRawFrame.
+Done with Sandbox::rawDepthFrameDispatcher.
+In Sandbox::receiveFilteredFrame.
+Done with Sandbox::receiveFilteredFrame.
+In FrameFilter::filterThreadMethod loop

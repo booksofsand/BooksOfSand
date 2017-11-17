@@ -37,10 +37,10 @@ Methods of class FrameFilter:
 void* FrameFilter::filterThreadMethod(void)
 	{
 	unsigned int lastInputFrameVersion=0;
-	std::cout << "In FrameFilter::filterThreadMethod!!!!!!!!!!!!!!!!!!!!!!!!!!" << std::endl;  // MM: added
+	std::cout << "In FrameFilter::filterThreadMethod" << std::endl;  // MM: added
 	while(true)
 		{
-		std::cout << "In FrameFilter::filterThreadMethod LOOP!!!!!!!!!!!!!!!!!!!!!" << std::endl;  // MM: added
+		std::cout << "In FrameFilter::filterThreadMethod loop" << std::endl;  // MM: added
 		Kinect::FrameBuffer frame;
 		{
 		Threads::MutexCond::Lock inputLock(inputCond);

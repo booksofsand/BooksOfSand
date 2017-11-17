@@ -22,6 +22,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #ifndef CONFIG_INCLUDED
 #define CONFIG_INCLUDED
 
+#define MAXDEPTH 6  // MM: is this the right amount of layers? more? fewer?
+#define MAXROWS 32
+#define MAXCOLS 48
+
 #define CONFIG_CONFIGDIR "/usr/local/etc/SARndbox-2.3"
 #define CONFIG_SHADERDIR "/usr/local/share/SARndbox-2.3/Shaders"
 

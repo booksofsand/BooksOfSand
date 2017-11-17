@@ -209,8 +209,8 @@ Scalar DepthImageRenderer::intersectLine(const Point& p0,const Point& p1,Scalar 
 	{
 	std::cout << "In DepthImageRenderer::intersectLine." << std::endl; // MM: added
 	/* Initialize the line segment: */
-	Scalar lambda0=Scalar(0);
-	Scalar lambda1=Scalar(1);
+	//Scalar lambda0=Scalar(0);
+	//Scalar lambda1=Scalar(1);
 	
 	/* Intersect the line segment with the upper elevation plane: */
 	Scalar d0=basePlane.calcDistance(p0);

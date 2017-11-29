@@ -275,7 +275,7 @@ Methods of class Sandbox:
 /* MM: is a raw depth frame a collection of data representing a single frame received from Kinect? */
 void Sandbox::rawDepthFrameDispatcher(const Kinect::FrameBuffer& frameBuffer)
 	{
-	  std::cout << "In Sandbox::rawDepthFrameDispatcher." << std::endl; // MM: added
+	  std::cout << "In Sandbox::rawDepthFrameDispatcher. LIA" << std::endl; // MM: added
 	/* Pass the received frame to the frame filter and the hand extractor: */
 	if(frameFilter!=0&&!pauseUpdates)
 		frameFilter->receiveRawFrame(frameBuffer);
@@ -288,6 +288,15 @@ void Sandbox::receiveFilteredFrame(const Kinect::FrameBuffer& frameBuffer)
 	{
 	std::cout << "In Sandbox::receiveFilteredFrame." << std::endl; // MM: added
 	/* Put the new frame into the frame input buffer: */
+	/*
+	for (int row = 0; row < 480; row = row+50) {    
+	   for (int col = 0; col < 640; col+=50) {
+	    //if ((row*640)+col < frameBuffer.getData<GLfloat>().size())
+	    std::cout << frameBuffer.getData<GLfloat>()[(row*640)+col] << "\n";
+	    }
+	  std::cout << std::endl;
+	}
+	*/
 	filteredFrames.postNewValue(frameBuffer);
 	
 	/* Wake up the foreground thread: */

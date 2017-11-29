@@ -21,7 +21,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 ***********************************************************************/
 
 #include "ElevationColorMap.h"
-
 #include <string>
 #include <Misc/ThrowStdErr.h>
 #include <Misc/FileNameExtensions.h>
@@ -30,7 +29,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #include <GL/GLContextData.h>
 #include <GL/Extensions/GLARBShaderObjects.h>
 #include <Vrui/OpenFile.h>
-#include <iostream> // MM: added
 
 #include "Types.h"
 #include "DepthImageRenderer.h"
@@ -43,27 +41,22 @@ Methods of class ElevationColorMap:
 
 ElevationColorMap::ElevationColorMap(const char* heightMapName)
 	{
-	std::cout << "In ElevationColorMap::ElevationColorMap." << std::endl; // MM: added
 	/* Load the given height map: */
 	load(heightMapName);
-	std::cout << "Done with ElevationColorMap::ElevationColorMap." << std::endl; // MM: added
 	}
 
 void ElevationColorMap::initContext(GLContextData& contextData) const
 	{
-	std::cout << "In ElevationColorMap::initContext." << std::endl; // MM: added
 	/* Initialize required OpenGL extensions: */
 	GLARBShaderObjects::initExtension();
 	
 	/* Create the data item and associate it with this object: */
 	DataItem* dataItem=new DataItem;
 	contextData.addDataItem(this,dataItem);
-	std::cout << "Done with ElevationColorMap::initContext." << std::endl; // MM: added
 	}
 
 void ElevationColorMap::load(const char* heightMapName)
 	{
-	  std::cout << "In ElevationColorMap::load." << std::endl; // MM: added
 	/* Open the height map file: */
 	std::string fullHeightMapName;
 	if(heightMapName[0]=='/')
@@ -81,24 +74,10 @@ void ElevationColorMap::load(const char* heightMapName)
 	
 	/* Open the height map file: */
 	IO::ValueSource heightMapSource(Vrui::openFile(fullHeightMapName.c_str()));
-	/* MM: here, the height map already exists, and it's opened as a standard file
-	       using some Vrui functions. below we see that the height map file must
-               contain a bunch of numbers called key values and color values, with
-               one key value followed by 3 color values (probably RGB). these are
-               loaded into two different arrays, then passed by reference in the end
-               to setColors, which is in Vrui/GL/GLColorMap.cpp. 
-
-               I forget where at the moment, but we saw a file with these values
-               on the installed and working SARndbox system. it was only a dozen lines
-               or so, each with four values (must be the depth and 3 color values),
-               so clearly this program colors within the specified ranges.
-
-               problem is, we want to do pixel by pixel. */
 	
 	/* Load the height color map: */
 	std::vector<Color> heightMapColors;
 	std::vector<GLdouble> heightMapKeys;
-	std::cout << "heightMapName: " << heightMapName << std::endl; //MM:
 	if(Misc::hasCaseExtension(heightMapName,".cpt"))
 		{
 		heightMapSource.setPunctuation("\n");
@@ -108,7 +87,6 @@ void ElevationColorMap::load(const char* heightMapName)
 			{
 			/* Read the next color map key value: */
 			heightMapKeys.push_back(GLdouble(heightMapSource.readNumber()));
-			
 			
 			/* Read the next color map color value: */
 			Color color;
@@ -131,16 +109,13 @@ void ElevationColorMap::load(const char* heightMapName)
 			{
 			/* Read the next color map key value: */
 			heightMapKeys.push_back(GLdouble(heightMapSource.readNumber()));
-			std::cout << "key: " << heightMapSource.readNumber() << std::endl; //MM:
 			if(!heightMapSource.isLiteral(','))
 				Misc::throwStdErr("ElevationColorMap: Color map format error in line %d of file %s",line,fullHeightMapName.c_str());
 			
 			/* Read the next color map color value: */
 			Color color;
-			for(int i=0;i<3;++i) { //MM: added {
+			for(int i=0;i<3;++i)
 				color[i]=Color::Scalar(heightMapSource.readNumber());
-				std::cout << "key: " << heightMapSource.readNumber() << std::endl; //MM:
-			} //MM: 
 			color[3]=Color::Scalar(1);
 			heightMapColors.push_back(color);
 			
@@ -151,23 +126,14 @@ void ElevationColorMap::load(const char* heightMapName)
 		}
 	
 	/* Create the color map: */
-	/* MM: heightMapKeys contains height values as keys, which are then 
-               mapped to the colors that were calculated above.
-
-               setColors is in Vrui/GL/GLColorMap.cpp; it creates a color map 
-               from a piecewise linear color function */
-	std::cout << "heightMapKeys.size(): " << heightMapKeys.size() << std::endl; // MM:
 	setColors(heightMapKeys.size(),&heightMapColors[0],&heightMapKeys[0],256);
 	
 	/* Invalidate the color map texture object: */
-	// MM: I'm guessing this is so the surface renderer knows to update its display
 	++textureVersion;
-	std::cout << "Done with ElevationColorMap::load." << std::endl; // MM: added
 	}
 
 void ElevationColorMap::calcTexturePlane(const Plane& basePlane)
 	{
-	std::cout << "In ElevationColorMap::calcTexturePlane(const Plane& basePlane)." << std::endl; // MM: added
 	/* Scale and offset the camera-space base plane equation: */
 	const Plane::Vector& bpn=basePlane.getNormal();
 	Scalar bpo=basePlane.getOffset();
@@ -176,20 +142,16 @@ void ElevationColorMap::calcTexturePlane(const Plane& basePlane)
 	for(int i=0;i<3;++i)
 		texturePlaneEq[i]=GLfloat(bpn[i]*hms);
 	texturePlaneEq[3]=GLfloat(-bpo*hms+hmo);
-	std::cout << "Done with ElevationColorMap::calcTexturePlane." << std::endl; // MM: added
 	}
 
 void ElevationColorMap::calcTexturePlane(const DepthImageRenderer* depthImageRenderer)
 	{
-	std::cout << "In ElevationColorMap::calcTexturePlane(const DepthImageRenderer* depthImageRenderer)." << std::endl; // MM: added
 	/* Calculate texture plane based on the given depth image renderer's base plane: */
 	calcTexturePlane(depthImageRenderer->getBasePlane());
-	std::cout << "Done with ElevationColorMap::calcTexturePlane." << std::endl; // MM: added
 	}
 
 void ElevationColorMap::bindTexture(GLContextData& contextData) const
 	{
-	std::cout << "In ElevationColorMap::bindTexture." << std::endl; // MM: added
 	/* Retrieve the data item: */
 	DataItem* dataItem=contextData.retrieveDataItem<DataItem>(this);
 	
@@ -207,13 +169,10 @@ void ElevationColorMap::bindTexture(GLContextData& contextData) const
 		
 		dataItem->textureObjectVersion=textureVersion;
 		}
-	std::cout << "Done with ElevationColorMap::bindTexture." << std::endl; // MM: added
 	}
 
 void ElevationColorMap::uploadTexturePlane(GLint location) const
 	{
-	std::cout << "In ElevationColorMap::uploadTexturePlane." << std::endl; // MM: added
 	/* Upload the texture mapping plane equation: */
 	glUniformARB<4>(location,1,texturePlaneEq);
-	std::cout << "Done with ElevationColorMap::uploadTexturePlane." << std::endl; // MM: added
 	}

@@ -90,7 +90,6 @@ Methods of class DEMTool:
 
 void DEMTool::loadDEMFile(const char* demFileName)
 	{
-	std::cout << "In DEMTool::loadDEMFile." << std::endl;  // MM: added
 	/* Load the selected DEM file: */
 	load(demFileName);
 	
@@ -133,7 +132,6 @@ void DEMTool::loadDEMFile(const char* demFileName)
 	
 	/* Set the DEM transformation: */
 	setTransform(demT*OGTransform(application->boxTransform),demVerticalScale,demT.getOrigin()[2]);
-	std::cout << "Done with DEMTool::loadDEMFile." << std::endl;  // MM: added
 	}
 
 void DEMTool::loadDEMFileCallback(GLMotif::FileSelectionDialog::OKCallbackData* cbData)
@@ -144,13 +142,11 @@ void DEMTool::loadDEMFileCallback(GLMotif::FileSelectionDialog::OKCallbackData* 
 
 DEMToolFactory* DEMTool::initClass(Vrui::ToolManager& toolManager)
 	{
-	std::cout << "In DEMTool::initClass." << std::endl;  // MM: added
 	/* Create the tool factory: */
 	factory=new DEMToolFactory(toolManager);
 	
 	/* Register and return the class: */
 	toolManager.addClass(factory,Vrui::ToolManager::defaultToolFactoryDestructor);
-	std::cout << "Done with DEMTool::initClass." << std::endl;  // MM: added
 	return factory;
 	}
 
@@ -167,7 +163,6 @@ DEMTool::~DEMTool(void)
 
 void DEMTool::configure(const Misc::ConfigurationFileSection& configFileSection)
 	{
-	std::cout << "In DEMTool::configure." << std::endl;  // MM: added
 	/* Query DEM file name: */
 	demFileName=configFileSection.retrieveString("./demFileName",demFileName);
 	
@@ -180,12 +175,10 @@ void DEMTool::configure(const Misc::ConfigurationFileSection& configFileSection)
 	
 	demVerticalShift=configFileSection.retrieveValue<Scalar>("./demVerticalShift",demVerticalShift);
 	demVerticalScale=configFileSection.retrieveValue<Scalar>("./demVerticalScale",demVerticalScale);
-	std::cout << "Done with DEMTool::configure." << std::endl;  // MM: added
 	}
 
 void DEMTool::initialize(void)
 	{
-	std::cout << "In DEMTool::initialize." << std::endl;  // MM: added
 	/* Bring up a file selection dialog if there is no pre-configured DEM file: */
 	if(demFileName.empty())
 		{
@@ -197,7 +190,6 @@ void DEMTool::initialize(void)
 		/* Load the configured DEM file: */
 		loadDEMFile(demFileName.c_str());
 		}
-	std::cout << "Done with DEMTool::initialize." << std::endl;  // MM: added
 	}
 
 const Vrui::ToolFactory* DEMTool::getFactory(void) const

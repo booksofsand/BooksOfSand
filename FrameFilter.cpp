@@ -1,5 +1,3 @@
-/* MM: this one can probably be left as-is. looks crucial for building frames from Kinect */
-
 /***********************************************************************
 FrameFilter - Class to filter streams of depth frames arriving from a
 depth camera, with code to detect unstable values in each pixel, and
@@ -28,7 +26,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #include <Misc/FunctionCalls.h>
 #include <Geometry/HVector.h>
 #include <Geometry/Matrix.h>
-#include <iostream>  // MM: added
 
 /****************************
 Methods of class FrameFilter:
@@ -37,10 +34,9 @@ Methods of class FrameFilter:
 void* FrameFilter::filterThreadMethod(void)
 	{
 	unsigned int lastInputFrameVersion=0;
-	std::cout << "In FrameFilter::filterThreadMethod" << std::endl;  // MM: added
+	
 	while(true)
 		{
-		std::cout << "In FrameFilter::filterThreadMethod loop" << std::endl;  // MM: added
 		Kinect::FrameBuffer frame;
 		{
 		Threads::MutexCond::Lock inputLock(inputCond);
@@ -218,7 +214,6 @@ FrameFilter::FrameFilter(const unsigned int sSize[2],unsigned int sNumAveragingS
 	 statBuffer(0),
 	 outputFrameFunction(0)
 	{
-	std::cout << "In FrameFilter::FrameFilter." << std::endl;  // MM: added
 	/* Remember the frame size: */
 	for(int i=0;i<2;++i)
 		size[i]=sSize[i];
@@ -298,7 +293,6 @@ FrameFilter::~FrameFilter(void)
 
 void FrameFilter::setValidDepthInterval(unsigned int newMinDepth,unsigned int newMaxDepth)
 	{
-	std::cout << "In FrameFilter::setValidDepthInterval." << std::endl;  // MM: added
 	/* Set the equations for the minimum and maximum plane in depth image space: */
 	minPlane[0]=0.0f;
 	minPlane[1]=0.0f;
@@ -312,7 +306,6 @@ void FrameFilter::setValidDepthInterval(unsigned int newMinDepth,unsigned int ne
 
 void FrameFilter::setValidElevationInterval(const PTransform& depthProjection,const Plane& basePlane,double newMinElevation,double newMaxElevation)
 	{
-	std::cout << "In FrameFilter::setValidElevationInterval." << std::endl;  // MM: added
 	/* Calculate the equations of the minimum and maximum elevation planes in camera space: */
 	PTransform::HVector minPlaneCc(basePlane.getNormal());
 	minPlaneCc[3]=-(basePlane.getOffset()+newMinElevation*basePlane.getNormal().mag());
@@ -364,7 +357,6 @@ void FrameFilter::setOutputFrameFunction(FrameFilter::OutputFrameFunction* newOu
 
 void FrameFilter::receiveRawFrame(const Kinect::FrameBuffer& newFrame)
 	{
-	std::cout << "In FrameFilter::receiveRawFrame." << std::endl;  // MM: added
 	Threads::MutexCond::Lock inputLock(inputCond);
 	
 	/* Store the new buffer in the input buffer: */

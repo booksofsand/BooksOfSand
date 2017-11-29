@@ -132,8 +132,6 @@ class Sandbox:public Vrui::Application,public GLObject
 	FrameFilter* frameFilter; // Processing object to filter raw depth frames from the Kinect camera
 	bool pauseUpdates; // Pauses updates of the topography
 	Threads::TripleBuffer<Kinect::FrameBuffer> filteredFrames; // Triple buffer for incoming filtered depth frames
-	// MM: ^ is this more important to look at than the depthImageRenderer->depthImage? how to display this data?
-	//     See Vrui/Threads/TripleBuffer.h
 	DepthImageRenderer* depthImageRenderer; // Object managing the current filtered depth image
 	ONTransform boxTransform; // Transformation from camera space to baseplane space (x along long sandbox axis, z up)
 	Box bbox; // Bounding box around the surface
@@ -160,6 +158,7 @@ class Sandbox:public Vrui::Application,public GLObject
 	int controlPipeFd; // File descriptor of an optional named pipe to send control commands to a running AR Sandbox
 	
 	/* Private methods: */
+	void alterDepthMap(Kinect::FrameBuffer depthmap);
 	void rawDepthFrameDispatcher(const Kinect::FrameBuffer& frameBuffer); // Callback receiving raw depth frames from the Kinect camera; forwards them to the frame filter and rain maker objects
 	void receiveFilteredFrame(const Kinect::FrameBuffer& frameBuffer); // Callback receiving filtered depth frames from the filter object
 	void toggleDEM(DEM* dem); // Sets or toggles the currently active DEM

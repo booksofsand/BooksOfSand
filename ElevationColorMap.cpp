@@ -131,16 +131,13 @@ void ElevationColorMap::load(const char* heightMapName)
 			{
 			/* Read the next color map key value: */
 			heightMapKeys.push_back(GLdouble(heightMapSource.readNumber()));
-			std::cout << "key: " << heightMapSource.readNumber() << std::endl; //MM:
 			if(!heightMapSource.isLiteral(','))
 				Misc::throwStdErr("ElevationColorMap: Color map format error in line %d of file %s",line,fullHeightMapName.c_str());
 			
 			/* Read the next color map color value: */
 			Color color;
-			for(int i=0;i<3;++i) { //MM: added {
+			for(int i=0;i<3;++i)
 				color[i]=Color::Scalar(heightMapSource.readNumber());
-				std::cout << "key: " << heightMapSource.readNumber() << std::endl; //MM:
-			} //MM: 
 			color[3]=Color::Scalar(1);
 			heightMapColors.push_back(color);
 			

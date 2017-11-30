@@ -1516,9 +1516,6 @@ void Sandbox::display(GLContextData& contextData) const
 	const Kinect::FrameBuffer& f = filteredFrames.getLockedValue();
 	//std::cout << std::endl << "DEPTH IMAGE" << std::endl << f.getData<GLfloat>()[2] << std::endl << std::endl;  //LJ PRINT STUFF
 	// MM: f.getData<GLfloat>() is a pointer to a list of 307200 floats (the frame is 480 by 640 in dimension)
-
-	std::cout << std::endl;
-	exit(0);  // MM: added to terminate program after init, for test output viewing
 	
 	/*
 	std::cout << "\t";
@@ -1672,7 +1669,6 @@ OUTPUT:
 	
 
 	}    */
-	std::cout << std::endl;
 	
 	std::cout << "Done with Sandbox::display." << std::endl; // MM: added
 	}

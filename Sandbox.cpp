@@ -833,6 +833,36 @@ void Sandbox::toolDestructionCallback(Vrui::ToolManager::ToolDestructionCallback
 		}
 	}
 
+void Sandbox::alterDepthMap(Kinect::FrameBuffer depthmap){
+//LJ
+  int xvals = depthmap.getSize(0);
+  int yvals = depthmap.getSize(1);
+  std::vector<std::vector<float> > newdm(xvals, std::vector<float>(yvals)); //make vector of size x with vectors of size y
+  //std::cout << depthmap.getData<GLfloat>()[500] << std::endl;
+  for(int z=0; z < (xvals*yvals); z++)
+  {
+    std::cout << depthmap.getData<GLfloat>()[z] << " ";
+    //int c = z % xvals;
+    //int r = z / yvals;
+    //newdm[r].push_back(olddm[z]);
+  }
+  std::cout << std::endl;
+  /*int i = 0;
+  while(i < xvals)
+  {
+    std::cout << "[";
+    for(std::vector<float>::const_iterator p = newdm[i].begin(); p != newdm[i].end(); ++p)
+    {
+      std::cout << *p << ' '; 
+    }
+    std::cout << "]" << std::endl;
+    i++;
+  }*/
+  exit(0);
+  
+}
+
+	
 /* MM: a Vrui::Application method - necessary for us */
 void Sandbox::frame(void)
 	{

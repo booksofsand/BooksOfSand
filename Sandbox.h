@@ -158,7 +158,6 @@ class Sandbox:public Vrui::Application,public GLObject
 	int controlPipeFd; // File descriptor of an optional named pipe to send control commands to a running AR Sandbox
 	
 	/* Private methods: */
-	void alterDepthMap(Kinect::FrameBuffer depthmap);
 	void rawDepthFrameDispatcher(const Kinect::FrameBuffer& frameBuffer); // Callback receiving raw depth frames from the Kinect camera; forwards them to the frame filter and rain maker objects
 	void receiveFilteredFrame(const Kinect::FrameBuffer& frameBuffer); // Callback receiving filtered depth frames from the filter object
 	void toggleDEM(DEM* dem); // Sets or toggles the currently active DEM

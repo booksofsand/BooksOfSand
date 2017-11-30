@@ -795,11 +795,8 @@ Sandbox::Sandbox(int& argc,char**& argv)
 		camera=realCamera;
 		}
 	for(int i=0;i<2;++i)
-	{
 		frameSize[i]=camera->getActualFrameSize(Kinect::FrameSource::DEPTH)[i];
-		// 640 by 480
-		//std::cout << "FRAME[" << i << "]" << frameSize[i] << std::endl;
-	}
+	
 	/* Get the camera's per-pixel depth correction parameters and evaluate it on the depth frame's pixel grid: */
 	Kinect::FrameSource::DepthCorrection* depthCorrection=camera->getDepthCorrectionParameters();
 	if(depthCorrection!=0)
@@ -935,7 +932,6 @@ Sandbox::Sandbox(int& argc,char**& argv)
 			{
 			if(haveHeightMapPlane)
 				rsIt->elevationColorMap->calcTexturePlane(heightMapPlane);
-	
 			else
 				rsIt->elevationColorMap->calcTexturePlane(depthImageRenderer);
 			}
@@ -1044,45 +1040,14 @@ void Sandbox::toolDestructionCallback(Vrui::ToolManager::ToolDestructionCallback
 		activeDem=0;
 		}
 	}
-	
-void Sandbox::alterDepthMap(Kinect::FrameBuffer depthmap){
-//LJ
-  int xvals = depthmap.getSize(0);
-  int yvals = depthmap.getSize(1);
-  std::vector<std::vector<float> > newdm(xvals, std::vector<float>(yvals)); //make vector of size x with vectors of size y
-  //std::cout << depthmap.getData<GLfloat>()[500] << std::endl;
-  for(int z=0; z < (xvals*yvals); z++)
-  {
-    std::cout << depthmap.getData<GLfloat>()[z] << " ";
-    //int c = z % xvals;
-    //int r = z / yvals;
-    //newdm[r].push_back(olddm[z]);
-  }
-  std::cout << std::endl;
-  /*int i = 0;
-  while(i < xvals)
-  {
-    std::cout << "[";
-    for(std::vector<float>::const_iterator p = newdm[i].begin(); p != newdm[i].end(); ++p)
-    {
-      std::cout << *p << ' '; 
-    }
-    std::cout << "]" << std::endl;
-    i++;
-  }*/
-  exit(0);
-  
-}
 
 void Sandbox::frame(void)
 	{
-	  //LJ THIS LOOPS
 	/* Check if the filtered frame has been updated: */
 	if(filteredFrames.lockNewValue())
 		{
 		/* Update the depth image renderer's depth image: */
 		depthImageRenderer->setDepthImage(filteredFrames.getLockedValue());
-		//alterDepthMap(filteredFrames.getLockedValue());
 		}
 	
 	if(handExtractor!=0)

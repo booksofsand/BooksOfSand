@@ -6,6 +6,8 @@
 # Command: /usr/bin/qmake-qt5 -o Makefile Graphics.pro
 #############################################################################
 
+# MM: trying to merge SARndbox w QtApplication
+
 MAKEFILE      = Makefile
 
 ####### Compiler, tools and options

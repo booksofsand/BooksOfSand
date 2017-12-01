@@ -20,6 +20,8 @@
 # 02111-1307 USA
 ########################################################################
 
+# MM: trying to merge SARndbox w QtApplication
+
 # Directory containing the Vrui build system. The directory below
 # matches the default Vrui installation; if Vrui's installation
 # directory was changed during Vrui's installation, the directory below

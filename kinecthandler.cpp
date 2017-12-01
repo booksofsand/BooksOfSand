@@ -191,6 +191,7 @@ KinectHandler::KinectHandler(int argc,char**& argv,SandboxWindow* theBox) : Vrui
 		}*/
 	//float hysteresis=cfg.retrieveValue<float>("./hysteresis",0.1f);
 	//Misc::FixedArray<unsigned int,2> wtSize;
+
   // MM: we may not end up using / needing this
   // Create the frame filter object //LJ added
   std::cout << "Make FrameFilter" << std:: endl;
@@ -201,12 +202,12 @@ KinectHandler::KinectHandler(int argc,char**& argv,SandboxWindow* theBox) : Vrui
   frameFilter->setSpatialFilter(true);
   frameFilter->setOutputFrameFunction(Misc::createFunctionCall(this, &KinectHandler::receiveFilteredFrame));
   std::cout << "Made FrameFilter" << std::endl;
-  //*/ //Lj tried adding Frame Filter...mess
+  */ // LJ tried adding Frame Filter
 }
 
 
-// MM: we may not actually need a timerEvent. if we have our
-//     Kinect::FrameSource* camera item, it's set up to call
+// MM: we don't actually need a timerEvent if we have our
+//     Kinect::FrameSource* camera item; it's set up to call
 //     rawDepthFrameDispatcher. frameFilter is set up to call receiveFilteredFrame
 void KinectHandler::timerEvent(QTimerEvent *event) {
   /*std::cout << "In KinectHandler::timerEvent." << std::endl; // MM: testing

@@ -1,5 +1,5 @@
 /***********************************************************************
-Small image viewer using Vrui, modified by M. Montgomery. 
+Small image viewer using Vrui.
 Copyright (c) 2011-2016 Oliver Kreylos
 
 This program is free software; you can redistribute it and/or modify it
@@ -16,6 +16,9 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 ***********************************************************************/
+
+// MM: an attempt to implement an ImageMap class to replace the
+//     ElevationColorMap
 
 #ifndef IMAGEMAP_INCLUDED
 #define IMAGEMAP_INCLUDED
@@ -46,27 +49,27 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 class DepthImageRenderer;
 
 class ImageMap:public GLTextureObject
-	{
-	// MM: the following have all been added from ElevationColorMap.h;
-	//     may not all be necessary
+{
+  // MM: the following have all been added from ElevationColorMap.h;
+  //     may not all be necessary
 	  
-	/* Elements: */
-	private:	
-	GLfloat texturePlaneEq[4]; // Texture mapping plane equation in GLSL-compatible format
-        //Images::TextureSet textures; // MM: making public for Sandbox.cpp
+  /* Elements: */
+ private:	
+  GLfloat texturePlaneEq[4]; // Texture mapping plane equation in GLSL-compatible format
+  //Images::TextureSet textures; // MM: making public for Sandbox.cpp
 			  
-	/* Constructors and destructors: */
-	public:
-	ImageMap(const char* imageName);
-	Images::TextureSet textures;
+  /* Constructors and destructors: */
+ public:
+  ImageMap(const char* imageName);
+  Images::TextureSet textures;
 
-	/* Methods */
-	virtual void initContext(GLContextData& contextData) const; // from GLObject
-	void load(const char* imageName); // Overrides image map by loading the given image file
-	void calcTexturePlane(const Plane& basePlane); // Calculates the texture mapping plane for the given base plane equation
-	void calcTexturePlane(const DepthImageRenderer* depthImageRenderer); // Calculates the texture mapping plane for the given depth image renderer
-	void bindTexture(GLContextData& contextData) const; // Binds the image map texture object to the currently active texture unit
-	void uploadTexturePlane(GLint location) const; // Uploads the texture mapping plane equation into the GLSL 4-vector at the given uniform location
-	};
+  /* Methods */
+  virtual void initContext(GLContextData& contextData) const; // from GLObject
+  void load(const char* imageName); // Overrides image map by loading the given image file
+  void calcTexturePlane(const Plane& basePlane); // Calculates the texture mapping plane for the given base plane equation
+  void calcTexturePlane(const DepthImageRenderer* depthImageRenderer); // Calculates the texture mapping plane for the given depth image renderer
+  void bindTexture(GLContextData& contextData) const; // Binds the image map texture object to the currently active texture unit
+  void uploadTexturePlane(GLint location) const; // Uploads the texture mapping plane equation into the GLSL 4-vector at the given uniform location
+};
 
 #endif

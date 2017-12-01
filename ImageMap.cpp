@@ -1,5 +1,5 @@
 /***********************************************************************
-Small image viewer using Vrui, modified by M. Montgomery. 
+Small image viewer using Vrui.
 Copyright (c) 2011-2016 Oliver Kreylos
 
 This program is free software; you can redistribute it and/or modify it
@@ -17,8 +17,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 ***********************************************************************/
 
-/* MM: TO DO: adapt existing ImageViewer code and ElevationColorMap code
-              to create an image class instead of a color map class */
+// MM: an attempt to implement an ImageMap class to replace the
+//     ElevationColorMap
 
 #include "ImageMap.h"
 
@@ -114,7 +114,7 @@ void ImageMap::calcTexturePlane(const Plane& basePlane) {
   // Calculates the texture mapping plane for the given base plane equation
 
   // MM: code from ElevationColorMap.cpp
-  // TO DO: look at GLColorMap to see what this does. need to adapt?
+  // look at GLColorMap to see what this does. need to adapt?
 
   /*  
   // Scale and offset the camera-space base plane equation
@@ -168,13 +168,13 @@ void ImageMap::bindTexture(GLContextData& contextData) const {
   //     Note the key is 0U, which was the key in ImageViewer constructor.
   const Images::TextureSet::GLState::Texture& tex=texGLState->bindTexture(0U);
   const Images::BaseImage& image=tex.getImage();
-  // MM: try replacing this with Image so can test the setPixel() method (TO DO)
+  // MM: try replacing this with Image so can test the setPixel() method 
   std::cout << "texGLState->bindTexture and tex.getImage() done." << std::endl;  // MM: added
   
   // Query the range of texture coordinates
   const GLfloat* texMin=tex.getTexCoordMin();
   const GLfloat* texMax=tex.getTexCoordMax();
-  // MM: TO DO: determine if these values are accurate (should they match sandbox dimensions?)
+  // MM: determine if these values are accurate (should they match sandbox dimensions?)
   std::cout << "tex.getTexCoordMax() and Min() done." << std::endl;  // MM: added
   
   // Draw the image
@@ -230,7 +230,7 @@ void ImageMap::uploadTexturePlane(GLint location) const {
   // Uploads the texture mapping plane equation into the GLSL 4-vector at the given uniform location
   
   // MM: code from ElevationColorMap.cpp
-  // TO DO: adapt for image if necessary
+  // adapt for image if necessary
   glUniformARB<4>(location,1,texturePlaneEq);
   /* MM: texturePlaneEq was declared in .h: GLfloat texturePlaneEq[4];
 

@@ -1,12 +1,15 @@
-// MM: TO DO: compare this with ImageViewer.cpp, SurfaceRenderer.cpp. try to incorporate with ImageMap
+/* MM: an example image displayer using GL and GLUT and devIL (no Vrui). 
+   compare this with ImageViewer.cpp, SurfaceRenderer.cpp.
+   try to incorporate with ImageMap?
 
-/* https://www.opengl.org/discussion_boards/showthread.php/181714-Does-opengl-help-in-the-display-of-an-existing-image
+https://www.opengl.org/discussion_boards/showthread.php/181714-Does-opengl-help-in-the-display-of-an-existing-image
 
 Compile with GL, GLUT and devIL development libraries:
 gcc devil_example.c -lGL -lglut -lIL -o devil_example
 
 Run: 
 ./devil_example your_image_file.jpg   */
+
 
 #include <IL/il.h>      // devIL for image handling (can substitute Vrui?)
 #include <GL/glut.h>    // GLUT for window handling (can substitute Vrui?)

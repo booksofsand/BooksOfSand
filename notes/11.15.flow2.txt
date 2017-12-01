@@ -1,4 +1,8 @@
-11/15 9:30pm flow MM
+11/15 9:30pm flow
+MM: Flow printout w more print stmts to trace SARndbox processes.
+    Trying to figure out where some crucial steps happen (like
+    setting the current directory, that seems to be important
+    before setting up Kinect). 
 
 In Application::Application (Vrui::Application.cpp).
 In init (Vrui::Vrui.Workbench.cpp).

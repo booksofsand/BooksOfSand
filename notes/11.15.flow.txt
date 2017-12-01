@@ -1,4 +1,8 @@
-11/15 7:15pm flow - MM
+11/15 7:15pm flow
+MM: Slightly commented flow printout to trace SARndbox processes.
+    Trying to figure out where some crucial steps happen (like
+    setting the current directory, that seems to be important
+    before setting up Kinect). 
 
 [arsandbox@localhost SARndbox-2.3]$ sudo /usr/local/bin/SARndbox -fpv -uhm
 

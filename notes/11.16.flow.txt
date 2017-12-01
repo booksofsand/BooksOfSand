@@ -1,4 +1,8 @@
-11/16 6:45pm flow MM
+11/16 6:45pm flow
+MM: Flow printout to trace SARndbox processes.
+    Trying to figure out where some crucial steps happen (like
+    setting the current directory, that seems to be important
+    before setting up Kinect). 
 
 [arsandbox@localhost BooksOfSand]$ sudo /usr/local/bin/SARndbox -fpv
 In Application::Application (Vrui::Application.cpp).

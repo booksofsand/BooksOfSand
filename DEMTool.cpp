@@ -27,6 +27,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #include <Misc/ConfigurationFile.h>
 #include <Geometry/GeometryValueCoders.h>
 #include <Vrui/OpenFile.h>
+#include <iostream>  // MM: added
 
 #include "Sandbox.h"
 
@@ -35,48 +36,48 @@ Methods of class DEMToolFactory:
 *******************************/
 
 DEMToolFactory::DEMToolFactory(Vrui::ToolManager& toolManager)
-	:ToolFactory("DEMTool",toolManager),
-	 demSelectionHelper(Vrui::getWidgetManager(),"",".grid",Vrui::openDirectory("."))
-	{
-	/* Initialize tool layout: */
-	layout.setNumButtons(1);
+  :ToolFactory("DEMTool",toolManager),
+   demSelectionHelper(Vrui::getWidgetManager(),"",".grid",Vrui::openDirectory("."))
+{
+  /* Initialize tool layout: */
+  layout.setNumButtons(1);
 	
-	#if 0
-	/* Insert class into class hierarchy: */
-	ToolFactory* toolFactory=toolManager.loadClass("Tool");
-	toolFactory->addChildClass(this);
-	addParentClass(toolFactory);
-	#endif
+#if 0
+  /* Insert class into class hierarchy: */
+  ToolFactory* toolFactory=toolManager.loadClass("Tool");
+  toolFactory->addChildClass(this);
+  addParentClass(toolFactory);
+#endif
 	
-	/* Set tool class' factory pointer: */
-	DEMTool::factory=this;
-	}
+  /* Set tool class' factory pointer: */
+  DEMTool::factory=this;
+}
 
 DEMToolFactory::~DEMToolFactory(void)
-	{
-	/* Reset tool class' factory pointer: */
-	DEMTool::factory=0;
-	}
+{
+  /* Reset tool class' factory pointer: */
+  DEMTool::factory=0;
+}
 
 const char* DEMToolFactory::getName(void) const
-	{
-	return "Show DEM";
-	}
+{
+  return "Show DEM";
+}
 
 const char* DEMToolFactory::getButtonFunction(int) const
-	{
-	return "Toggle DEM";
-	}
+{
+  return "Toggle DEM";
+}
 
 Vrui::Tool* DEMToolFactory::createTool(const Vrui::ToolInputAssignment& inputAssignment) const
-	{
-	return new DEMTool(this,inputAssignment);
-	}
+{
+  return new DEMTool(this,inputAssignment);
+}
 
 void DEMToolFactory::destroyTool(Vrui::Tool* tool) const
-	{
-	delete tool;
-	}
+{
+  delete tool;
+}
 
 /********************************
 Static elements of class DEMTool:
@@ -89,127 +90,127 @@ Methods of class DEMTool:
 ************************/
 
 void DEMTool::loadDEMFile(const char* demFileName)
+{
+  std::cout << "In DEMTool::loadDEMFile." << std::endl;  // MM: added
+  /* Load the selected DEM file: */
+  load(demFileName);
+	
+  OGTransform demT;
+  if(haveDemTransform)
+    demT=demTransform;
+  else
+    {
+      /* Calculate an appropriate DEM transformation to fit the DEM into the sandbox's domain: */
+      const Scalar* demBox=getDemBox();
+      Scalar demSx=demBox[2]-demBox[0];
+      Scalar demSy=demBox[3]-demBox[1];
+      Scalar boxSx=application->bbox.getSize(0);
+      Scalar boxSy=application->bbox.getSize(1);
+		
+      /* Shift the DEM's center to the box's center: */
+      Point demCenter;
+      demCenter[0]=Math::mid(demBox[0],demBox[2]);
+      demCenter[1]=Math::mid(demBox[1],demBox[3]);
+      demCenter[2]=Scalar(calcAverageElevation());
+      demT=OGTransform::translateFromOriginTo(demCenter);
+		
+      /* Determine whether the DEM should be rotated: */
+      Scalar scale=Math::min(demSx/boxSx,demSy/boxSy);
+      Scalar scaleRot=Math::min(demSx/boxSy,demSy/boxSx);
+		
+      if(scale<scaleRot)
 	{
-	std::cout << "In DEMTool::loadDEMFile." << std::endl;  // MM: added
-	/* Load the selected DEM file: */
-	load(demFileName);
-	
-	OGTransform demT;
-	if(haveDemTransform)
-		demT=demTransform;
-	else
-		{
-		/* Calculate an appropriate DEM transformation to fit the DEM into the sandbox's domain: */
-		const Scalar* demBox=getDemBox();
-		Scalar demSx=demBox[2]-demBox[0];
-		Scalar demSy=demBox[3]-demBox[1];
-		Scalar boxSx=application->bbox.getSize(0);
-		Scalar boxSy=application->bbox.getSize(1);
-		
-		/* Shift the DEM's center to the box's center: */
-		Point demCenter;
-		demCenter[0]=Math::mid(demBox[0],demBox[2]);
-		demCenter[1]=Math::mid(demBox[1],demBox[3]);
-		demCenter[2]=Scalar(calcAverageElevation());
-		demT=OGTransform::translateFromOriginTo(demCenter);
-		
-		/* Determine whether the DEM should be rotated: */
-		Scalar scale=Math::min(demSx/boxSx,demSy/boxSy);
-		Scalar scaleRot=Math::min(demSx/boxSy,demSy/boxSx);
-		
-		if(scale<scaleRot)
-			{
-			/* Scale and rotate DEM: */
-			demT*=OGTransform::rotate(OGTransform::Rotation::rotateZ(Math::rad(Scalar(90))));
-			scale=scaleRot;
-			}
-		
-		/* Scale DEM without rotation: */
-		demT*=OGTransform::scale(scale);
-		}
-	
-	/* Shift the DEM vertically: */
-	demT*=OGTransform::translate(Vector(0,0,demVerticalShift/demVerticalScale));
-	
-	/* Set the DEM transformation: */
-	setTransform(demT*OGTransform(application->boxTransform),demVerticalScale,demT.getOrigin()[2]);
-	std::cout << "Done with DEMTool::loadDEMFile." << std::endl;  // MM: added
+	  /* Scale and rotate DEM: */
+	  demT*=OGTransform::rotate(OGTransform::Rotation::rotateZ(Math::rad(Scalar(90))));
+	  scale=scaleRot;
 	}
+		
+      /* Scale DEM without rotation: */
+      demT*=OGTransform::scale(scale);
+    }
+	
+  /* Shift the DEM vertically: */
+  demT*=OGTransform::translate(Vector(0,0,demVerticalShift/demVerticalScale));
+	
+  /* Set the DEM transformation: */
+  setTransform(demT*OGTransform(application->boxTransform),demVerticalScale,demT.getOrigin()[2]);
+  std::cout << "Done with DEMTool::loadDEMFile." << std::endl;  // MM: added
+}
 
 void DEMTool::loadDEMFileCallback(GLMotif::FileSelectionDialog::OKCallbackData* cbData)
-	{
-	/* Load the selected DEM file: */
-	loadDEMFile(cbData->selectedDirectory->getPath(cbData->selectedFileName).c_str());
-	}
+{
+  /* Load the selected DEM file: */
+  loadDEMFile(cbData->selectedDirectory->getPath(cbData->selectedFileName).c_str());
+}
 
 DEMToolFactory* DEMTool::initClass(Vrui::ToolManager& toolManager)
-	{
-	std::cout << "In DEMTool::initClass." << std::endl;  // MM: added
-	/* Create the tool factory: */
-	factory=new DEMToolFactory(toolManager);
+{
+  std::cout << "In DEMTool::initClass." << std::endl;  // MM: added
+  /* Create the tool factory: */
+  factory=new DEMToolFactory(toolManager);
 	
-	/* Register and return the class: */
-	toolManager.addClass(factory,Vrui::ToolManager::defaultToolFactoryDestructor);
-	std::cout << "Done with DEMTool::initClass." << std::endl;  // MM: added
-	return factory;
-	}
+  /* Register and return the class: */
+  toolManager.addClass(factory,Vrui::ToolManager::defaultToolFactoryDestructor);
+  std::cout << "Done with DEMTool::initClass." << std::endl;  // MM: added
+  return factory;
+}
 
 DEMTool::DEMTool(const Vrui::ToolFactory* factory,const Vrui::ToolInputAssignment& inputAssignment)
-	:Vrui::Tool(factory,inputAssignment),
-	 haveDemTransform(false),demTransform(OGTransform::identity),
-	 demVerticalShift(0),demVerticalScale(1)
-	{
-	}
+  :Vrui::Tool(factory,inputAssignment),
+  haveDemTransform(false),demTransform(OGTransform::identity),
+  demVerticalShift(0),demVerticalScale(1)
+{
+}
 
 DEMTool::~DEMTool(void)
-	{
-	}
+{
+}
 
 void DEMTool::configure(const Misc::ConfigurationFileSection& configFileSection)
-	{
-	std::cout << "In DEMTool::configure." << std::endl;  // MM: added
-	/* Query DEM file name: */
-	demFileName=configFileSection.retrieveString("./demFileName",demFileName);
+{
+  std::cout << "In DEMTool::configure." << std::endl;  // MM: added
+  /* Query DEM file name: */
+  demFileName=configFileSection.retrieveString("./demFileName",demFileName);
 	
-	/* Read the DEM transformation: */
-	if(configFileSection.hasTag("./demTransform"))
-		{
-		haveDemTransform=true;
-		demTransform=configFileSection.retrieveValue<OGTransform>("./demTransform",demTransform);
-		}
+  /* Read the DEM transformation: */
+  if(configFileSection.hasTag("./demTransform"))
+    {
+      haveDemTransform=true;
+      demTransform=configFileSection.retrieveValue<OGTransform>("./demTransform",demTransform);
+    }
 	
-	demVerticalShift=configFileSection.retrieveValue<Scalar>("./demVerticalShift",demVerticalShift);
-	demVerticalScale=configFileSection.retrieveValue<Scalar>("./demVerticalScale",demVerticalScale);
-	std::cout << "Done with DEMTool::configure." << std::endl;  // MM: added
-	}
+  demVerticalShift=configFileSection.retrieveValue<Scalar>("./demVerticalShift",demVerticalShift);
+  demVerticalScale=configFileSection.retrieveValue<Scalar>("./demVerticalScale",demVerticalScale);
+  std::cout << "Done with DEMTool::configure." << std::endl;  // MM: added
+}
 
 void DEMTool::initialize(void)
-	{
-	std::cout << "In DEMTool::initialize." << std::endl;  // MM: added
-	/* Bring up a file selection dialog if there is no pre-configured DEM file: */
-	if(demFileName.empty())
-		{
-		/* Load a DEM file: */
-		factory->demSelectionHelper.loadFile("Load DEM File...",this,&DEMTool::loadDEMFileCallback);
-		}
-	else
-		{
-		/* Load the configured DEM file: */
-		loadDEMFile(demFileName.c_str());
-		}
-	std::cout << "Done with DEMTool::initialize." << std::endl;  // MM: added
-	}
+{
+  std::cout << "In DEMTool::initialize." << std::endl;  // MM: added
+  /* Bring up a file selection dialog if there is no pre-configured DEM file: */
+  if(demFileName.empty())
+    {
+      /* Load a DEM file: */
+      factory->demSelectionHelper.loadFile("Load DEM File...",this,&DEMTool::loadDEMFileCallback);
+    }
+  else
+    {
+      /* Load the configured DEM file: */
+      loadDEMFile(demFileName.c_str());
+    }
+  std::cout << "Done with DEMTool::initialize." << std::endl;  // MM: added
+}
 
 const Vrui::ToolFactory* DEMTool::getFactory(void) const
-	{
-	return factory;
-	}
+{
+  return factory;
+}
 
 void DEMTool::buttonCallback(int buttonSlotIndex,Vrui::InputDevice::ButtonCallbackData* cbData)
-	{
-	if(cbData->newButtonState)
-		{
-		/* Toggle this DEM tool as the active one: */
-		application->toggleDEM(this);
-		}
-	}
+{
+  if(cbData->newButtonState)
+    {
+      /* Toggle this DEM tool as the active one: */
+      application->toggleDEM(this);
+    }
+}
